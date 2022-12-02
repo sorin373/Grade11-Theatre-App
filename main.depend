@@ -1,0 +1,16 @@
+# depslib dependency file v1.0
+1666827420 source:c:\users\sorin\documents\scoala\info\codeblocks\main\main.cpp
+	<cstring>
+	<fstream>
+	<iostream>
+
+1669755216 source:c:\users\sorin\documents\sorindocs\info\codeblocks\main\main.cpp
+	<iostream>
+	<stdlib.h>
+	<Windows.h>
+	<iomanip>
+	<cwchar>
+
+1669993806 source:c:\users\sorin\documents\sorindocs\info\gitprojects\csproject-repo\main.cpp
+	<iostream>
+
