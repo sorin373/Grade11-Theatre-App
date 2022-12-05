@@ -1,16 +1,9 @@
-#define _WIN32_WINNT 0x0601
-
 #include <iostream> // cin / cout
 #include <fstream>  // input din fisier
 #include <cstring>  // string-uri
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
-
-// manipulare terminal
-#include <windows.h>
-#include <cwchar>
-#include <wincon.h>
 
 using namespace std;
 
