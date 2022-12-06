@@ -1,0 +1,6 @@
+1.	Afisarea primelor 3 cele mai incapatoare sali de teatru
+2.	Afisarea tuturor regizorilor a caror varsta este mai mare sau egal cu 40 ani si a caror nume incepe cu litera…
+3.	Sortarea alfabetica si crescatoare in functie de nume si pret
+4.	Care piesa a fost cel mai des frecventata?
+5.	Cautarea unei piese de teatru!!!!
+6.	Afisarea tuturor persoanelor care au vizionat cel putin 2 piese de teatru in cadrul teatrului nostru?
