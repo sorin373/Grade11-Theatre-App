@@ -32,7 +32,14 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="actor.txt" />
+		<Unit filename="bilet.txt" />
 		<Unit filename="main.cpp" />
+		<Unit filename="personaj.txt" />
+		<Unit filename="personal.txt" />
+		<Unit filename="piesa.txt" />
+		<Unit filename="sala.txt" />
+		<Unit filename="spectator.txt" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
