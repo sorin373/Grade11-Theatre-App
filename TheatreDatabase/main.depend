@@ -1,9 +1,0 @@
-# depslib dependency file v1.0
-1670354084 source:c:\users\sorin\documents\sorindocs\info\gitprojects\csproject-repo\main\main.cpp
-	<iostream>
-	<fstream>
-	<cstring>
-	<stdio.h>
-	<stdlib.h>
-	<conio.h>
-
