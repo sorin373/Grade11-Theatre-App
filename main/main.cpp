@@ -19,11 +19,14 @@ struct sala
 struct actor
 {
     unsigned int ID_Actor;
+    unsigned int ID_Piesa;
     char Nume_Actor[101];
     char Prenume_Actor[101];
     unsigned int Varsta_Actor;
-    long long unsigned int CNP_Actor;
-} actorTeatru[200];
+    char Email_Actor[101];
+    char CNP_Actor[15];
+    char Sex_Actor;
+} actorTeatru[1001];
 
 struct piesa
 {
@@ -82,8 +85,9 @@ void citire_sali()
 void citire_actori()
 {
     ifstream fisierActor("actor.txt");           // fisier actori care joaca in piesele de teatru
-    while (fisierActor >> actorTeatru[NumarActori].ID_Actor >> actorTeatru[NumarActori].Nume_Actor >> actorTeatru[NumarActori].Prenume_Actor
-        >> actorTeatru[NumarActori].Varsta_Actor >> actorTeatru[NumarActori].CNP_Actor)
+    while (fisierActor >> actorTeatru[NumarActori].ID_Actor >> actorTeatru[NumarActori].ID_Piesa >> actorTeatru[NumarActori].Nume_Actor
+        >> actorTeatru[NumarActori].Prenume_Actor >> actorTeatru[NumarActori].Varsta_Actor >> actorTeatru[NumarActori].Email_Actor
+        >> actorTeatru[NumarActori].CNP_Actor >> actorTeatru[NumarActori].Sex_Actor)
         NumarActori++;
     NumarActori--;
     fisierActor.close();
@@ -106,12 +110,9 @@ void citire_piese()
 void citire_personaje_piese()
 {
     ifstream fisierPersonaj("personaj.txt");    // fisier cu personajele din fiecare piesa de teatru
-    while (fisierPersonaj >> personajPiesa[NumarPersonaje].ID_Piesa >> personajPiesa[NumarPersonaje].ID_Actor)
-    {
-        fisierPersonaj.get();
-        fisierPersonaj.get(personajPiesa[NumarPersonaje].Nume_Personaj,101);
+    while (fisierPersonaj >> personajPiesa[NumarPersonaje].ID_Piesa >> personajPiesa[NumarPersonaje].ID_Actor
+           >> personajPiesa[NumarPersonaje].Nume_Personaj)
         NumarPersonaje++;
-    }
     NumarPersonaje--;
     fisierPersonaj.close();
 }
@@ -140,7 +141,8 @@ void citire_personal()
 void citire_spectatori()
 {
     ifstream fisierSpectator("spectator.txt"); // fisier cu spectatorii care si-au rezervat loc la fiecare piesa de teatru
-    while (fisierSpectator >> spectatorPiesa[NumarSpectatori].ID_Spectator >> spectatorPiesa[NumarSpectatori].ID_Bilet >> spectatorPiesa[NumarSpectatori].ID_Piesa)
+    while (fisierSpectator >> spectatorPiesa[NumarSpectatori].ID_Spectator >> spectatorPiesa[NumarSpectatori].ID_Bilet
+           >> spectatorPiesa[NumarSpectatori].ID_Piesa)
         NumarSpectatori++;
     NumarSpectatori--;
     fisierSpectator.close();
@@ -166,7 +168,8 @@ void afisare_piese()
 void afisare_sali()
 {
     for (unsigned int i = 1; i <= NumarSali; i++)
-        cout << "Sala " << salaTeatru[i].ID_Sala << ": " << salaTeatru[i].Nr_Scaune << " scaune normale " << salaTeatru[i].Nr_Scaune_Loja << " scaune in loja" << endl;
+        cout << "Sala " << salaTeatru[i].ID_Sala << ": " << salaTeatru[i].Nr_Scaune << " scaune normale "
+        << salaTeatru[i].Nr_Scaune_Loja << " scaune in loja" << endl;
 }
 
 void afisare_bilete()
@@ -177,14 +180,35 @@ void afisare_bilete()
 
 void afisare_actori()
 {
+    // Determinarea numelui cu numar maxim de caractere
+    unsigned int NumarMaxCaractereNume = 0;
+
     for (unsigned int i = 1; i <= NumarActori; i++)
-        cout << actorTeatru[i].Nume_Actor << " " << actorTeatru[i].Prenume_Actor << endl;
+        if (strlen(actorTeatru[i].Nume_Actor) > NumarMaxCaractereNume) NumarMaxCaractereNume = strlen(actorTeatru[i].Nume_Actor);
+
+    // Determinarea prenumelui cu numar maxim de caractere
+    unsigned int NumarMaxCaracterePrenume = 0;
+
+    for (unsigned int i = 0; i <= NumarActori; i++)
+        if (strlen(actorTeatru[i].Prenume_Actor) > NumarMaxCaracterePrenume) NumarMaxCaracterePrenume = strlen(actorTeatru[i].Prenume_Actor);
+
+    // Afisare Actori
+    cout << "ID_Actor" << " " << "ID_Piesa" << " " << "Nume_Actor" << " " << "Prenume_Actor" << " " << "Varsta_Actor" << " " << "Email_Actor" << "\n\n";
+
+    for (unsigned int i = 1; i <= NumarActori; i++)
+    {
+        cout << actorTeatru[i].ID_Actor << setw(10 - 1) << " " << actorTeatru[i].ID_Piesa << setw(10 - 1) << " " << actorTeatru[i].Nume_Actor
+        << setw(NumarMaxCaractereNume - strlen(actorTeatru[i].Nume_Actor) + 10) << " " << actorTeatru[i].Prenume_Actor
+        << setw(NumarMaxCaracterePrenume - strlen(actorTeatru[i].Prenume_Actor) + 10) << " " << actorTeatru[i].Varsta_Actor << " ani"
+        << setw(10) << " " << actorTeatru[i].Email_Actor << "\n\n";
+    }
+
 }
 
 void afisare_personal()
 {
     for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
-        cout << personalTeatru[i].Nume_PersonalTeatru << " " << personalTeatru[i].Prenume_PersonalTeatru << endl;
+        cout << personalTeatru[i].Nume_PersonalTeatru << endl;
 }
 
 int main()
@@ -240,13 +264,13 @@ int main()
 
                 case 1: // Cautarea pieselor in baza de date dupa ID-ul lor (vID_Piesa), introdus de la tastatura
                 {
-                    unsigned int vID_Piesa;
+                    char vNume_Piesa[101];
                     unsigned int ok = 0;
 
-                    cout << endl << "Tasteaza ID-ul piesei cautate: "; cin >> vID_Piesa; cout << "\n\n";
+                    cout << endl << "Tasteaza numele piesei: "; cin.get(); cin.get(vNume_Piesa, 101);
 
                     for (unsigned int i = 1; i <= NumarPiese && ok == 0; i++)
-                        if (piesaTeatru[i].ID_Piesa == vID_Piesa)
+                        if (stricmp(piesaTeatru[i].Nume_Piesa, vNume_Piesa) == 0)
                         {
                             system("CLS"); // sterge continut consola
 
@@ -282,13 +306,12 @@ int main()
                                     unsigned int k = 1;
                                     while (actorTeatru[k].ID_Actor != personajPiesa[j].ID_Actor) k++;
 
-                                    cout << " (jucat de " << actorTeatru[k].Nume_Actor << " " << actorTeatru[k].Prenume_Actor << ")" << endl;
+                                    cout << " (jucat de " << actorTeatru[k].Nume_Actor << ")" << endl;
                                 }
-
-                            cout << "Apasa enter pentru a te intoarce la meniul precedent..." << endl;
 
                             ok = 1; // iese din 'for'
                         }
+
                 }
                     _getch();
                     break;
@@ -332,6 +355,7 @@ int main()
             break;
         case 4:
         {
+            system("CLS");
             afisare_actori();
         }
             _getch();
