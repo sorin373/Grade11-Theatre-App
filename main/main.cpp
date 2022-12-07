@@ -6,6 +6,9 @@
 #include <stdlib.h>
 #include <conio.h>
 
+#include <windows.h>
+#include <wincon.h>
+
 using namespace std;
 
 /// Declarare structuri de date
@@ -71,6 +74,51 @@ struct spectator
 
 // Declarare contoarelor
 unsigned int NumarActori = 1, NumarPiese = 1, NumarBilete = 1, NumarSali = 1, NumarPersonalTeatru = 1, NumarSpectatori = 1, NumarPersonaje = 1;
+
+/// Functii ajutatoare (daca exista erori comenteaza toate subprogramele din functii ajutatoare)
+void fillLinieConsola(unsigned int vWidth)
+{
+    cout << setw(5 - 2) << " ";
+
+    char fillLine;
+    fillLine = cout.fill('_');
+    cout.width(vWidth);
+    cout << '_' << endl;
+    cout.fill(fillLine);
+    cout << endl;
+}
+
+void SetCursorSize(const int iSize = 0)
+{
+    HANDLE cxHandle;
+    cxHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO cci;
+    cci.dwSize = iSize;
+    cci.bVisible = true;
+    SetConsoleCursorInfo(cxHandle, &cci);
+}
+
+//CONSOLE_FONT_INFOEX, *PCONSOLE_FONT_INFOEX
+typedef struct _CONSOLE_FONT_INFOEX
+{
+    ULONG cbSize;
+    DWORD nFont;
+    COORD dwFontSize;
+    UINT  FontFamily;
+    UINT  FontWeight;
+    WCHAR FaceName[LF_FACESIZE];
+} CONSOLE_FONT_INFOEX, *PCONSOLE_FONT_INFOEX;
+
+//the function declaration begins
+#ifdef __cplusplus
+extern "C" {
+#endif
+BOOL WINAPI SetCurrentConsoleFontEx(HANDLE hConsoleOutput, BOOL bMaximumWindow, PCONSOLE_FONT_INFOEX
+                                    lpConsoleCurrentFontEx);
+#ifdef __cplusplus
+}
+#endif
+//the function declaration ends
 
 /// Citire date din fisierele corespunzatoare
 void citire_sali()
@@ -158,10 +206,11 @@ void afisare_piese()
         if (strlen(piesaTeatru[i].Nume_Piesa) > NumarMaxCaractere) NumarMaxCaractere = strlen(piesaTeatru[i].Nume_Piesa);
 
     // Afisarea pieselor de teatru (ID, NUME, DATA)
-    cout << "ID" << setw(5 + 1) << " " << "Nume"<< setw(NumarMaxCaractere + 1) << " " << "Data" << "\n\n";
+    cout << "\n\n" << setw(5 - 1) << " " << "ID" << setw(5 + 1) << " " << "Nume"<< setw(NumarMaxCaractere + 1) << " " << "Data" << endl;
+    fillLinieConsola(85); // umple toate linia din consola cu  '_'
 
     for (unsigned int i = 1; i <= NumarPiese; i++)
-        cout << piesaTeatru[i].ID_Piesa << setw(5) << " " << piesaTeatru[i].Nume_Piesa
+        cout << setw(5) << " " << piesaTeatru[i].ID_Piesa << setw(5) << " " << piesaTeatru[i].Nume_Piesa
         << setw(NumarMaxCaractere - strlen(piesaTeatru[i].Nume_Piesa) + 5) << " " << piesaTeatru[i].Data_Piesa << endl;
 }
 
@@ -192,16 +241,23 @@ void afisare_actori()
     for (unsigned int i = 0; i <= NumarActori; i++)
         if (strlen(actorTeatru[i].Prenume_Actor) > NumarMaxCaracterePrenume) NumarMaxCaracterePrenume = strlen(actorTeatru[i].Prenume_Actor);
 
+    // Determinarea Email-ului cu numar maxim de caractere
+    unsigned int NumarMaxCaractereEmail = 0;
+
+    for (unsigned int i = 0; i < NumarActori; i++)
+        if (strlen(actorTeatru[i].Email_Actor) > NumarMaxCaractereEmail) NumarMaxCaractereEmail = strlen(actorTeatru[i].Email_Actor);
+
     // Afisare Actori
-    cout << "ID_Actor" << " " << "ID_Piesa" << " " << "Nume_Actor" << " " << "Prenume_Actor" << " " << "Varsta_Actor" << " " << "Email_Actor" << "\n\n";
+    cout << "\n\n" << setw(5 - 1) << " " << "ID_Actor" << " " << "ID_Piesa" << setw(5) << " " << "Nume_Actor" << setw(NumarMaxCaractereNume) <<" " << "Prenume_Actor" << setw(NumarMaxCaracterePrenume - 5) << " "
+    << "Varsta_Actor" << setw(10) << " " << "Email_Actor" << "\n";
+
+    fillLinieConsola(115); // umple toate linia din consola cu  '_'
 
     for (unsigned int i = 1; i <= NumarActori; i++)
-    {
-        cout << actorTeatru[i].ID_Actor << setw(10 - 1) << " " << actorTeatru[i].ID_Piesa << setw(10 - 1) << " " << actorTeatru[i].Nume_Actor
+        cout << setw(5) << " " << actorTeatru[i].ID_Actor << setw(10 - 1) << " " << actorTeatru[i].ID_Piesa << setw(10 - 1) << " " << actorTeatru[i].Nume_Actor
         << setw(NumarMaxCaractereNume - strlen(actorTeatru[i].Nume_Actor) + 10) << " " << actorTeatru[i].Prenume_Actor
         << setw(NumarMaxCaracterePrenume - strlen(actorTeatru[i].Prenume_Actor) + 10) << " " << actorTeatru[i].Varsta_Actor << " ani"
-        << setw(10) << " " << actorTeatru[i].Email_Actor << "\n\n";
-    }
+        << setw(10) << " " << actorTeatru[i].Email_Actor << setw(NumarMaxCaractereEmail - strlen(actorTeatru[i].Email_Actor) + 10) << "\n";
 
 }
 
@@ -213,7 +269,24 @@ void afisare_personal()
 
 int main()
 {
-    // Citirea datelor din fisierele corespunzatoare
+    /// _______TERMINAL_______
+
+    CONSOLE_FONT_INFOEX cfi;
+    cfi.cbSize = sizeof(cfi);
+    cfi.nFont = 0;
+    cfi.dwFontSize.X = 0;                   // Latimea caracterului
+    cfi.dwFontSize.Y = 20;                  // Inaltimea
+    cfi.FontFamily = FF_DONTCARE;
+    cfi.FontWeight = 700;
+
+    std::wcscpy(cfi.FaceName, L"Consolas"); // Font
+    SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
+
+    ::SendMessage(::GetConsoleWindow(), WM_SYSKEYDOWN, VK_RETURN, 0x20000000);  //Full screen
+    system(""); /// Add color
+    SetCursorSize(25);
+
+    /// Citirea datelor din fisierele corespunzatoare
     citire_sali();
     citire_actori();
     citire_piese();
@@ -229,16 +302,20 @@ int main()
         system("CLS");
 
         // Continutul meniului principal
-        cout << "MENIU" << "\n\n";
+        cout << "\n\n" << setw(35) << " " << "MENIU" << "\n";
 
-        cout << "1. Piesele ce urmeaza sa fie jucate in perioasa 10.07 - 17.07.2022." << endl;
-        cout << "2. Sali de teatru." << endl;
-        cout << "3. Tipurile de bilete disponibile la vanzare." << endl;
-        cout << "4. Actorii care joaca in piesele de teatru." << endl;
-        cout << "5. Personalul teatrului." << endl;
-        cout << "0. Iesire" << "\n\n";
+        fillLinieConsola(70); // umple toate linia din consola cu  '_'
 
-        cout << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: "; cin >> Meniu_1;
+        cout << setw(5 - 1) << " " << "1. Piesele ce urmeaza sa fie jucate in perioasa 10.07 - 17.07.2022." << endl;
+        cout << setw(5 - 1) << " " << "2. Sali de teatru." << endl;
+        cout << setw(5 - 1) << " " << "3. Tipurile de bilete disponibile la vanzare." << endl;
+        cout << setw(5 - 1) << " " << "4. Actorii care joaca in piesele de teatru." << endl;
+        cout << setw(5 - 1) << " " << "5. Personalul teatrului." << endl;
+        cout << setw(5 - 1) << " " << "0. Iesire" << "\n\n";
+
+        fillLinieConsola(70); // umple toate linia din consola cu  '_'
+
+        cout << setw(5 - 1) << " " << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: "; cin >> Meniu_1;
 
         switch (Meniu_1)
         {
@@ -250,24 +327,30 @@ int main()
             {
                 system("CLS"); // sterge continut consola
                 afisare_piese(); cout << endl;
+                fillLinieConsola(85); // umple toate linia din consola cu  '_'
 
                 // Continutul celui de al doilea meniu
-                cout << "1. Detalii desre piesele de teatru." << endl;
-                cout << "2. Personajele care joaca in piesele de teatru si actorii corespunzatori acestora." << endl;
-                cout << "3. Profit si cheltuieli." << endl;
-                cout << "0. Inapoi." << "\n\n";
+                cout << setw(5 - 1) << " " << "1. Detalii desre piesele de teatru." << endl;
+                cout << setw(5 - 1) << " " << "2. Personajele care joaca in piesele de teatru si actorii corespunzatori acestora." << endl;
+                cout << setw(5 - 1) << " " << "3. Profit si cheltuieli." << endl;
+                cout << setw(5 - 1) << " " << "0. Inapoi." << "\n\n";
 
-                cout << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: "; cin >> Meniu_2;
+                fillLinieConsola(85);
+
+                cout << setw(5 - 1) << " " << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: "; cin >> Meniu_2;
 
                 switch (Meniu_2)
                 {
 
-                case 1: // Cautarea pieselor in baza de date dupa ID-ul lor (vID_Piesa), introdus de la tastatura
+                case 1: // Cautarea pieselor in baza de date dupa numele lor (vNume_Piesa), introdus de la tastatura
+                        // Modificat din ID => Nume !!!!!!!!!!!!!!!
+                        // De lucrat la afisare piese dupa cautarea
+                        // implementare cautarii dupa data, ID si nume
                 {
                     char vNume_Piesa[101];
                     unsigned int ok = 0;
 
-                    cout << endl << "Tasteaza numele piesei: "; cin.get(); cin.get(vNume_Piesa, 101);
+                    cout << endl << setw(5 - 1) << " " << "Tasteaza numele piesei: "; cin.get(); cin.get(vNume_Piesa, 101);
 
                     for (unsigned int i = 1; i <= NumarPiese && ok == 0; i++)
                         if (stricmp(piesaTeatru[i].Nume_Piesa, vNume_Piesa) == 0)
@@ -326,7 +409,7 @@ int main()
                     for (unsigned int i = 1; i <= NumarPiese && ok == 0; i++)
                         if (piesaTeatru[i].ID_Piesa == vID_Piesa)
                         {
-                            for (int j = 1; j <= NumarSpectatori; j++)
+                            for (unsigned int j = 1; j <= NumarSpectatori; j++)
                                 if (spectatorPiesa[j].ID_Piesa == piesaTeatru[i].ID_Piesa)
                                     v = v + biletPiesa[spectatorPiesa[j].ID_Bilet].Pret_Bilet;
                             ok = 1;
@@ -356,7 +439,18 @@ int main()
         case 4:
         {
             system("CLS");
+
             afisare_actori();
+            fillLinieConsola(115); // umple toate linia din consola cu  '_'
+
+            cout << setw(5 - 1) << " " << "1. Cauta dupa numele personajului." << endl;
+            cout << setw(5 - 1) << " " << "2. Cauta dupa ID-ul piesei." << "\n\n";
+
+            /// TODO
+            unsigned int Meniu_3;
+
+            //cout << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: "; cin >> Meniu_3;
+
         }
             _getch();
             break;
