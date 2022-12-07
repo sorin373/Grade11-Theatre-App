@@ -22,9 +22,8 @@ struct actor
     char Nume_Actor[101];
     char Prenume_Actor[101];
     unsigned int Varsta_Actor;
-    char Email_Actor[101];
     long long unsigned int CNP_Actor;
-} actorTeatru[35];
+} actorTeatru[200];
 
 struct piesa
 {
@@ -84,7 +83,7 @@ void citire_actori()
 {
     ifstream fisierActor("actor.txt");           // fisier actori care joaca in piesele de teatru
     while (fisierActor >> actorTeatru[NumarActori].ID_Actor >> actorTeatru[NumarActori].Nume_Actor >> actorTeatru[NumarActori].Prenume_Actor
-        >> actorTeatru[NumarActori].Varsta_Actor >> actorTeatru[NumarActori].Email_Actor >> actorTeatru[NumarActori].CNP_Actor)
+        >> actorTeatru[NumarActori].Varsta_Actor >> actorTeatru[NumarActori].CNP_Actor)
         NumarActori++;
     NumarActori--;
     fisierActor.close();
@@ -93,9 +92,13 @@ void citire_actori()
 void citire_piese()
 {
     ifstream fisierPiesa("piesa.txt");          // fisier cu piesele care urmeaza sa fie jucate in urmatoarea saptamana
-    while (fisierPiesa >> piesaTeatru[NumarPiese].ID_Piesa >> piesaTeatru[NumarPiese].Nume_Piesa >> piesaTeatru[NumarPiese].ID_Sala
+    while (fisierPiesa >> piesaTeatru[NumarPiese].ID_Piesa >> piesaTeatru[NumarPiese].ID_Sala
         >> piesaTeatru[NumarPiese].Data_Piesa >> piesaTeatru[NumarPiese].Ora_Piesa)
-        NumarPiese++;
+        {
+            fisierPiesa.get();
+            fisierPiesa.get(piesaTeatru[NumarPiese].Nume_Piesa,101);
+            NumarPiese++;
+        }
     NumarPiese--;
     fisierPiesa.close();
 }
@@ -103,8 +106,12 @@ void citire_piese()
 void citire_personaje_piese()
 {
     ifstream fisierPersonaj("personaj.txt");    // fisier cu personajele din fiecare piesa de teatru
-    while (fisierPersonaj >> personajPiesa[NumarPersonaje].ID_Piesa >> personajPiesa[NumarPersonaje].ID_Actor >> personajPiesa[NumarPersonaje].Nume_Personaj)
+    while (fisierPersonaj >> personajPiesa[NumarPersonaje].ID_Piesa >> personajPiesa[NumarPersonaje].ID_Actor)
+    {
+        fisierPersonaj.get();
+        fisierPersonaj.get(personajPiesa[NumarPersonaje].Nume_Personaj,101);
         NumarPersonaje++;
+    }
     NumarPersonaje--;
     fisierPersonaj.close();
 }
@@ -171,13 +178,13 @@ void afisare_bilete()
 void afisare_actori()
 {
     for (unsigned int i = 1; i <= NumarActori; i++)
-        cout << actorTeatru[i].Nume_Actor << endl;
+        cout << actorTeatru[i].Nume_Actor << " " << actorTeatru[i].Prenume_Actor << endl;
 }
 
 void afisare_personal()
 {
     for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
-        cout << personalTeatru[i].Nume_PersonalTeatru << endl;
+        cout << personalTeatru[i].Nume_PersonalTeatru << " " << personalTeatru[i].Prenume_PersonalTeatru << endl;
 }
 
 int main()
@@ -233,13 +240,13 @@ int main()
 
                 case 1: // Cautarea pieselor in baza de date dupa ID-ul lor (vID_Piesa), introdus de la tastatura
                 {
-                    char vNume_Piesa[101];
+                    unsigned int vID_Piesa;
                     unsigned int ok = 0;
 
-                    cout << endl << "Tasteaza numele piesei: "; cin.get(); cin.get(vNume_Piesa, 101);
+                    cout << endl << "Tasteaza ID-ul piesei cautate: "; cin >> vID_Piesa; cout << "\n\n";
 
                     for (unsigned int i = 1; i <= NumarPiese && ok == 0; i++)
-                        if (stricmp(piesaTeatru[i].Nume_Piesa, vNume_Piesa) == 0)
+                        if (piesaTeatru[i].ID_Piesa == vID_Piesa)
                         {
                             system("CLS"); // sterge continut consola
 
@@ -275,8 +282,10 @@ int main()
                                     unsigned int k = 1;
                                     while (actorTeatru[k].ID_Actor != personajPiesa[j].ID_Actor) k++;
 
-                                    cout << " (jucat de " << actorTeatru[k].Nume_Actor << ")" << endl;
+                                    cout << " (jucat de " << actorTeatru[k].Nume_Actor << " " << actorTeatru[k].Prenume_Actor << ")" << endl;
                                 }
+
+                            cout << "Apasa enter pentru a te intoarce la meniul precedent..." << endl;
 
                             ok = 1; // iese din 'for'
                         }
@@ -286,9 +295,6 @@ int main()
 
                 case 3:
                 {
-                    system("CLS"); // sterge continut consola
-                    cout << "Profit si Cheltuieli" << "\n";
-
                     unsigned int vID_Piesa;
                     unsigned int ok = 0, v = 0;
 
@@ -299,10 +305,10 @@ int main()
                         {
                             for (int j = 1; j <= NumarSpectatori; j++)
                                 if (spectatorPiesa[j].ID_Piesa == piesaTeatru[i].ID_Piesa)
-                                    v = v + biletPiesa[piesaTeatru[i].ID_Piesa].Pret_Bilet;
+                                    v = v + biletPiesa[spectatorPiesa[j].ID_Bilet].Pret_Bilet;
                             ok = 1;
                         }
-                    cout << "Biletele cumparate pentru aceasta piesa alcatuiesc " << v << " lei" << "\n\n";
+                    cout << "Biletele cumparate pentru aceasta piesa alcatuiesc " << v << " lei." << "\n\n";
                     cout << "Apasa enter pentru a te intoarce la meniul precedent..." << endl;
 
                 }
