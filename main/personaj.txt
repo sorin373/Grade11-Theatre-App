@@ -191,3 +191,10 @@
 119	191	Fraila
 119	192	Mircea Aldea
 119	193	Margareta Aldea
+120 194 Nae grimea
+120 195 Iancu Pompon
+120 196 Mita Baston
+120 197 Cracanel
+120 198 Conu Leonida
+120 199 Mircea Medianu
+120 200 Arcadie Donos

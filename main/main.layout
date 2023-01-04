@@ -2,14 +2,54 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="main.cpp" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
+	<File name="piesa.txt" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="509" topLine="0" />
+			<Cursor1 position="253" topLine="2" />
 		</Cursor>
 	</File>
-	<File name="sala.txt" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="main.cpp" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="56" topLine="0" />
+			<Cursor1 position="26143" topLine="226" />
+		</Cursor>
+		<Folding>
+			<Collapse line="19" />
+			<Collapse line="64" />
+			<Collapse line="72" />
+			<Collapse line="85" />
+			<Collapse line="95" />
+			<Collapse line="103" />
+			<Collapse line="111" />
+			<Collapse line="123" />
+			<Collapse line="132" />
+			<Collapse line="145" />
+			<Collapse line="157" />
+			<Collapse line="172" />
+			<Collapse line="186" />
+			<Collapse line="199" />
+			<Collapse line="208" />
+			<Collapse line="217" />
+			<Collapse line="227" />
+			<Collapse line="251" />
+			<Collapse line="264" />
+			<Collapse line="270" />
+			<Collapse line="317" />
+			<Collapse line="324" />
+			<Collapse line="405" />
+			<Collapse line="428" />
+			<Collapse line="450" />
+			<Collapse line="534" />
+			<Collapse line="589" />
+			<Collapse line="641" />
+		</Folding>
+	</File>
+	<File name="actor.txt" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="10424" topLine="157" />
+		</Cursor>
+	</File>
+	<File name="personaj.txt" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4131" topLine="173" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

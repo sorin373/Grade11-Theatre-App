@@ -1,22 +1,22 @@
-101	2	10.09	19:00 Hamlet
-102	5	10.09	19:00 Faust
-103	1	11.09	21:00 Cursa de soareci
-104	3	11.09	20:00 Romeo si Julieta
-105	4	11.09	20:00 Tache, Ianke si Cadar
-106	5	12.09	19:30 Dineu cu prosti
-107	6	12.09	20:00 Pescarusul
-108	1	12.09	21:00 Hamlet
-109	2	13.09	20:00 Padurea spanzuratilor
-110	3	13.09	21:30 Constelatii
-111	4	14.09	19:30 Macbeth
-112	6	14.09	20:00 Desteptarea primaverii
-113	2	14.09	20:30 Zbor deasupra unui cuib de cuci
-114	3	15.09	18:00 Tinutul din miezul verii
-115	1	15.09	20:00 Fazanul
-116	4	15.09	20:00 Romeo si Julieta
-117	2	16.09	17:00 Tatal meu, preotul
-118	5	16.09	18:00 50 de secunde
-119	6	16.09	18:00 Vizita
-120	3	17.09	17:00 D-l Goe
-121	1	17.09	17:00 D-ale carnavalului
-122	5	17.09	20:00 Gaitele
+101 2 10.09 19:00 Hamlet
+102 5 10.09 19:00 Faust
+103 1 11.09 21:00 Cursa de soareci
+104 3 11.09 20:00 Romeo si Julieta
+105 4 11.09 20:00 Tache, Ianke si Cadar
+106 5 12.09 19:30 Dineu cu prosti
+107 6 12.09 20:00 Pescarusul
+108 1 12.09 21:00 Hamlet
+109 2 13.09 20:00 Padurea spanzuratilor
+110 3 13.09 21:30 Constelatii
+111 4 14.09 19:30 Macbeth
+112 6 14.09 20:00 Desteptarea primaverii
+113 2 14.09 20:30 Zbor deasupra unui cuib de cuci
+114 3 15.09 18:00 Tinutul din miezul verii
+115 1 15.09 20:00 Fazanul
+116 4 15.09 20:00 Romeo si Julieta
+117 2 16.09 17:00 Tatal meu, preotul
+118 5 16.09 18:00 50 de secunde
+119 6 16.09 18:00 Vizita
+120 3 17.09 17:00 D-l Goe
+121 1 17.09 17:00 D-ale carnavalului
+122 5 17.09 20:00 Gaitele
