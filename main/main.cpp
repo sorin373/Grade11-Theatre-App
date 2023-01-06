@@ -1292,11 +1292,109 @@ void Adaugare_Personal()
     cout << setw(4) << " " << "Introduceti datele noului angajat (administratie teatru):" << "\n\n";
     cout << setw(6) << " " << "ID-ul angajatului: " << copie_ID_Personal_Max << endl;
     personalTeatru[NumarPersonalTeatru].ID_PersonalTeatru = copie_ID_Personal_Max;
+
+    cout << setw(6) << " " << "Functie: ";
+    char vFunctiePersonalTeatru[1001];
+    cin.get();
+    cin.get(vFunctiePersonalTeatru, 1001);
+
+    for (unsigned int i = 0; i < strlen(vFunctiePersonalTeatru); i++)
+        if (vFunctiePersonalTeatru[i] == ' ')
+            vFunctiePersonalTeatru[i] = '_';
+    strcpy(personalTeatru[NumarPersonalTeatru].Functie_PersonalTeatru,vFunctiePersonalTeatru);
+
+    cout << setw(6) << " " << "Nume angajat: ";
+    cin >> personalTeatru[NumarPersonalTeatru].Nume_PersonalTeatru;
+    cout << setw(6) << " " << "Prenume angajat: ";
+    cin >> personalTeatru[NumarPersonalTeatru].Prenume_PersonalTeatru;
+    cout << setw(6) << " " << "CNP angajat: ";
+
+    bool valid = false;
+    while (!valid)
+    {
+        cin >> personalTeatru[NumarPersonalTeatru].CNP_PersonalTeatru;
+        if (cin.fail() || strlen(personalTeatru[NumarPersonalTeatru].CNP_PersonalTeatru) != 13)
+        {
+            cin.clear();
+            cin.ignore();
+            cout << '\n';
+            cerr << setw(6) << " " << "Valoarea introdusa in campul PRET BILET este invalida!" << endl;
+            Sleep(1500);
+            copie_ID_Personal_Max--;
+            Adaugare_Personal();
+        }
+        else valid = true;
+    }
+
+    cout << setw(6) << " " << "Varsta angajat: ";
+    cin >> personalTeatru[NumarPersonalTeatru].Varsta_PersonalTeatru;
+
+    ofstream fisierPersonalTeatru;
+    fisierPersonalTeatru.open("personal.txt", ios::out | ios::app);
+    fisierPersonalTeatru << personalTeatru[NumarPersonalTeatru].ID_PersonalTeatru << " "
+                         << personalTeatru[NumarPersonalTeatru].Functie_PersonalTeatru << " "
+                         << personalTeatru[NumarPersonalTeatru].Nume_PersonalTeatru << " "
+                         << personalTeatru[NumarPersonalTeatru].Prenume_PersonalTeatru << " "
+                         << personalTeatru[NumarPersonalTeatru].CNP_PersonalTeatru << " "
+                         << personalTeatru[NumarPersonalTeatru].Varsta_PersonalTeatru << endl;
+    fisierPersonalTeatru.close();
 }
 
 void Stergere_Personal()
 {
+    system("CLS");
+    afisare_personal();
 
+    unsigned int vID;
+
+    bool valid = false;
+
+    cout << "\n\n";
+    cout << setw(5) << " " << "APASA TASTA '0' PENTRU A ANULA";
+    cout << "\n\n";
+    cout << setw(5) << " " << "Introduceti ID-ul angajatului pe care doriti sa il stergeti din baza de date: ";
+
+    while (!valid)
+    {
+        cin >> vID;
+        if (cin.fail())
+        {
+            cin.clear();
+            cin.ignore();
+            cout << '\n';
+            cerr << setw(6 - 1) << " " << "Valoarea introdusa in campul ID PIESA este invalida!" << endl;
+            Sleep(1500);
+            Stergere_Personal();
+        }
+        else valid = true;
+    }
+
+    if (vID == 0)
+        return;
+    else
+    {
+        for (unsigned int i = vID; i <= NumarPersonalTeatru; i++)
+        {
+            personalTeatru[i].ID_PersonalTeatru = personalTeatru[i + 1].ID_PersonalTeatru - 1;
+            strcpy(personalTeatru[i].Functie_PersonalTeatru, personalTeatru[i + 1].Functie_PersonalTeatru);
+            strcpy(personalTeatru[i].Nume_PersonalTeatru, personalTeatru[i + 1].Nume_PersonalTeatru);
+            strcpy(personalTeatru[i].Prenume_PersonalTeatru, personalTeatru[i + 1].Prenume_PersonalTeatru);
+            strcpy(personalTeatru[i].CNP_PersonalTeatru, personalTeatru[i + 1].CNP_PersonalTeatru);
+            personalTeatru[i].Varsta_PersonalTeatru = personalTeatru[i + 1].Varsta_PersonalTeatru;
+        }
+        NumarPersonalTeatru--;
+        copie_ID_Personal_Max--;
+    }
+
+    ofstream fisierPersonalTeatru("personal.txt");
+    for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
+        fisierPersonalTeatru << personalTeatru[i].ID_PersonalTeatru << " "
+                             << personalTeatru[i].Functie_PersonalTeatru << " "
+                             << personalTeatru[i].Nume_PersonalTeatru << " "
+                             << personalTeatru[i].Prenume_PersonalTeatru << " "
+                             << personalTeatru[i].CNP_PersonalTeatru << " "
+                             << personalTeatru[i].Varsta_PersonalTeatru << endl;
+    fisierPersonalTeatru.close();
 }
 
 int main()
@@ -1390,6 +1488,7 @@ int main()
                 {
                     cautare_Piesa_ID_Actori();
                 }
+                _getch();
                 break;
 
                 case 3:
@@ -1518,6 +1617,7 @@ int main()
                 {
                 case 1:
                     Adaugare_Actori();
+                    _getch();
                     break;
                 case 2:
                     Stergere_Actori();
