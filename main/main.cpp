@@ -1735,6 +1735,128 @@ void sortare_alfabetica_piese()
              << setw(NumarMaxCaractere - strlen(s_piesaTeatru[i].Nume_Piesa) + 5) << " " << s_piesaTeatru[i].Data_Piesa << endl;
 }
 
+///Ioana
+///Afisati toate piesele care se tin dupa ora…(ora va fi introdusa de la tastatura)
+
+///Afisati toate piesele care se tin dupa ora…(ora va fi introdusa de la tastatura)
+void piese_dupa_ora()
+{
+    char ora[6];
+    cin.get(ora,6);
+    for (unsigned int i = 1; i <= NumarPiese; i++)
+    {
+        if(strcmp(ora,piesaTeatru[i].Ora_Piesa)<=0)
+            cout<<piesaTeatru[i].Nume_Piesa<<" "<<piesaTeatru[i].Ora_Piesa<<endl;
+    }
+}
+
+///Afisarea primelor 3 cele mai incapatoare sali din teatru
+void cele_mai_mari_3_sali ()
+{
+    system("CLS");
+
+    cout << "\n\n";
+    cout << setw(5) << " " << "Primele 3 cele mai incapatoare sali din teatru: " << "\n\n";
+    unsigned int i,aux,j;
+    unsigned int v_locuri[1000], v_sala[1000];
+
+    for(i=1; i<=NumarSali-1; i++)
+    {
+        v_locuri[i]=salaTeatru[i].Nr_Scaune+salaTeatru[i].Nr_Scaune_Loja;
+        v_sala[i]=salaTeatru[i].ID_Sala;
+    }
+    for(i=1; i<=NumarSali-2; i++)
+        for(j=i+1; j<=NumarSali-1; j++)
+            if(v_locuri[i]<v_locuri[j])
+            {
+                aux=v_locuri[i];
+                v_locuri[i]=v_locuri[j];
+                v_locuri[j]=aux;
+                aux=v_sala[i];
+                v_sala[i]=v_sala[j];
+                v_sala[j]=aux;
+            }
+    for(i=1; i<=3; i++)
+        cout << setw(5) << " " <<"Sala: " << v_sala[i]<< " cu " << v_locuri[i] << " locuri" << endl;
+
+    cout << '\n' << setw(4) << " " << "Apasati enter pentru a va intoarce la meniul precedent...";
+    _getch();
+}
+
+///Afisarea tuturor actorilor a caror varsta este mai mare sau egala cu … ani.
+void varsta_mai_mare_actori()
+{
+    unsigned int nrMaxCaractereNume = 0;
+    for (unsigned int i = 1; i <= NumarActori; i++)
+        if (strlen(actorTeatru[i].Nume_Actor) > nrMaxCaractereNume)
+            nrMaxCaractereNume = strlen(actorTeatru[i].Nume_Actor);
+
+    unsigned int nrMaxCaracterePrenume = 0;
+    for (unsigned int i = 1; i <= NumarActori; i++)
+        if (strlen(actorTeatru[i].Prenume_Actor) > nrMaxCaracterePrenume)
+            nrMaxCaracterePrenume = strlen(actorTeatru[i].Prenume_Actor);
+
+    cout << "\n\n";
+    unsigned int varsta = 0,i;
+    cout << setw(4) << " " << "Afisarea tuturor actorilor dupa o anumita varsta" << "\n\n";
+    cout << setw(4) << " " << "Introduceti varsta: ";
+    cin>>varsta;
+    system("CLS");
+    cout << setw(4) << " " << "\n\n";
+    cout << setw(4) << " " << "Actorii a caror varsta este mai mare sau egala cu " << varsta << " ani" << '\n';
+    fillLinieConsola(60);
+
+    cout << setw(5) << " " << "Nume" << setw(nrMaxCaractereNume) << " " << "Prenume" << setw(7) << " " << "Varsta" << '\n';
+    fillLinieConsola(60);
+
+    for(i=0; i<NumarActori; i++)
+        if(actorTeatru[i].Varsta_Actor>=varsta)
+            cout<< setw(4) << " " <<actorTeatru[i].Nume_Actor << setw(nrMaxCaractereNume + 5 - strlen(actorTeatru[i].Nume_Actor))
+                <<" "<<actorTeatru[i].Prenume_Actor << setw(nrMaxCaracterePrenume + 5 - strlen(actorTeatru[i].Prenume_Actor)) << " "
+                << actorTeatru[i].Varsta_Actor <<endl;
+
+    fillLinieConsola(60);
+
+    cout << '\n' << setw(4) << " " << "Apasati enter pentru a va intoarce la meniul precedent...";
+    _getch();
+}
+///Afisarea tuturor actorilor a caror varsta este mai mica sau egala cu … ani
+void varsta_mai_mica_actori()
+{
+
+    unsigned int nrMaxCaractereNume = 0;
+    for (unsigned int i = 1; i <= NumarActori; i++)
+        if (strlen(actorTeatru[i].Nume_Actor) > nrMaxCaractereNume)
+            nrMaxCaractereNume = strlen(actorTeatru[i].Nume_Actor);
+
+    unsigned int nrMaxCaracterePrenume = 0;
+    for (unsigned int i = 1; i <= NumarActori; i++)
+        if (strlen(actorTeatru[i].Prenume_Actor) > nrMaxCaracterePrenume)
+            nrMaxCaracterePrenume = strlen(actorTeatru[i].Prenume_Actor);
+
+    cout << "\n\n";
+    unsigned int varsta = 0,i;
+    cout << setw(4) << " " << "Afisarea tuturor actorilor inainte o anumita varsta" << "\n\n";
+    cout << setw(4) << " " << "Introduceti varsta: ";
+    cin>>varsta;
+
+    cout << setw(4) << " " << "\n\n";
+    cout << setw(4) << " " << "Actorii a caror varsta este mai mica sau egala cu " << varsta << " ani" << '\n';
+    fillLinieConsola(60);
+
+    cout << setw(5) << " " << "Nume" << setw(nrMaxCaractereNume) << " " << "Prenume" << setw(7) << " " << "Varsta" << '\n';
+    fillLinieConsola(60);
+     for(i=0;i<NumarActori;i++)
+        if(actorTeatru[i].Varsta_Actor<=varsta)
+           cout<< setw(4) << " " <<actorTeatru[i].Nume_Actor << setw(nrMaxCaractereNume + 5 - strlen(actorTeatru[i].Nume_Actor))
+                <<" "<<actorTeatru[i].Prenume_Actor << setw(nrMaxCaracterePrenume + 5 - strlen(actorTeatru[i].Prenume_Actor)) << " "
+                << actorTeatru[i].Varsta_Actor <<endl;
+     fillLinieConsola(60);
+
+    cout << '\n' << setw(4) << " " << "Apasati enter pentru a va intoarce la meniul precedent...";
+    _getch();
+}
+
 int main()
 {
     con.color(0x03);
