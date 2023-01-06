@@ -196,5 +196,3 @@
 120 196 Mita Baston
 120 197 Cracanel
 120 198 Conu Leonida
-120 199 Mircea Medianu
-120 200 Arcadie Donos

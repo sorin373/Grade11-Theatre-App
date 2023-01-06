@@ -1,6 +1,6 @@
-1		Bilet_pentru_elevi	14.99
-2		Bilet_pentru_studenti 16.99
-3		Bilet_pentru_pensionari	19.99
-4		Bilet_pentru_adulti	29.99
-5		Bilet_pentru_copii_sub_12_ani	9.99
-6		Bilet_pentru_copii_sub_5_ani	0
+1 Bilet_pentru_elevi 14.99
+2 Bilet_pentru_studenti 16.99
+3 Bilet_pentru_pensionari 19.99
+4 Bilet_pentru_adulti 29.99
+5 Bilet_pentru_copii_sub_12_ani 9.99
+6 Bilet_pentru_copii_sub_5_ani 0.00
