@@ -58,6 +58,7 @@ console con(200, 10000);
 // Declarare contoarelor
 unsigned int NumarActori = 1, NumarPiese = 1, NumarBilete = 1, NumarSali = 1, NumarPersonalTeatru = 1, NumarSpectatori = 1, NumarPersonaje = 1, NumarPieseVechi = 1, NumarSpectatoriVechi = 1;
 unsigned int copie_ID_Sala_Max = 0, copie_ID_Actor_Max = 0, copie_ID_Piesa_Max = 0, copie_ID_Bilet_Max = 0, copie_ID_Personal_Max = 0, copie_ID_Piesa_Veche_Max = 0;
+unsigned int contorVenit = 1;
 
 /// Declarare structuri de date
 struct sala
@@ -138,6 +139,14 @@ public:
     char Data_Piesa[11];
     unsigned int ID_PersonalTeatru;
 } piesa_veche[401];
+
+struct venit
+{
+public:
+    unsigned int ID_Piesa;
+    char Data_Piesa[11];
+    float suma;
+} venitPiesa[1001];
 
 // Functii ajutatoare
 void fillLinieConsola(const unsigned int vWidth)
@@ -470,6 +479,81 @@ void afisare_piese_vechi()
     }
     fillLinieConsola(80);
 }
+
+void sort_piese_ID_crescator()
+{
+    bool vSort = true;
+    do
+    {
+        vSort = true;
+        for (unsigned int i = 1; i <= NumarPiese - 1; i++)
+            if (piesaTeatru[i].ID_Piesa > piesaTeatru[i + 1].ID_Piesa)
+            {
+                unsigned int aux;
+
+                aux = piesaTeatru[i].ID_Piesa;
+                piesaTeatru[i].ID_Piesa = piesaTeatru[i + 1].ID_Piesa;
+                piesaTeatru[i + 1].ID_Piesa = aux;
+
+                aux = piesaTeatru[i].ID_Sala;
+                piesaTeatru[i].ID_Sala = piesaTeatru[i + 1].ID_Piesa;
+                piesaTeatru[i + 1].ID_Piesa = aux;
+
+                aux = piesaTeatru[i].ID_PersonalTeatru;
+                piesaTeatru[i].ID_PersonalTeatru = piesaTeatru[i + 1].ID_PersonalTeatru;
+                piesaTeatru[i + 1].ID_PersonalTeatru = aux;
+
+                char charAux[1001];
+
+                strcpy(charAux, piesaTeatru[i].Data_Piesa);
+                strcpy(piesaTeatru[i].Data_Piesa, piesaTeatru[i + 1].Data_Piesa);
+                strcpy(piesaTeatru[i + 1].Data_Piesa, charAux);
+
+                strcpy(charAux, piesaTeatru[i].Ora_Piesa);
+                strcpy(piesaTeatru[i].Ora_Piesa, piesaTeatru[i + 1].Ora_Piesa);
+                strcpy(piesaTeatru[i + 1].Ora_Piesa, charAux);
+
+                strcpy(charAux, piesaTeatru[i].Nume_Piesa);
+                strcpy(piesaTeatru[i].Nume_Piesa, piesaTeatru[i + 1].Nume_Piesa);
+                strcpy(piesaTeatru[i + 1].Nume_Piesa, charAux);
+
+                vSort = false;
+            }
+    }
+    while (!vSort);
+}
+
+void sort_venituri_ID_crescator()
+{
+    bool vSort = false;
+
+    do
+    {
+        vSort = false;
+        for (unsigned int i = 1; i <= contorVenit - 1; i++)
+            if (venitPiesa[i].ID_Piesa > venitPiesa[i + 1].ID_Piesa)
+            {
+                unsigned int aux;
+                aux = venitPiesa[i].ID_Piesa;
+                venitPiesa[i].ID_Piesa = venitPiesa[i + 1].ID_Piesa;
+                venitPiesa[i + 1].ID_Piesa = aux;
+
+                char dataAux[11];
+                strcpy(dataAux, venitPiesa[i].Data_Piesa);
+                strcpy(venitPiesa[i].Data_Piesa, venitPiesa[i + 1].Data_Piesa);
+                strcpy(venitPiesa[i + 1].Data_Piesa, dataAux);
+
+                float sumaAux;
+                sumaAux = venitPiesa[i].suma;
+                venitPiesa[i].suma = venitPiesa[i + 1].suma;
+                venitPiesa[i + 1].suma = sumaAux;
+
+                vSort = false;
+            }
+    }
+    while (!vSort);
+}
+
 
 /// Componente main
 void cautare_piesa()
@@ -1735,7 +1819,7 @@ void Meniu_Venituri_Piese()
 
             contor--;
             sort_venituri_ID_crescator();
-            
+
             /*
             for (unsigned int i = 1; i <= contorVenit; i++)
                 for (unsigned int j = 1; j <= contor; j++)
@@ -1771,7 +1855,8 @@ void piese_dupa_data()
 {
     cout << endl << "Tasteaza data: ";
     char date[11];
-    cin.get(); cin.get(date,11);
+    cin.get();
+    cin.get(date,11);
     unsigned int NumarMaxCaractere = 0;
 
     for (unsigned int i = 1; i <= NumarPiese; i++)
@@ -1789,14 +1874,15 @@ void piese_dupa_data()
     for (unsigned int i = 1; i <= NumarPiese; i++)
         if(strcmp(date,piesaTeatru[i].Data_Piesa)<0)
             cout << setw(5) << " " << piesaTeatru[i].ID_Piesa << setw(5) << " " << piesaTeatru[i].Nume_Piesa
-                << setw(NumarMaxCaractere - strlen(piesaTeatru[i].Nume_Piesa) + 5) << " " << piesaTeatru[i].Data_Piesa << endl;
+                 << setw(NumarMaxCaractere - strlen(piesaTeatru[i].Nume_Piesa) + 5) << " " << piesaTeatru[i].Data_Piesa << endl;
 }
 
 void sali_cu_piesa()
 {
     cout << endl << "Tasteaza numele piesei: ";
     char vNume_Piesa[101];
-    cin.get(); cin.get(vNume_Piesa,101);
+    cin.get();
+    cin.get(vNume_Piesa,101);
     cout<<"Aceasta piesa va fi jucata in: "<<endl;
     for (unsigned int i = 1; i <= NumarPiese; i++)
         if(stricmp(piesaTeatru[i].Nume_Piesa, vNume_Piesa) == 0)
@@ -1816,7 +1902,8 @@ void cautare_actori_nume()
     {
         cout << endl << "Tasteaza prenumele actorului: ";
         char vPrenume_Actor[101];
-        cin.get(); cin.get(vPrenume_Actor,101);
+        cin.get();
+        cin.get(vPrenume_Actor,101);
 
         unsigned int NumarMaxCaractereNume = 0;
         unsigned int NumarMaxCaracterePrenume = 0;
@@ -1833,33 +1920,34 @@ void cautare_actori_nume()
                     NumarMaxCaractereEmail = strlen(actorTeatru[i].Email_Actor);
             }
         cout << "\n\n"
-            << setw(5 - 1) << " "
-            << "ID_Actor" << " "
-            << "ID_Piesa" << setw(5) << " "
-            << "Nume_Actor"
-            << setw(NumarMaxCaractereNume) << " "
-            << "Prenume_Actor" << setw(NumarMaxCaracterePrenume) << " "
-            << "Varsta_Actor" << setw(10) << " "
-            << "Email_Actor" << setw(NumarMaxCaractereEmail - 1) << " "
-            << "CNP" << setw(14) << " "
-            << "Sex"
-            << "\n";
+             << setw(5 - 1) << " "
+             << "ID_Actor" << " "
+             << "ID_Piesa" << setw(5) << " "
+             << "Nume_Actor"
+             << setw(NumarMaxCaractereNume) << " "
+             << "Prenume_Actor" << setw(NumarMaxCaracterePrenume) << " "
+             << "Varsta_Actor" << setw(10) << " "
+             << "Email_Actor" << setw(NumarMaxCaractereEmail - 1) << " "
+             << "CNP" << setw(14) << " "
+             << "Sex"
+             << "\n";
 
         fillLinieConsola(150);
 
         for (unsigned int i = 1; i <= NumarActori; i++)
             if(stricmp(vPrenume_Actor,actorTeatru[i].Prenume_Actor)==0)
                 cout << setw(5) << " " << actorTeatru[i].ID_Actor << setw(10 - 1) << " " << actorTeatru[i].ID_Piesa << setw(10 - 1) << " " << actorTeatru[i].Nume_Actor
-                    << setw(NumarMaxCaractereNume - strlen(actorTeatru[i].Nume_Actor) + 10) << " " << actorTeatru[i].Prenume_Actor
-                    << setw(NumarMaxCaracterePrenume - strlen(actorTeatru[i].Prenume_Actor) + 15) << " " << actorTeatru[i].Varsta_Actor << " ani"
-                    << setw(10) << " " << actorTeatru[i].Email_Actor << setw(NumarMaxCaractereEmail - strlen(actorTeatru[i].Email_Actor) + 10)
-                    << " " << actorTeatru[i].CNP_Actor << setw(8) << " " << actorTeatru[i].Sex_Actor << setw(10) << "\n";
+                     << setw(NumarMaxCaractereNume - strlen(actorTeatru[i].Nume_Actor) + 10) << " " << actorTeatru[i].Prenume_Actor
+                     << setw(NumarMaxCaracterePrenume - strlen(actorTeatru[i].Prenume_Actor) + 15) << " " << actorTeatru[i].Varsta_Actor << " ani"
+                     << setw(10) << " " << actorTeatru[i].Email_Actor << setw(NumarMaxCaractereEmail - strlen(actorTeatru[i].Email_Actor) + 10)
+                     << " " << actorTeatru[i].CNP_Actor << setw(8) << " " << actorTeatru[i].Sex_Actor << setw(10) << "\n";
     }
     else
     {
         cout << endl << "Tasteaza numele de familie al actorului: ";
         char vNume_Actor[101];
-        cin.get(); cin.get(vNume_Actor,101);
+        cin.get();
+        cin.get(vNume_Actor,101);
 
         unsigned int NumarMaxCaractereNume = 0;
         unsigned int NumarMaxCaracterePrenume = 0;
@@ -1876,27 +1964,27 @@ void cautare_actori_nume()
                     NumarMaxCaractereEmail = strlen(actorTeatru[i].Email_Actor);
             }
         cout << "\n\n"
-            << setw(5 - 1) << " "
-            << "ID_Actor" << " "
-            << "ID_Piesa" << setw(5) << " "
-            << "Nume_Actor"
-            << setw(NumarMaxCaractereNume) << " "
-            << "Prenume_Actor" << setw(NumarMaxCaracterePrenume) << " "
-            << "Varsta_Actor" << setw(10) << " "
-            << "Email_Actor" << setw(NumarMaxCaractereEmail - 1) << " "
-            << "CNP" << setw(14) << " "
-            << "Sex"
-            << "\n";
+             << setw(5 - 1) << " "
+             << "ID_Actor" << " "
+             << "ID_Piesa" << setw(5) << " "
+             << "Nume_Actor"
+             << setw(NumarMaxCaractereNume) << " "
+             << "Prenume_Actor" << setw(NumarMaxCaracterePrenume) << " "
+             << "Varsta_Actor" << setw(10) << " "
+             << "Email_Actor" << setw(NumarMaxCaractereEmail - 1) << " "
+             << "CNP" << setw(14) << " "
+             << "Sex"
+             << "\n";
 
         fillLinieConsola(150);
 
         for (unsigned int i = 1; i <= NumarActori; i++)
             if(stricmp(vNume_Actor,actorTeatru[i].Nume_Actor)==0)
                 cout << setw(5) << " " << actorTeatru[i].ID_Actor << setw(10 - 1) << " " << actorTeatru[i].ID_Piesa << setw(10 - 1) << " " << actorTeatru[i].Nume_Actor
-                    << setw(NumarMaxCaractereNume - strlen(actorTeatru[i].Nume_Actor) + 10) << " " << actorTeatru[i].Prenume_Actor
-                    << setw(NumarMaxCaracterePrenume - strlen(actorTeatru[i].Prenume_Actor) + 15) << " " << actorTeatru[i].Varsta_Actor << " ani"
-                    << setw(10) << " " << actorTeatru[i].Email_Actor << setw(NumarMaxCaractereEmail - strlen(actorTeatru[i].Email_Actor) + 10)
-                    << " " << actorTeatru[i].CNP_Actor << setw(8) << " " << actorTeatru[i].Sex_Actor << setw(10) << "\n";
+                     << setw(NumarMaxCaractereNume - strlen(actorTeatru[i].Nume_Actor) + 10) << " " << actorTeatru[i].Prenume_Actor
+                     << setw(NumarMaxCaracterePrenume - strlen(actorTeatru[i].Prenume_Actor) + 15) << " " << actorTeatru[i].Varsta_Actor << " ani"
+                     << setw(10) << " " << actorTeatru[i].Email_Actor << setw(NumarMaxCaractereEmail - strlen(actorTeatru[i].Email_Actor) + 10)
+                     << " " << actorTeatru[i].CNP_Actor << setw(8) << " " << actorTeatru[i].Sex_Actor << setw(10) << "\n";
     }
 }
 
@@ -1935,10 +2023,11 @@ void bilete_pe_piesa()
         {
             for (unsigned int j = 1; j <= NumarSpectatori; j++)
                 if (spectatorPiesa[j].ID_Piesa == piesaTeatru[i].ID_Piesa)
-                    {bilete ++;
-                     if(spectatorPiesa[j].loja == 1)
-                          bilete_loja ++;
-                    }
+                {
+                    bilete ++;
+                    if(spectatorPiesa[j].loja == 1)
+                        bilete_loja ++;
+                }
             ok = 1;
         }
     cout << "Pentru aceasta piesa s-au vandut " << bilete << " bilete, dintre care " << bilete_loja << " pentru loja.";
@@ -1947,12 +2036,12 @@ void bilete_pe_piesa()
 void bilete_nevandute()
 {
     cout << endl;
-    unsigned int bilete_vandute[201]={0};
+    unsigned int bilete_vandute[201]= {0};
     for(unsigned int i = 1; i <= NumarSpectatoriVechi; i++)
         bilete_vandute[spectator_vechi[i].ID_Piesa]++;
     unsigned int meniu_subprogram;
     cout << "1. Numarul de bilete nevandute intr-o piesa." << endl
-        << "2. Numarul de bilete nevandute in total." << "\n\n";
+         << "2. Numarul de bilete nevandute in total." << "\n\n";
     cout << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: ";
     cin >> meniu_subprogram;
     if(meniu_subprogram == 1)
@@ -2045,157 +2134,161 @@ void sortari_piese()
         system("CLS");
         cout<<endl;
         cout << setw(5 - 1) << " "
-            << "1. Sortare alfabetica." << endl;
+             << "1. Sortare alfabetica." << endl;
         cout << setw(5 - 1) << " "
-            << "2. Sortare dupa data." << endl;
+             << "2. Sortare dupa data." << endl;
         cout << setw(5 - 1) << " "
-            << "3. Sortare dupa ora." << endl;
+             << "3. Sortare dupa ora." << endl;
         cout << setw(5 - 1) << " "
-            << "0. Inapoi"
-            << "\n\n";
+             << "0. Inapoi"
+             << "\n\n";
 
         cout << setw(5 - 1) << " " << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: ";
         cin >> Meniu_sortari;
         switch (Meniu_sortari)
         {
-            case 1:
+        case 1:
+        {
+            unsigned int ok;
+            piesa s_piesaTeatru[201];
+            for(unsigned int i = 1; i <= NumarPiese; i++)
+                s_piesaTeatru[i] = piesaTeatru[i];
+            do
             {
-                unsigned int ok;
-                piesa s_piesaTeatru[201];
-                for(unsigned int i = 1; i <= NumarPiese; i++)
-                    s_piesaTeatru[i] = piesaTeatru[i];
-                do
-                {
-                    ok = 1;
-                    for(unsigned int i = 1; i < NumarPiese; i++)
-                        if(stricmp(s_piesaTeatru[i].Nume_Piesa, s_piesaTeatru[i+1].Nume_Piesa)>0)
-                        {
-                            swap(s_piesaTeatru[i], s_piesaTeatru[i+1]);
-                            ok = 0;
-                        }
-                }while(ok == 0);
-
-                unsigned int NumarMaxCaractere = 0;
-                for (unsigned int i = 1; i <= NumarPiese; i++)
-                    if (strlen(s_piesaTeatru[i].Nume_Piesa) > NumarMaxCaractere)
-                        NumarMaxCaractere = strlen(s_piesaTeatru[i].Nume_Piesa);
-
-                cout << "\n\n"
-                    << setw(5) << " "
-                    << "ID" << setw(5 + 1) << " "
-                    << "Nume" << setw(NumarMaxCaractere + 1) << " "
-                    << "Data" << setw(5 + 2) << " "
-                    << "Ora" << setw(5 + 3) << " " << "Regizor" << endl;
-                fillLinieConsola(85);
-                for (unsigned int i = 1; i <= NumarPiese; i++)
-                {
-                    cout << setw(5) << " " << s_piesaTeatru[i].ID_Piesa << setw(5) << " " << s_piesaTeatru[i].Nume_Piesa
-                        << setw(NumarMaxCaractere - strlen(s_piesaTeatru[i].Nume_Piesa) + 5) << " " << s_piesaTeatru[i].Data_Piesa << " "
-                        << setw(5) << " " << s_piesaTeatru[i].Ora_Piesa << setw(5) << " ";
-
-                    for (unsigned int j = 0; j <= NumarPersonalTeatru; j++)
-                        if (personalTeatru[j].ID_PersonalTeatru == s_piesaTeatru[i].ID_PersonalTeatru)
-                            cout << personalTeatru[j].Nume_PersonalTeatru << " " << personalTeatru[j].Prenume_PersonalTeatru << endl;
-                }
-                fillLinieConsola(85);
+                ok = 1;
+                for(unsigned int i = 1; i < NumarPiese; i++)
+                    if(stricmp(s_piesaTeatru[i].Nume_Piesa, s_piesaTeatru[i+1].Nume_Piesa)>0)
+                    {
+                        swap(s_piesaTeatru[i], s_piesaTeatru[i+1]);
+                        ok = 0;
+                    }
             }
-            _getch();
-            break;
+            while(ok == 0);
 
-            case 2:
+            unsigned int NumarMaxCaractere = 0;
+            for (unsigned int i = 1; i <= NumarPiese; i++)
+                if (strlen(s_piesaTeatru[i].Nume_Piesa) > NumarMaxCaractere)
+                    NumarMaxCaractere = strlen(s_piesaTeatru[i].Nume_Piesa);
+
+            cout << "\n\n"
+                 << setw(5) << " "
+                 << "ID" << setw(5 + 1) << " "
+                 << "Nume" << setw(NumarMaxCaractere + 1) << " "
+                 << "Data" << setw(5 + 2) << " "
+                 << "Ora" << setw(5 + 3) << " " << "Regizor" << endl;
+            fillLinieConsola(85);
+            for (unsigned int i = 1; i <= NumarPiese; i++)
             {
-                unsigned int ok;
-                piesa s_piesaTeatru[201];
-                for(unsigned int i = 1; i <= NumarPiese; i++)
-                    s_piesaTeatru[i] = piesaTeatru[i];
-                do
-                {
-                    ok = 1;
-                    for(unsigned int i = 1; i < NumarPiese; i++)
-                        if((s_piesaTeatru[i].Data_Piesa[4] > s_piesaTeatru[i+1].Data_Piesa[4] ||
+                cout << setw(5) << " " << s_piesaTeatru[i].ID_Piesa << setw(5) << " " << s_piesaTeatru[i].Nume_Piesa
+                     << setw(NumarMaxCaractere - strlen(s_piesaTeatru[i].Nume_Piesa) + 5) << " " << s_piesaTeatru[i].Data_Piesa << " "
+                     << setw(5) << " " << s_piesaTeatru[i].Ora_Piesa << setw(5) << " ";
+
+                for (unsigned int j = 0; j <= NumarPersonalTeatru; j++)
+                    if (personalTeatru[j].ID_PersonalTeatru == s_piesaTeatru[i].ID_PersonalTeatru)
+                        cout << personalTeatru[j].Nume_PersonalTeatru << " " << personalTeatru[j].Prenume_PersonalTeatru << endl;
+            }
+            fillLinieConsola(85);
+        }
+        _getch();
+        break;
+
+        case 2:
+        {
+            unsigned int ok;
+            piesa s_piesaTeatru[201];
+            for(unsigned int i = 1; i <= NumarPiese; i++)
+                s_piesaTeatru[i] = piesaTeatru[i];
+            do
+            {
+                ok = 1;
+                for(unsigned int i = 1; i < NumarPiese; i++)
+                    if((s_piesaTeatru[i].Data_Piesa[4] > s_piesaTeatru[i+1].Data_Piesa[4] ||
                             (s_piesaTeatru[i].Data_Piesa[4] == s_piesaTeatru[i+1].Data_Piesa[4] && s_piesaTeatru[i].Data_Piesa[5] > s_piesaTeatru[i+1].Data_Piesa[5]) ||
                             ((s_piesaTeatru[i].Data_Piesa[4] == s_piesaTeatru[i+1].Data_Piesa[4] && s_piesaTeatru[i].Data_Piesa[5] == s_piesaTeatru[i+1].Data_Piesa[5]) &&
-                            s_piesaTeatru[i].Data_Piesa[0] > s_piesaTeatru[i+1].Data_Piesa[0])) ||
+                             s_piesaTeatru[i].Data_Piesa[0] > s_piesaTeatru[i+1].Data_Piesa[0])) ||
                             (((s_piesaTeatru[i].Data_Piesa[4] == s_piesaTeatru[i+1].Data_Piesa[4] && s_piesaTeatru[i].Data_Piesa[5] == s_piesaTeatru[i+1].Data_Piesa[5]) &&
-                            s_piesaTeatru[i].Data_Piesa[0] == s_piesaTeatru[i+1].Data_Piesa[0]) && s_piesaTeatru[i].Data_Piesa[1] > s_piesaTeatru[i+1].Data_Piesa[1]))
-                        {
-                            swap(s_piesaTeatru[i], s_piesaTeatru[i+1]);
-                            ok = 0;
-                        }
-                }while(ok == 0);
-
-                unsigned int NumarMaxCaractere = 0;
-                for (unsigned int i = 1; i <= NumarPiese; i++)
-                    if (strlen(s_piesaTeatru[i].Nume_Piesa) > NumarMaxCaractere)
-                        NumarMaxCaractere = strlen(s_piesaTeatru[i].Nume_Piesa);
-
-                cout << "\n\n"
-                    << setw(5) << " "
-                    << "ID" << setw(5 + 1) << " "
-                    << "Nume" << setw(NumarMaxCaractere + 1) << " "
-                    << "Data" << setw(5 + 2) << " "
-                    << "Ora" << setw(5 + 3) << " " << "Regizor" << endl;
-                fillLinieConsola(85);
-                for (unsigned int i = 1; i <= NumarPiese; i++)
-                {
-                    cout << setw(5) << " " << s_piesaTeatru[i].ID_Piesa << setw(5) << " " << s_piesaTeatru[i].Nume_Piesa
-                        << setw(NumarMaxCaractere - strlen(s_piesaTeatru[i].Nume_Piesa) + 5) << " " << s_piesaTeatru[i].Data_Piesa << " "
-                        << setw(5) << " " << s_piesaTeatru[i].Ora_Piesa << setw(5) << " ";
-
-                    for (unsigned int j = 0; j <= NumarPersonalTeatru; j++)
-                        if (personalTeatru[j].ID_PersonalTeatru == s_piesaTeatru[i].ID_PersonalTeatru)
-                            cout << personalTeatru[j].Nume_PersonalTeatru << " " << personalTeatru[j].Prenume_PersonalTeatru << endl;
-                }
-                fillLinieConsola(85);
+                              s_piesaTeatru[i].Data_Piesa[0] == s_piesaTeatru[i+1].Data_Piesa[0]) && s_piesaTeatru[i].Data_Piesa[1] > s_piesaTeatru[i+1].Data_Piesa[1]))
+                    {
+                        swap(s_piesaTeatru[i], s_piesaTeatru[i+1]);
+                        ok = 0;
+                    }
             }
-            _getch();
-            break;
+            while(ok == 0);
 
-            case 3:
+            unsigned int NumarMaxCaractere = 0;
+            for (unsigned int i = 1; i <= NumarPiese; i++)
+                if (strlen(s_piesaTeatru[i].Nume_Piesa) > NumarMaxCaractere)
+                    NumarMaxCaractere = strlen(s_piesaTeatru[i].Nume_Piesa);
+
+            cout << "\n\n"
+                 << setw(5) << " "
+                 << "ID" << setw(5 + 1) << " "
+                 << "Nume" << setw(NumarMaxCaractere + 1) << " "
+                 << "Data" << setw(5 + 2) << " "
+                 << "Ora" << setw(5 + 3) << " " << "Regizor" << endl;
+            fillLinieConsola(85);
+            for (unsigned int i = 1; i <= NumarPiese; i++)
             {
-                unsigned int ok;
-                piesa s_piesaTeatru[201];
-                for(unsigned int i = 1; i <= NumarPiese; i++)
-                    s_piesaTeatru[i] = piesaTeatru[i];
-                do
-                {
-                    ok = 1;
-                    for(unsigned int i = 1; i < NumarPiese; i++)
-                        if(strcmp(s_piesaTeatru[i].Ora_Piesa, s_piesaTeatru[i+1].Ora_Piesa)>0)
-                        {
-                            swap(s_piesaTeatru[i], s_piesaTeatru[i+1]);
-                            ok = 0;
-                        }
-                }while(ok == 0);
+                cout << setw(5) << " " << s_piesaTeatru[i].ID_Piesa << setw(5) << " " << s_piesaTeatru[i].Nume_Piesa
+                     << setw(NumarMaxCaractere - strlen(s_piesaTeatru[i].Nume_Piesa) + 5) << " " << s_piesaTeatru[i].Data_Piesa << " "
+                     << setw(5) << " " << s_piesaTeatru[i].Ora_Piesa << setw(5) << " ";
 
-                unsigned int NumarMaxCaractere = 0;
-                for (unsigned int i = 1; i <= NumarPiese; i++)
-                    if (strlen(s_piesaTeatru[i].Nume_Piesa) > NumarMaxCaractere)
-                        NumarMaxCaractere = strlen(s_piesaTeatru[i].Nume_Piesa);
-
-                cout << "\n\n"
-                    << setw(5) << " "
-                    << "ID" << setw(5 + 1) << " "
-                    << "Nume" << setw(NumarMaxCaractere + 1) << " "
-                    << "Data" << setw(5 + 2) << " "
-                    << "Ora" << setw(5 + 3) << " " << "Regizor" << endl;
-                fillLinieConsola(85);
-                for (unsigned int i = 1; i <= NumarPiese; i++)
-                {
-                    cout << setw(5) << " " << s_piesaTeatru[i].ID_Piesa << setw(5) << " " << s_piesaTeatru[i].Nume_Piesa
-                        << setw(NumarMaxCaractere - strlen(s_piesaTeatru[i].Nume_Piesa) + 5) << " " << s_piesaTeatru[i].Data_Piesa << " "
-                        << setw(5) << " " << s_piesaTeatru[i].Ora_Piesa << setw(5) << " ";
-
-                    for (unsigned int j = 0; j <= NumarPersonalTeatru; j++)
-                        if (personalTeatru[j].ID_PersonalTeatru == s_piesaTeatru[i].ID_PersonalTeatru)
-                            cout << personalTeatru[j].Nume_PersonalTeatru << " " << personalTeatru[j].Prenume_PersonalTeatru << endl;
-                }
-                fillLinieConsola(85);
+                for (unsigned int j = 0; j <= NumarPersonalTeatru; j++)
+                    if (personalTeatru[j].ID_PersonalTeatru == s_piesaTeatru[i].ID_PersonalTeatru)
+                        cout << personalTeatru[j].Nume_PersonalTeatru << " " << personalTeatru[j].Prenume_PersonalTeatru << endl;
             }
-            _getch();
-            break;
+            fillLinieConsola(85);
         }
-    }while(Meniu_sortari!=0);
+        _getch();
+        break;
+
+        case 3:
+        {
+            unsigned int ok;
+            piesa s_piesaTeatru[201];
+            for(unsigned int i = 1; i <= NumarPiese; i++)
+                s_piesaTeatru[i] = piesaTeatru[i];
+            do
+            {
+                ok = 1;
+                for(unsigned int i = 1; i < NumarPiese; i++)
+                    if(strcmp(s_piesaTeatru[i].Ora_Piesa, s_piesaTeatru[i+1].Ora_Piesa)>0)
+                    {
+                        swap(s_piesaTeatru[i], s_piesaTeatru[i+1]);
+                        ok = 0;
+                    }
+            }
+            while(ok == 0);
+
+            unsigned int NumarMaxCaractere = 0;
+            for (unsigned int i = 1; i <= NumarPiese; i++)
+                if (strlen(s_piesaTeatru[i].Nume_Piesa) > NumarMaxCaractere)
+                    NumarMaxCaractere = strlen(s_piesaTeatru[i].Nume_Piesa);
+
+            cout << "\n\n"
+                 << setw(5) << " "
+                 << "ID" << setw(5 + 1) << " "
+                 << "Nume" << setw(NumarMaxCaractere + 1) << " "
+                 << "Data" << setw(5 + 2) << " "
+                 << "Ora" << setw(5 + 3) << " " << "Regizor" << endl;
+            fillLinieConsola(85);
+            for (unsigned int i = 1; i <= NumarPiese; i++)
+            {
+                cout << setw(5) << " " << s_piesaTeatru[i].ID_Piesa << setw(5) << " " << s_piesaTeatru[i].Nume_Piesa
+                     << setw(NumarMaxCaractere - strlen(s_piesaTeatru[i].Nume_Piesa) + 5) << " " << s_piesaTeatru[i].Data_Piesa << " "
+                     << setw(5) << " " << s_piesaTeatru[i].Ora_Piesa << setw(5) << " ";
+
+                for (unsigned int j = 0; j <= NumarPersonalTeatru; j++)
+                    if (personalTeatru[j].ID_PersonalTeatru == s_piesaTeatru[i].ID_PersonalTeatru)
+                        cout << personalTeatru[j].Nume_PersonalTeatru << " " << personalTeatru[j].Prenume_PersonalTeatru << endl;
+            }
+            fillLinieConsola(85);
+        }
+        _getch();
+        break;
+        }
+    }
+    while(Meniu_sortari!=0);
 }
 
 void sortari_actori()
@@ -2207,200 +2300,204 @@ void sortari_actori()
         cout<<endl;
 
         cout << setw(5 - 1) << " "
-            << "1. Sortare alfabetica dupa numele de familie." << endl;
+             << "1. Sortare alfabetica dupa numele de familie." << endl;
         cout << setw(5 - 1) << " "
-            << "2. Sortare alfabetica dupa prenume." << endl;
+             << "2. Sortare alfabetica dupa prenume." << endl;
         cout << setw(5 - 1) << " "
-            << "3. Sortare dupa varsta." << endl;
+             << "3. Sortare dupa varsta." << endl;
         cout << setw(5 - 1) << " "
-            << "0. Inapoi"
-            << "\n\n";
+             << "0. Inapoi"
+             << "\n\n";
 
         cout << setw(5 - 1) << " " << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: ";
         cin >> Meniu_sortari;
         switch (Meniu_sortari)
         {
-            case 1:
+        case 1:
+        {
+            unsigned int ok;
+            actor c_actor[201];
+            for(unsigned int i = 1; i <= NumarActori; i++)
+                c_actor[i] = actorTeatru[i];
+            do
             {
-                unsigned int ok;
-                actor c_actor[201];
-                for(unsigned int i = 1; i <= NumarActori; i++)
-                    c_actor[i] = actorTeatru[i];
-                do
-                {
-                    ok = 1;
-                    for(unsigned int i = 1; i < NumarActori; i++)
-                        if(stricmp(c_actor[i].Nume_Actor, c_actor[i+1].Nume_Actor)>0)
-                        {
-                            swap(c_actor[i], c_actor[i+1]);
-                            ok = 0;
-                        }
-                }while(ok == 0);
-
-                unsigned int NumarMaxCaractereNume = 0;
-
-                for (unsigned int i = 1; i <= NumarActori; i++)
-                    if (strlen(c_actor[i].Nume_Actor) > NumarMaxCaractereNume)
-                        NumarMaxCaractereNume = strlen(c_actor[i].Nume_Actor);
-
-                unsigned int NumarMaxCaracterePrenume = 0;
-
-                for (unsigned int i = 0; i <= NumarActori; i++)
-                    if (strlen(c_actor[i].Prenume_Actor) > NumarMaxCaracterePrenume)
-                        NumarMaxCaracterePrenume = strlen(c_actor[i].Prenume_Actor);
-
-                unsigned int NumarMaxCaractereEmail = 0;
-
-                for (unsigned int i = 0; i < NumarActori; i++)
-                    if (strlen(c_actor[i].Email_Actor) > NumarMaxCaractereEmail)
-                        NumarMaxCaractereEmail = strlen(c_actor[i].Email_Actor);
-
-                cout << "\n\n"
-                    << setw(5 - 1) << " "
-                    << "ID Actor"
-                    << " "
-                    << "ID_Piesa" << setw(5) << " "
-                    << "Nume_Actor"
-                    << setw(NumarMaxCaractereNume) << " "
-                    << "Prenume_Actor" << setw(NumarMaxCaracterePrenume - 5) << " "
-                    << "Varsta_Actor" << setw(10) << " "
-                    << "Email_Actor"
-                    << "\n";
-
-                fillLinieConsola(115);
-
-                for (unsigned int i = 1; i <= NumarActori; i++)
-                    cout << setw(5) << " " << c_actor[i].ID_Actor << setw(10 - 1) << " " << c_actor[i].ID_Piesa << setw(10 - 1) << " " << c_actor[i].Nume_Actor
-                        << setw(NumarMaxCaractereNume - strlen(c_actor[i].Nume_Actor) + 10) << " " << c_actor[i].Prenume_Actor
-                        << setw(NumarMaxCaracterePrenume - strlen(c_actor[i].Prenume_Actor) + 10) << " " << c_actor[i].Varsta_Actor << " ani"
-                        << setw(10) << " " << c_actor[i].Email_Actor << setw(NumarMaxCaractereEmail - strlen(c_actor[i].Email_Actor) + 10) << "\n";
-
-                fillLinieConsola(115);
+                ok = 1;
+                for(unsigned int i = 1; i < NumarActori; i++)
+                    if(stricmp(c_actor[i].Nume_Actor, c_actor[i+1].Nume_Actor)>0)
+                    {
+                        swap(c_actor[i], c_actor[i+1]);
+                        ok = 0;
+                    }
             }
-            _getch();
-            break;
+            while(ok == 0);
 
-            case 2:
-            {
-                unsigned int ok;
-                actor c_actor[201];
-                for(unsigned int i = 1; i <= NumarActori; i++)
-                    c_actor[i] = actorTeatru[i];
-                do
-                {
-                    ok = 1;
-                    for(unsigned int i = 1; i < NumarActori; i++)
-                        if(stricmp(c_actor[i].Prenume_Actor, c_actor[i+1].Prenume_Actor)>0)
-                        {
-                            swap(c_actor[i], c_actor[i+1]);
-                            ok = 0;
-                        }
-                }while(ok == 0);
+            unsigned int NumarMaxCaractereNume = 0;
 
-                unsigned int NumarMaxCaractereNume = 0;
+            for (unsigned int i = 1; i <= NumarActori; i++)
+                if (strlen(c_actor[i].Nume_Actor) > NumarMaxCaractereNume)
+                    NumarMaxCaractereNume = strlen(c_actor[i].Nume_Actor);
 
-                for (unsigned int i = 1; i <= NumarActori; i++)
-                    if (strlen(c_actor[i].Nume_Actor) > NumarMaxCaractereNume)
-                        NumarMaxCaractereNume = strlen(c_actor[i].Nume_Actor);
+            unsigned int NumarMaxCaracterePrenume = 0;
 
-                unsigned int NumarMaxCaracterePrenume = 0;
+            for (unsigned int i = 0; i <= NumarActori; i++)
+                if (strlen(c_actor[i].Prenume_Actor) > NumarMaxCaracterePrenume)
+                    NumarMaxCaracterePrenume = strlen(c_actor[i].Prenume_Actor);
 
-                for (unsigned int i = 0; i <= NumarActori; i++)
-                    if (strlen(c_actor[i].Prenume_Actor) > NumarMaxCaracterePrenume)
-                        NumarMaxCaracterePrenume = strlen(c_actor[i].Prenume_Actor);
+            unsigned int NumarMaxCaractereEmail = 0;
 
-                unsigned int NumarMaxCaractereEmail = 0;
+            for (unsigned int i = 0; i < NumarActori; i++)
+                if (strlen(c_actor[i].Email_Actor) > NumarMaxCaractereEmail)
+                    NumarMaxCaractereEmail = strlen(c_actor[i].Email_Actor);
 
-                for (unsigned int i = 0; i < NumarActori; i++)
-                    if (strlen(c_actor[i].Email_Actor) > NumarMaxCaractereEmail)
-                        NumarMaxCaractereEmail = strlen(c_actor[i].Email_Actor);
+            cout << "\n\n"
+                 << setw(5 - 1) << " "
+                 << "ID Actor"
+                 << " "
+                 << "ID_Piesa" << setw(5) << " "
+                 << "Nume_Actor"
+                 << setw(NumarMaxCaractereNume) << " "
+                 << "Prenume_Actor" << setw(NumarMaxCaracterePrenume - 5) << " "
+                 << "Varsta_Actor" << setw(10) << " "
+                 << "Email_Actor"
+                 << "\n";
 
-                cout << "\n\n"
-                    << setw(5 - 1) << " "
-                    << "ID Actor"
-                    << " "
-                    << "ID_Piesa" << setw(5) << " "
-                    << "Nume_Actor"
-                    << setw(NumarMaxCaractereNume) << " "
-                    << "Prenume_Actor" << setw(NumarMaxCaracterePrenume - 5) << " "
-                    << "Varsta_Actor" << setw(10) << " "
-                    << "Email_Actor"
-                    << "\n";
+            fillLinieConsola(115);
 
-                fillLinieConsola(115);
+            for (unsigned int i = 1; i <= NumarActori; i++)
+                cout << setw(5) << " " << c_actor[i].ID_Actor << setw(10 - 1) << " " << c_actor[i].ID_Piesa << setw(10 - 1) << " " << c_actor[i].Nume_Actor
+                     << setw(NumarMaxCaractereNume - strlen(c_actor[i].Nume_Actor) + 10) << " " << c_actor[i].Prenume_Actor
+                     << setw(NumarMaxCaracterePrenume - strlen(c_actor[i].Prenume_Actor) + 10) << " " << c_actor[i].Varsta_Actor << " ani"
+                     << setw(10) << " " << c_actor[i].Email_Actor << setw(NumarMaxCaractereEmail - strlen(c_actor[i].Email_Actor) + 10) << "\n";
 
-                for (unsigned int i = 1; i <= NumarActori; i++)
-                    cout << setw(5) << " " << c_actor[i].ID_Actor << setw(10 - 1) << " " << c_actor[i].ID_Piesa << setw(10 - 1) << " " << c_actor[i].Nume_Actor
-                        << setw(NumarMaxCaractereNume - strlen(c_actor[i].Nume_Actor) + 10) << " " << c_actor[i].Prenume_Actor
-                        << setw(NumarMaxCaracterePrenume - strlen(c_actor[i].Prenume_Actor) + 10) << " " << c_actor[i].Varsta_Actor << " ani"
-                        << setw(10) << " " << c_actor[i].Email_Actor << setw(NumarMaxCaractereEmail - strlen(c_actor[i].Email_Actor) + 10) << "\n";
-
-                fillLinieConsola(115);
-            }
-            _getch();
-            break;
-
-            case 3:
-            {
-                unsigned int ok;
-                actor c_actor[201];
-                for(unsigned int i = 1; i <= NumarActori; i++)
-                    c_actor[i] = actorTeatru[i];
-                do
-                {
-                    ok = 1;
-                    for(unsigned int i = 1; i < NumarActori; i++)
-                        if(c_actor[i].Varsta_Actor > c_actor[i+1].Varsta_Actor)
-                        {
-                            swap(c_actor[i], c_actor[i+1]);
-                            ok = 0;
-                        }
-                }while(ok == 0);
-
-                unsigned int NumarMaxCaractereNume = 0;
-
-                for (unsigned int i = 1; i <= NumarActori; i++)
-                    if (strlen(c_actor[i].Nume_Actor) > NumarMaxCaractereNume)
-                        NumarMaxCaractereNume = strlen(c_actor[i].Nume_Actor);
-
-                unsigned int NumarMaxCaracterePrenume = 0;
-
-                for (unsigned int i = 0; i <= NumarActori; i++)
-                    if (strlen(c_actor[i].Prenume_Actor) > NumarMaxCaracterePrenume)
-                        NumarMaxCaracterePrenume = strlen(c_actor[i].Prenume_Actor);
-
-                unsigned int NumarMaxCaractereEmail = 0;
-
-                for (unsigned int i = 0; i < NumarActori; i++)
-                    if (strlen(c_actor[i].Email_Actor) > NumarMaxCaractereEmail)
-                        NumarMaxCaractereEmail = strlen(c_actor[i].Email_Actor);
-
-                cout << "\n\n"
-                    << setw(5 - 1) << " "
-                    << "ID Actor"
-                    << " "
-                    << "ID_Piesa" << setw(5) << " "
-                    << "Nume_Actor"
-                    << setw(NumarMaxCaractereNume) << " "
-                    << "Prenume_Actor" << setw(NumarMaxCaracterePrenume - 5) << " "
-                    << "Varsta_Actor" << setw(10) << " "
-                    << "Email_Actor"
-                    << "\n";
-
-                fillLinieConsola(115);
-
-                for (unsigned int i = 1; i <= NumarActori; i++)
-                    cout << setw(5) << " " << c_actor[i].ID_Actor << setw(10 - 1) << " " << c_actor[i].ID_Piesa << setw(10 - 1) << " " << c_actor[i].Nume_Actor
-                        << setw(NumarMaxCaractereNume - strlen(c_actor[i].Nume_Actor) + 10) << " " << c_actor[i].Prenume_Actor
-                        << setw(NumarMaxCaracterePrenume - strlen(c_actor[i].Prenume_Actor) + 10) << " " << c_actor[i].Varsta_Actor << " ani"
-                        << setw(10) << " " << c_actor[i].Email_Actor << setw(NumarMaxCaractereEmail - strlen(c_actor[i].Email_Actor) + 10) << "\n";
-
-                fillLinieConsola(115);
-            }
-            _getch();
-            break;
+            fillLinieConsola(115);
         }
-    }while(Meniu_sortari!=0);
+        _getch();
+        break;
+
+        case 2:
+        {
+            unsigned int ok;
+            actor c_actor[201];
+            for(unsigned int i = 1; i <= NumarActori; i++)
+                c_actor[i] = actorTeatru[i];
+            do
+            {
+                ok = 1;
+                for(unsigned int i = 1; i < NumarActori; i++)
+                    if(stricmp(c_actor[i].Prenume_Actor, c_actor[i+1].Prenume_Actor)>0)
+                    {
+                        swap(c_actor[i], c_actor[i+1]);
+                        ok = 0;
+                    }
+            }
+            while(ok == 0);
+
+            unsigned int NumarMaxCaractereNume = 0;
+
+            for (unsigned int i = 1; i <= NumarActori; i++)
+                if (strlen(c_actor[i].Nume_Actor) > NumarMaxCaractereNume)
+                    NumarMaxCaractereNume = strlen(c_actor[i].Nume_Actor);
+
+            unsigned int NumarMaxCaracterePrenume = 0;
+
+            for (unsigned int i = 0; i <= NumarActori; i++)
+                if (strlen(c_actor[i].Prenume_Actor) > NumarMaxCaracterePrenume)
+                    NumarMaxCaracterePrenume = strlen(c_actor[i].Prenume_Actor);
+
+            unsigned int NumarMaxCaractereEmail = 0;
+
+            for (unsigned int i = 0; i < NumarActori; i++)
+                if (strlen(c_actor[i].Email_Actor) > NumarMaxCaractereEmail)
+                    NumarMaxCaractereEmail = strlen(c_actor[i].Email_Actor);
+
+            cout << "\n\n"
+                 << setw(5 - 1) << " "
+                 << "ID Actor"
+                 << " "
+                 << "ID_Piesa" << setw(5) << " "
+                 << "Nume_Actor"
+                 << setw(NumarMaxCaractereNume) << " "
+                 << "Prenume_Actor" << setw(NumarMaxCaracterePrenume - 5) << " "
+                 << "Varsta_Actor" << setw(10) << " "
+                 << "Email_Actor"
+                 << "\n";
+
+            fillLinieConsola(115);
+
+            for (unsigned int i = 1; i <= NumarActori; i++)
+                cout << setw(5) << " " << c_actor[i].ID_Actor << setw(10 - 1) << " " << c_actor[i].ID_Piesa << setw(10 - 1) << " " << c_actor[i].Nume_Actor
+                     << setw(NumarMaxCaractereNume - strlen(c_actor[i].Nume_Actor) + 10) << " " << c_actor[i].Prenume_Actor
+                     << setw(NumarMaxCaracterePrenume - strlen(c_actor[i].Prenume_Actor) + 10) << " " << c_actor[i].Varsta_Actor << " ani"
+                     << setw(10) << " " << c_actor[i].Email_Actor << setw(NumarMaxCaractereEmail - strlen(c_actor[i].Email_Actor) + 10) << "\n";
+
+            fillLinieConsola(115);
+        }
+        _getch();
+        break;
+
+        case 3:
+        {
+            unsigned int ok;
+            actor c_actor[201];
+            for(unsigned int i = 1; i <= NumarActori; i++)
+                c_actor[i] = actorTeatru[i];
+            do
+            {
+                ok = 1;
+                for(unsigned int i = 1; i < NumarActori; i++)
+                    if(c_actor[i].Varsta_Actor > c_actor[i+1].Varsta_Actor)
+                    {
+                        swap(c_actor[i], c_actor[i+1]);
+                        ok = 0;
+                    }
+            }
+            while(ok == 0);
+
+            unsigned int NumarMaxCaractereNume = 0;
+
+            for (unsigned int i = 1; i <= NumarActori; i++)
+                if (strlen(c_actor[i].Nume_Actor) > NumarMaxCaractereNume)
+                    NumarMaxCaractereNume = strlen(c_actor[i].Nume_Actor);
+
+            unsigned int NumarMaxCaracterePrenume = 0;
+
+            for (unsigned int i = 0; i <= NumarActori; i++)
+                if (strlen(c_actor[i].Prenume_Actor) > NumarMaxCaracterePrenume)
+                    NumarMaxCaracterePrenume = strlen(c_actor[i].Prenume_Actor);
+
+            unsigned int NumarMaxCaractereEmail = 0;
+
+            for (unsigned int i = 0; i < NumarActori; i++)
+                if (strlen(c_actor[i].Email_Actor) > NumarMaxCaractereEmail)
+                    NumarMaxCaractereEmail = strlen(c_actor[i].Email_Actor);
+
+            cout << "\n\n"
+                 << setw(5 - 1) << " "
+                 << "ID Actor"
+                 << " "
+                 << "ID_Piesa" << setw(5) << " "
+                 << "Nume_Actor"
+                 << setw(NumarMaxCaractereNume) << " "
+                 << "Prenume_Actor" << setw(NumarMaxCaracterePrenume - 5) << " "
+                 << "Varsta_Actor" << setw(10) << " "
+                 << "Email_Actor"
+                 << "\n";
+
+            fillLinieConsola(115);
+
+            for (unsigned int i = 1; i <= NumarActori; i++)
+                cout << setw(5) << " " << c_actor[i].ID_Actor << setw(10 - 1) << " " << c_actor[i].ID_Piesa << setw(10 - 1) << " " << c_actor[i].Nume_Actor
+                     << setw(NumarMaxCaractereNume - strlen(c_actor[i].Nume_Actor) + 10) << " " << c_actor[i].Prenume_Actor
+                     << setw(NumarMaxCaracterePrenume - strlen(c_actor[i].Prenume_Actor) + 10) << " " << c_actor[i].Varsta_Actor << " ani"
+                     << setw(10) << " " << c_actor[i].Email_Actor << setw(NumarMaxCaractereEmail - strlen(c_actor[i].Email_Actor) + 10) << "\n";
+
+            fillLinieConsola(115);
+        }
+        _getch();
+        break;
+        }
+    }
+    while(Meniu_sortari!=0);
 }
 
 void sortari_personal()
@@ -2412,287 +2509,292 @@ void sortari_personal()
         cout<<endl;
 
         cout << setw(5 - 1) << " "
-            << "1. Sortare alfabetica dupa numele de familie." << endl;
+             << "1. Sortare alfabetica dupa numele de familie." << endl;
         cout << setw(5 - 1) << " "
-            << "2. Sortare alfabetica dupa prenume." << endl;
+             << "2. Sortare alfabetica dupa prenume." << endl;
         cout << setw(5 - 1) << " "
-            << "3. Sortare dupa varsta." << endl;
+             << "3. Sortare dupa varsta." << endl;
         cout << setw(5 - 1) << " "
-            << "4. Sortare dupa ocupatie." << endl;
+             << "4. Sortare dupa ocupatie." << endl;
         cout << setw(5 - 1) << " "
-            << "0. Inapoi"
-            << "\n\n";
+             << "0. Inapoi"
+             << "\n\n";
 
         cout << setw(5 - 1) << " " << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: ";
         cin >> Meniu_sortari;
         switch (Meniu_sortari)
         {
-            case 1:
+        case 1:
+        {
+            unsigned int ok;
+            personal c_personal[201];
+            for(unsigned int i = 1; i <= NumarPersonalTeatru; i++)
+                c_personal[i] = personalTeatru[i];
+            do
             {
-                unsigned int ok;
-                personal c_personal[201];
-                for(unsigned int i = 1; i <= NumarPersonalTeatru; i++)
-                    c_personal[i] = personalTeatru[i];
-                do
-                {
-                    ok = 1;
-                    for(unsigned int i = 1; i < NumarPersonalTeatru; i++)
-                        if(stricmp(c_personal[i].Nume_PersonalTeatru, c_personal[i+1].Nume_PersonalTeatru)>0)
-                        {
-                            swap(c_personal[i], c_personal[i+1]);
-                            ok = 0;
-                        }
-                }while(ok == 0);
-
-                unsigned int nrMaxCaractereFunctie = 0;
-                for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
-                    if (strlen(c_personal[i].Functie_PersonalTeatru) > nrMaxCaractereFunctie)
-                        nrMaxCaractereFunctie = strlen(c_personal[i].Functie_PersonalTeatru);
-
-                unsigned int nrMaxCaractereNumePersonal = 0;
-                for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
-                    if (strlen(c_personal[i].Nume_PersonalTeatru) > nrMaxCaractereNumePersonal)
-                        nrMaxCaractereNumePersonal = strlen(c_personal[i].Nume_PersonalTeatru);
-
-                unsigned int nrMaxCaracterePreumePersonal = 0;
-                for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
-                    if (strlen(c_personal[i].Prenume_PersonalTeatru) > nrMaxCaracterePreumePersonal)
-                        nrMaxCaracterePreumePersonal = strlen(c_personal[i].Prenume_PersonalTeatru);
-
-                cout << "\n\n"
-                    << setw(5) << " "
-                    << "ID Staff" << setw(10) << " "
-                    << "Functie" << setw(nrMaxCaractereFunctie - 10) << " "
-                    << "Nume staff"
-                    << setw(nrMaxCaractereNumePersonal - 5) << " "
-                    << "Prenume staff" << setw(nrMaxCaracterePreumePersonal - 5) << " "
-                    << "CNP staff" << setw(5) << " "
-                    << "Varsta staff"
-                    << "\n";
-                fillLinieConsola(110);
-
-                for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
-                {
-                    cout << setw(5 + 2) << " " << c_personal[i].ID_PersonalTeatru << setw(10 - 1) << " ";
-
-                    char vFunctiePersonalAux[1001];
-                    strcpy(vFunctiePersonalAux, c_personal[i].Functie_PersonalTeatru);
-                    for (unsigned int j = 0; j < strlen(vFunctiePersonalAux); j++)
-                        if (vFunctiePersonalAux[j] == '_')
-                            vFunctiePersonalAux[j] = ' ';
-
-                    cout << vFunctiePersonalAux << setw(nrMaxCaractereFunctie + 5 - strlen(c_personal[i].Functie_PersonalTeatru)) << " "
-                        << c_personal[i].Nume_PersonalTeatru << " " << setw(nrMaxCaractereNumePersonal + 5 - strlen(c_personal[i].Nume_PersonalTeatru)) << " "
-                        << c_personal[i].Prenume_PersonalTeatru << setw(nrMaxCaracterePreumePersonal + 5 - strlen(c_personal[i].Prenume_PersonalTeatru)) << " "
-                        << c_personal[i].CNP_PersonalTeatru << setw(5) << " "
-                        << c_personal[i].Varsta_PersonalTeatru << endl;
-                }
-
-                fillLinieConsola(110);
-
+                ok = 1;
+                for(unsigned int i = 1; i < NumarPersonalTeatru; i++)
+                    if(stricmp(c_personal[i].Nume_PersonalTeatru, c_personal[i+1].Nume_PersonalTeatru)>0)
+                    {
+                        swap(c_personal[i], c_personal[i+1]);
+                        ok = 0;
+                    }
             }
-            _getch();
-            break;
+            while(ok == 0);
 
-            case 2:
+            unsigned int nrMaxCaractereFunctie = 0;
+            for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
+                if (strlen(c_personal[i].Functie_PersonalTeatru) > nrMaxCaractereFunctie)
+                    nrMaxCaractereFunctie = strlen(c_personal[i].Functie_PersonalTeatru);
+
+            unsigned int nrMaxCaractereNumePersonal = 0;
+            for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
+                if (strlen(c_personal[i].Nume_PersonalTeatru) > nrMaxCaractereNumePersonal)
+                    nrMaxCaractereNumePersonal = strlen(c_personal[i].Nume_PersonalTeatru);
+
+            unsigned int nrMaxCaracterePreumePersonal = 0;
+            for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
+                if (strlen(c_personal[i].Prenume_PersonalTeatru) > nrMaxCaracterePreumePersonal)
+                    nrMaxCaracterePreumePersonal = strlen(c_personal[i].Prenume_PersonalTeatru);
+
+            cout << "\n\n"
+                 << setw(5) << " "
+                 << "ID Staff" << setw(10) << " "
+                 << "Functie" << setw(nrMaxCaractereFunctie - 10) << " "
+                 << "Nume staff"
+                 << setw(nrMaxCaractereNumePersonal - 5) << " "
+                 << "Prenume staff" << setw(nrMaxCaracterePreumePersonal - 5) << " "
+                 << "CNP staff" << setw(5) << " "
+                 << "Varsta staff"
+                 << "\n";
+            fillLinieConsola(110);
+
+            for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
             {
-                unsigned int ok;
-                personal c_personal[201];
-                for(unsigned int i = 1; i <= NumarPersonalTeatru; i++)
-                    c_personal[i] = personalTeatru[i];
-                do
-                {
-                    ok = 1;
-                    for(unsigned int i = 1; i < NumarPersonalTeatru; i++)
-                        if(stricmp(c_personal[i].Prenume_PersonalTeatru, c_personal[i+1].Prenume_PersonalTeatru)>0)
-                        {
-                            swap(c_personal[i], c_personal[i+1]);
-                            ok = 0;
-                        }
-                }while(ok == 0);
+                cout << setw(5 + 2) << " " << c_personal[i].ID_PersonalTeatru << setw(10 - 1) << " ";
 
-                unsigned int nrMaxCaractereFunctie = 0;
-                for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
-                    if (strlen(c_personal[i].Functie_PersonalTeatru) > nrMaxCaractereFunctie)
-                        nrMaxCaractereFunctie = strlen(c_personal[i].Functie_PersonalTeatru);
+                char vFunctiePersonalAux[1001];
+                strcpy(vFunctiePersonalAux, c_personal[i].Functie_PersonalTeatru);
+                for (unsigned int j = 0; j < strlen(vFunctiePersonalAux); j++)
+                    if (vFunctiePersonalAux[j] == '_')
+                        vFunctiePersonalAux[j] = ' ';
 
-                unsigned int nrMaxCaractereNumePersonal = 0;
-                for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
-                    if (strlen(c_personal[i].Nume_PersonalTeatru) > nrMaxCaractereNumePersonal)
-                        nrMaxCaractereNumePersonal = strlen(c_personal[i].Nume_PersonalTeatru);
-
-                unsigned int nrMaxCaracterePreumePersonal = 0;
-                for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
-                    if (strlen(c_personal[i].Prenume_PersonalTeatru) > nrMaxCaracterePreumePersonal)
-                        nrMaxCaracterePreumePersonal = strlen(c_personal[i].Prenume_PersonalTeatru);
-
-                cout << "\n\n"
-                    << setw(5) << " "
-                    << "ID Staff" << setw(10) << " "
-                    << "Functie" << setw(nrMaxCaractereFunctie - 10) << " "
-                    << "Nume staff"
-                    << setw(nrMaxCaractereNumePersonal - 5) << " "
-                    << "Prenume staff" << setw(nrMaxCaracterePreumePersonal - 5) << " "
-                    << "CNP staff" << setw(5) << " "
-                    << "Varsta staff"
-                    << "\n";
-                fillLinieConsola(110);
-
-                for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
-                {
-                    cout << setw(5 + 2) << " " << c_personal[i].ID_PersonalTeatru << setw(10 - 1) << " ";
-
-                    char vFunctiePersonalAux[1001];
-                    strcpy(vFunctiePersonalAux, c_personal[i].Functie_PersonalTeatru);
-                    for (unsigned int j = 0; j < strlen(vFunctiePersonalAux); j++)
-                        if (vFunctiePersonalAux[j] == '_')
-                            vFunctiePersonalAux[j] = ' ';
-
-                    cout << vFunctiePersonalAux << setw(nrMaxCaractereFunctie + 5 - strlen(c_personal[i].Functie_PersonalTeatru)) << " "
-                        << c_personal[i].Nume_PersonalTeatru << " " << setw(nrMaxCaractereNumePersonal + 5 - strlen(c_personal[i].Nume_PersonalTeatru)) << " "
-                        << c_personal[i].Prenume_PersonalTeatru << setw(nrMaxCaracterePreumePersonal + 5 - strlen(c_personal[i].Prenume_PersonalTeatru)) << " "
-                        << c_personal[i].CNP_PersonalTeatru << setw(5) << " "
-                        << c_personal[i].Varsta_PersonalTeatru << endl;
-                }
-
-                fillLinieConsola(110);
+                cout << vFunctiePersonalAux << setw(nrMaxCaractereFunctie + 5 - strlen(c_personal[i].Functie_PersonalTeatru)) << " "
+                     << c_personal[i].Nume_PersonalTeatru << " " << setw(nrMaxCaractereNumePersonal + 5 - strlen(c_personal[i].Nume_PersonalTeatru)) << " "
+                     << c_personal[i].Prenume_PersonalTeatru << setw(nrMaxCaracterePreumePersonal + 5 - strlen(c_personal[i].Prenume_PersonalTeatru)) << " "
+                     << c_personal[i].CNP_PersonalTeatru << setw(5) << " "
+                     << c_personal[i].Varsta_PersonalTeatru << endl;
             }
-            _getch();
-            break;
 
-            case 3:
-            {
-                unsigned int ok;
-                personal c_personal[201];
-                for(unsigned int i = 1; i <= NumarPersonalTeatru; i++)
-                    c_personal[i] = personalTeatru[i];
-                do
-                {
-                    ok = 1;
-                    for(unsigned int i = 1; i < NumarPersonalTeatru; i++)
-                        if(c_personal[i].Varsta_PersonalTeatru > c_personal[i+1].Varsta_PersonalTeatru)
-                        {
-                            swap(c_personal[i], c_personal[i+1]);
-                            ok = 0;
-                        }
-                }while(ok == 0);
+            fillLinieConsola(110);
 
-                unsigned int nrMaxCaractereFunctie = 0;
-                for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
-                    if (strlen(c_personal[i].Functie_PersonalTeatru) > nrMaxCaractereFunctie)
-                        nrMaxCaractereFunctie = strlen(c_personal[i].Functie_PersonalTeatru);
-
-                unsigned int nrMaxCaractereNumePersonal = 0;
-                for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
-                    if (strlen(c_personal[i].Nume_PersonalTeatru) > nrMaxCaractereNumePersonal)
-                        nrMaxCaractereNumePersonal = strlen(c_personal[i].Nume_PersonalTeatru);
-
-                unsigned int nrMaxCaracterePreumePersonal = 0;
-                for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
-                    if (strlen(c_personal[i].Prenume_PersonalTeatru) > nrMaxCaracterePreumePersonal)
-                        nrMaxCaracterePreumePersonal = strlen(c_personal[i].Prenume_PersonalTeatru);
-
-                cout << "\n\n"
-                    << setw(5) << " "
-                    << "ID Staff" << setw(10) << " "
-                    << "Functie" << setw(nrMaxCaractereFunctie - 10) << " "
-                    << "Nume staff"
-                    << setw(nrMaxCaractereNumePersonal - 5) << " "
-                    << "Prenume staff" << setw(nrMaxCaracterePreumePersonal - 5) << " "
-                    << "CNP staff" << setw(5) << " "
-                    << "Varsta staff"
-                    << "\n";
-                fillLinieConsola(110);
-
-                for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
-                {
-                    cout << setw(5 + 2) << " " << c_personal[i].ID_PersonalTeatru << setw(10 - 1) << " ";
-
-                    char vFunctiePersonalAux[1001];
-                    strcpy(vFunctiePersonalAux, c_personal[i].Functie_PersonalTeatru);
-                    for (unsigned int j = 0; j < strlen(vFunctiePersonalAux); j++)
-                        if (vFunctiePersonalAux[j] == '_')
-                            vFunctiePersonalAux[j] = ' ';
-
-                    cout << vFunctiePersonalAux << setw(nrMaxCaractereFunctie + 5 - strlen(c_personal[i].Functie_PersonalTeatru)) << " "
-                        << c_personal[i].Nume_PersonalTeatru << " " << setw(nrMaxCaractereNumePersonal + 5 - strlen(c_personal[i].Nume_PersonalTeatru)) << " "
-                        << c_personal[i].Prenume_PersonalTeatru << setw(nrMaxCaracterePreumePersonal + 5 - strlen(c_personal[i].Prenume_PersonalTeatru)) << " "
-                        << c_personal[i].CNP_PersonalTeatru << setw(5) << " "
-                        << c_personal[i].Varsta_PersonalTeatru << endl;
-                }
-
-                fillLinieConsola(110);
-            }
-            _getch();
-            break;
-
-            case 4:
-            {
-                unsigned int ok;
-                personal c_personal[201];
-                for(unsigned int i = 1; i <= NumarPersonalTeatru; i++)
-                    c_personal[i] = personalTeatru[i];
-                do
-                {
-                    ok = 1;
-                    for(unsigned int i = 1; i < NumarPersonalTeatru; i++)
-                        if(stricmp(c_personal[i].Functie_PersonalTeatru, c_personal[i+1].Functie_PersonalTeatru)>0)
-                        {
-                            swap(c_personal[i], c_personal[i+1]);
-                            ok = 0;
-                        }
-                }while(ok == 0);
-
-                unsigned int nrMaxCaractereFunctie = 0;
-                for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
-                    if (strlen(c_personal[i].Functie_PersonalTeatru) > nrMaxCaractereFunctie)
-                        nrMaxCaractereFunctie = strlen(c_personal[i].Functie_PersonalTeatru);
-
-                unsigned int nrMaxCaractereNumePersonal = 0;
-                for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
-                    if (strlen(c_personal[i].Nume_PersonalTeatru) > nrMaxCaractereNumePersonal)
-                        nrMaxCaractereNumePersonal = strlen(c_personal[i].Nume_PersonalTeatru);
-
-                unsigned int nrMaxCaracterePreumePersonal = 0;
-                for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
-                    if (strlen(c_personal[i].Prenume_PersonalTeatru) > nrMaxCaracterePreumePersonal)
-                        nrMaxCaracterePreumePersonal = strlen(c_personal[i].Prenume_PersonalTeatru);
-
-                cout << "\n\n"
-                    << setw(5) << " "
-                    << "ID Staff" << setw(10) << " "
-                    << "Functie" << setw(nrMaxCaractereFunctie - 10) << " "
-                    << "Nume staff"
-                    << setw(nrMaxCaractereNumePersonal - 5) << " "
-                    << "Prenume staff" << setw(nrMaxCaracterePreumePersonal - 5) << " "
-                    << "CNP staff" << setw(5) << " "
-                    << "Varsta staff"
-                    << "\n";
-                fillLinieConsola(110);
-
-                for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
-                {
-                    cout << setw(5 + 2) << " " << c_personal[i].ID_PersonalTeatru << setw(10 - 1) << " ";
-
-                    char vFunctiePersonalAux[1001];
-                    strcpy(vFunctiePersonalAux, c_personal[i].Functie_PersonalTeatru);
-                    for (unsigned int j = 0; j < strlen(vFunctiePersonalAux); j++)
-                        if (vFunctiePersonalAux[j] == '_')
-                            vFunctiePersonalAux[j] = ' ';
-
-                    cout << vFunctiePersonalAux << setw(nrMaxCaractereFunctie + 5 - strlen(c_personal[i].Functie_PersonalTeatru)) << " "
-                        << c_personal[i].Nume_PersonalTeatru << " " << setw(nrMaxCaractereNumePersonal + 5 - strlen(c_personal[i].Nume_PersonalTeatru)) << " "
-                        << c_personal[i].Prenume_PersonalTeatru << setw(nrMaxCaracterePreumePersonal + 5 - strlen(c_personal[i].Prenume_PersonalTeatru)) << " "
-                        << c_personal[i].CNP_PersonalTeatru << setw(5) << " "
-                        << c_personal[i].Varsta_PersonalTeatru << endl;
-                }
-
-                fillLinieConsola(110);
-            }
-            _getch();
-            break;
         }
-    }while(Meniu_sortari!=0);
+        _getch();
+        break;
+
+        case 2:
+        {
+            unsigned int ok;
+            personal c_personal[201];
+            for(unsigned int i = 1; i <= NumarPersonalTeatru; i++)
+                c_personal[i] = personalTeatru[i];
+            do
+            {
+                ok = 1;
+                for(unsigned int i = 1; i < NumarPersonalTeatru; i++)
+                    if(stricmp(c_personal[i].Prenume_PersonalTeatru, c_personal[i+1].Prenume_PersonalTeatru)>0)
+                    {
+                        swap(c_personal[i], c_personal[i+1]);
+                        ok = 0;
+                    }
+            }
+            while(ok == 0);
+
+            unsigned int nrMaxCaractereFunctie = 0;
+            for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
+                if (strlen(c_personal[i].Functie_PersonalTeatru) > nrMaxCaractereFunctie)
+                    nrMaxCaractereFunctie = strlen(c_personal[i].Functie_PersonalTeatru);
+
+            unsigned int nrMaxCaractereNumePersonal = 0;
+            for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
+                if (strlen(c_personal[i].Nume_PersonalTeatru) > nrMaxCaractereNumePersonal)
+                    nrMaxCaractereNumePersonal = strlen(c_personal[i].Nume_PersonalTeatru);
+
+            unsigned int nrMaxCaracterePreumePersonal = 0;
+            for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
+                if (strlen(c_personal[i].Prenume_PersonalTeatru) > nrMaxCaracterePreumePersonal)
+                    nrMaxCaracterePreumePersonal = strlen(c_personal[i].Prenume_PersonalTeatru);
+
+            cout << "\n\n"
+                 << setw(5) << " "
+                 << "ID Staff" << setw(10) << " "
+                 << "Functie" << setw(nrMaxCaractereFunctie - 10) << " "
+                 << "Nume staff"
+                 << setw(nrMaxCaractereNumePersonal - 5) << " "
+                 << "Prenume staff" << setw(nrMaxCaracterePreumePersonal - 5) << " "
+                 << "CNP staff" << setw(5) << " "
+                 << "Varsta staff"
+                 << "\n";
+            fillLinieConsola(110);
+
+            for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
+            {
+                cout << setw(5 + 2) << " " << c_personal[i].ID_PersonalTeatru << setw(10 - 1) << " ";
+
+                char vFunctiePersonalAux[1001];
+                strcpy(vFunctiePersonalAux, c_personal[i].Functie_PersonalTeatru);
+                for (unsigned int j = 0; j < strlen(vFunctiePersonalAux); j++)
+                    if (vFunctiePersonalAux[j] == '_')
+                        vFunctiePersonalAux[j] = ' ';
+
+                cout << vFunctiePersonalAux << setw(nrMaxCaractereFunctie + 5 - strlen(c_personal[i].Functie_PersonalTeatru)) << " "
+                     << c_personal[i].Nume_PersonalTeatru << " " << setw(nrMaxCaractereNumePersonal + 5 - strlen(c_personal[i].Nume_PersonalTeatru)) << " "
+                     << c_personal[i].Prenume_PersonalTeatru << setw(nrMaxCaracterePreumePersonal + 5 - strlen(c_personal[i].Prenume_PersonalTeatru)) << " "
+                     << c_personal[i].CNP_PersonalTeatru << setw(5) << " "
+                     << c_personal[i].Varsta_PersonalTeatru << endl;
+            }
+
+            fillLinieConsola(110);
+        }
+        _getch();
+        break;
+
+        case 3:
+        {
+            unsigned int ok;
+            personal c_personal[201];
+            for(unsigned int i = 1; i <= NumarPersonalTeatru; i++)
+                c_personal[i] = personalTeatru[i];
+            do
+            {
+                ok = 1;
+                for(unsigned int i = 1; i < NumarPersonalTeatru; i++)
+                    if(c_personal[i].Varsta_PersonalTeatru > c_personal[i+1].Varsta_PersonalTeatru)
+                    {
+                        swap(c_personal[i], c_personal[i+1]);
+                        ok = 0;
+                    }
+            }
+            while(ok == 0);
+
+            unsigned int nrMaxCaractereFunctie = 0;
+            for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
+                if (strlen(c_personal[i].Functie_PersonalTeatru) > nrMaxCaractereFunctie)
+                    nrMaxCaractereFunctie = strlen(c_personal[i].Functie_PersonalTeatru);
+
+            unsigned int nrMaxCaractereNumePersonal = 0;
+            for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
+                if (strlen(c_personal[i].Nume_PersonalTeatru) > nrMaxCaractereNumePersonal)
+                    nrMaxCaractereNumePersonal = strlen(c_personal[i].Nume_PersonalTeatru);
+
+            unsigned int nrMaxCaracterePreumePersonal = 0;
+            for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
+                if (strlen(c_personal[i].Prenume_PersonalTeatru) > nrMaxCaracterePreumePersonal)
+                    nrMaxCaracterePreumePersonal = strlen(c_personal[i].Prenume_PersonalTeatru);
+
+            cout << "\n\n"
+                 << setw(5) << " "
+                 << "ID Staff" << setw(10) << " "
+                 << "Functie" << setw(nrMaxCaractereFunctie - 10) << " "
+                 << "Nume staff"
+                 << setw(nrMaxCaractereNumePersonal - 5) << " "
+                 << "Prenume staff" << setw(nrMaxCaracterePreumePersonal - 5) << " "
+                 << "CNP staff" << setw(5) << " "
+                 << "Varsta staff"
+                 << "\n";
+            fillLinieConsola(110);
+
+            for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
+            {
+                cout << setw(5 + 2) << " " << c_personal[i].ID_PersonalTeatru << setw(10 - 1) << " ";
+
+                char vFunctiePersonalAux[1001];
+                strcpy(vFunctiePersonalAux, c_personal[i].Functie_PersonalTeatru);
+                for (unsigned int j = 0; j < strlen(vFunctiePersonalAux); j++)
+                    if (vFunctiePersonalAux[j] == '_')
+                        vFunctiePersonalAux[j] = ' ';
+
+                cout << vFunctiePersonalAux << setw(nrMaxCaractereFunctie + 5 - strlen(c_personal[i].Functie_PersonalTeatru)) << " "
+                     << c_personal[i].Nume_PersonalTeatru << " " << setw(nrMaxCaractereNumePersonal + 5 - strlen(c_personal[i].Nume_PersonalTeatru)) << " "
+                     << c_personal[i].Prenume_PersonalTeatru << setw(nrMaxCaracterePreumePersonal + 5 - strlen(c_personal[i].Prenume_PersonalTeatru)) << " "
+                     << c_personal[i].CNP_PersonalTeatru << setw(5) << " "
+                     << c_personal[i].Varsta_PersonalTeatru << endl;
+            }
+
+            fillLinieConsola(110);
+        }
+        _getch();
+        break;
+
+        case 4:
+        {
+            unsigned int ok;
+            personal c_personal[201];
+            for(unsigned int i = 1; i <= NumarPersonalTeatru; i++)
+                c_personal[i] = personalTeatru[i];
+            do
+            {
+                ok = 1;
+                for(unsigned int i = 1; i < NumarPersonalTeatru; i++)
+                    if(stricmp(c_personal[i].Functie_PersonalTeatru, c_personal[i+1].Functie_PersonalTeatru)>0)
+                    {
+                        swap(c_personal[i], c_personal[i+1]);
+                        ok = 0;
+                    }
+            }
+            while(ok == 0);
+
+            unsigned int nrMaxCaractereFunctie = 0;
+            for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
+                if (strlen(c_personal[i].Functie_PersonalTeatru) > nrMaxCaractereFunctie)
+                    nrMaxCaractereFunctie = strlen(c_personal[i].Functie_PersonalTeatru);
+
+            unsigned int nrMaxCaractereNumePersonal = 0;
+            for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
+                if (strlen(c_personal[i].Nume_PersonalTeatru) > nrMaxCaractereNumePersonal)
+                    nrMaxCaractereNumePersonal = strlen(c_personal[i].Nume_PersonalTeatru);
+
+            unsigned int nrMaxCaracterePreumePersonal = 0;
+            for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
+                if (strlen(c_personal[i].Prenume_PersonalTeatru) > nrMaxCaracterePreumePersonal)
+                    nrMaxCaracterePreumePersonal = strlen(c_personal[i].Prenume_PersonalTeatru);
+
+            cout << "\n\n"
+                 << setw(5) << " "
+                 << "ID Staff" << setw(10) << " "
+                 << "Functie" << setw(nrMaxCaractereFunctie - 10) << " "
+                 << "Nume staff"
+                 << setw(nrMaxCaractereNumePersonal - 5) << " "
+                 << "Prenume staff" << setw(nrMaxCaracterePreumePersonal - 5) << " "
+                 << "CNP staff" << setw(5) << " "
+                 << "Varsta staff"
+                 << "\n";
+            fillLinieConsola(110);
+
+            for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
+            {
+                cout << setw(5 + 2) << " " << c_personal[i].ID_PersonalTeatru << setw(10 - 1) << " ";
+
+                char vFunctiePersonalAux[1001];
+                strcpy(vFunctiePersonalAux, c_personal[i].Functie_PersonalTeatru);
+                for (unsigned int j = 0; j < strlen(vFunctiePersonalAux); j++)
+                    if (vFunctiePersonalAux[j] == '_')
+                        vFunctiePersonalAux[j] = ' ';
+
+                cout << vFunctiePersonalAux << setw(nrMaxCaractereFunctie + 5 - strlen(c_personal[i].Functie_PersonalTeatru)) << " "
+                     << c_personal[i].Nume_PersonalTeatru << " " << setw(nrMaxCaractereNumePersonal + 5 - strlen(c_personal[i].Nume_PersonalTeatru)) << " "
+                     << c_personal[i].Prenume_PersonalTeatru << setw(nrMaxCaracterePreumePersonal + 5 - strlen(c_personal[i].Prenume_PersonalTeatru)) << " "
+                     << c_personal[i].CNP_PersonalTeatru << setw(5) << " "
+                     << c_personal[i].Varsta_PersonalTeatru << endl;
+            }
+
+            fillLinieConsola(110);
+        }
+        _getch();
+        break;
+        }
+    }
+    while(Meniu_sortari!=0);
 }
 
 void sortari_piese_vechi()
@@ -2703,115 +2805,118 @@ void sortari_piese_vechi()
         system("CLS");
         cout<<endl;
         cout << setw(5 - 1) << " "
-            << "1. Sortare alfabetica." << endl;
+             << "1. Sortare alfabetica." << endl;
         cout << setw(5 - 1) << " "
-            << "2. Sortare dupa data." << endl;
+             << "2. Sortare dupa data." << endl;
         cout << setw(5 - 1) << " "
-            << "0. Inapoi"
-            << "\n\n";
+             << "0. Inapoi"
+             << "\n\n";
 
         cout << setw(5 - 1) << " " << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: ";
         cin >> Meniu_sortari;
         switch (Meniu_sortari)
         {
-            case 1:
+        case 1:
+        {
+            unsigned int ok;
+            piesa_v c_piesa_veche[401];
+            for(unsigned int i = 1; i <= NumarPieseVechi; i++)
+                c_piesa_veche[i] = piesa_veche[i];
+            do
             {
-                unsigned int ok;
-                piesa_v c_piesa_veche[401];
-                for(unsigned int i = 1; i <= NumarPieseVechi; i++)
-                    c_piesa_veche[i] = piesa_veche[i];
-                do
-                {
-                    ok = 1;
-                    for(unsigned int i = 1; i < NumarPieseVechi; i++)
-                        if(stricmp(c_piesa_veche[i].Nume_Piesa, c_piesa_veche[i+1].Nume_Piesa)>0)
-                        {
-                            swap(c_piesa_veche[i], c_piesa_veche[i+1]);
-                            ok = 0;
-                        }
-                }while(ok == 0);
-
-                unsigned int NumarMaxCaractere = 0;
-
-                for (unsigned int i = 1; i <= NumarPieseVechi; i++)
-                    if (strlen(c_piesa_veche[i].Nume_Piesa) > NumarMaxCaractere)
-                        NumarMaxCaractere = strlen(c_piesa_veche[i].Nume_Piesa);
-
-                cout << "\n\n"
-                    << setw(5) << " "
-                    << "ID" << setw(5 + 1) << " "
-                    << "Nume" << setw(NumarMaxCaractere + 1) << " "
-                    << "Data" << setw(5 + 3) << " "
-                    << "Regizor" << endl;
-                fillLinieConsola(75);
-
-                for (unsigned int i = 1; i <= NumarPieseVechi; i++)
-                {
-                    cout << setw(5) << " " << c_piesa_veche[i].ID_Piesa << setw(5) << " " << c_piesa_veche[i].Nume_Piesa
-                        << setw(NumarMaxCaractere - strlen(c_piesa_veche[i].Nume_Piesa) + 5) << " " << c_piesa_veche[i].Data_Piesa << " "
-                        << setw(5) << " ";
-
-                    for (unsigned int j = 0; j <= NumarPersonalTeatru; j++)
-                        if (personalTeatru[j].ID_PersonalTeatru == piesa_veche[i].ID_PersonalTeatru)
-                            cout << personalTeatru[j].Nume_PersonalTeatru << " " << personalTeatru[j].Prenume_PersonalTeatru << endl;
-                }
-                fillLinieConsola(75);
+                ok = 1;
+                for(unsigned int i = 1; i < NumarPieseVechi; i++)
+                    if(stricmp(c_piesa_veche[i].Nume_Piesa, c_piesa_veche[i+1].Nume_Piesa)>0)
+                    {
+                        swap(c_piesa_veche[i], c_piesa_veche[i+1]);
+                        ok = 0;
+                    }
             }
-            _getch();
-            break;
+            while(ok == 0);
 
-            case 2:
+            unsigned int NumarMaxCaractere = 0;
+
+            for (unsigned int i = 1; i <= NumarPieseVechi; i++)
+                if (strlen(c_piesa_veche[i].Nume_Piesa) > NumarMaxCaractere)
+                    NumarMaxCaractere = strlen(c_piesa_veche[i].Nume_Piesa);
+
+            cout << "\n\n"
+                 << setw(5) << " "
+                 << "ID" << setw(5 + 1) << " "
+                 << "Nume" << setw(NumarMaxCaractere + 1) << " "
+                 << "Data" << setw(5 + 3) << " "
+                 << "Regizor" << endl;
+            fillLinieConsola(75);
+
+            for (unsigned int i = 1; i <= NumarPieseVechi; i++)
             {
-                unsigned int ok;
-                piesa_v c_piesa_veche[401];
-                for(unsigned int i = 1; i <= NumarPieseVechi; i++)
-                    c_piesa_veche[i] = piesa_veche[i];
-                do
-                {
-                    ok = 1;
-                    for(unsigned int i = 1; i < NumarPieseVechi; i++)
-                        if((c_piesa_veche[i].Data_Piesa[4] > c_piesa_veche[i+1].Data_Piesa[4] ||
+                cout << setw(5) << " " << c_piesa_veche[i].ID_Piesa << setw(5) << " " << c_piesa_veche[i].Nume_Piesa
+                     << setw(NumarMaxCaractere - strlen(c_piesa_veche[i].Nume_Piesa) + 5) << " " << c_piesa_veche[i].Data_Piesa << " "
+                     << setw(5) << " ";
+
+                for (unsigned int j = 0; j <= NumarPersonalTeatru; j++)
+                    if (personalTeatru[j].ID_PersonalTeatru == piesa_veche[i].ID_PersonalTeatru)
+                        cout << personalTeatru[j].Nume_PersonalTeatru << " " << personalTeatru[j].Prenume_PersonalTeatru << endl;
+            }
+            fillLinieConsola(75);
+        }
+        _getch();
+        break;
+
+        case 2:
+        {
+            unsigned int ok;
+            piesa_v c_piesa_veche[401];
+            for(unsigned int i = 1; i <= NumarPieseVechi; i++)
+                c_piesa_veche[i] = piesa_veche[i];
+            do
+            {
+                ok = 1;
+                for(unsigned int i = 1; i < NumarPieseVechi; i++)
+                    if((c_piesa_veche[i].Data_Piesa[4] > c_piesa_veche[i+1].Data_Piesa[4] ||
                             (c_piesa_veche[i].Data_Piesa[4] == c_piesa_veche[i+1].Data_Piesa[4] && c_piesa_veche[i].Data_Piesa[5] > c_piesa_veche[i+1].Data_Piesa[5]) ||
                             ((c_piesa_veche[i].Data_Piesa[4] == c_piesa_veche[i+1].Data_Piesa[4] && c_piesa_veche[i].Data_Piesa[5] == c_piesa_veche[i+1].Data_Piesa[5]) &&
-                            c_piesa_veche[i].Data_Piesa[0] > c_piesa_veche[i+1].Data_Piesa[0])) ||
+                             c_piesa_veche[i].Data_Piesa[0] > c_piesa_veche[i+1].Data_Piesa[0])) ||
                             (((c_piesa_veche[i].Data_Piesa[4] == c_piesa_veche[i+1].Data_Piesa[4] && c_piesa_veche[i].Data_Piesa[5] == c_piesa_veche[i+1].Data_Piesa[5]) &&
-                            c_piesa_veche[i].Data_Piesa[0] == c_piesa_veche[i+1].Data_Piesa[0]) && c_piesa_veche[i].Data_Piesa[1] > c_piesa_veche[i+1].Data_Piesa[1]))
-                        {
-                            swap(c_piesa_veche[i], c_piesa_veche[i+1]);
-                            ok = 0;
-                        }
-                }while(ok == 0);
-
-                unsigned int NumarMaxCaractere = 0;
-
-                for (unsigned int i = 1; i <= NumarPieseVechi; i++)
-                    if (strlen(c_piesa_veche[i].Nume_Piesa) > NumarMaxCaractere)
-                        NumarMaxCaractere = strlen(c_piesa_veche[i].Nume_Piesa);
-
-                cout << "\n\n"
-                    << setw(5) << " "
-                    << "ID" << setw(5 + 1) << " "
-                    << "Nume" << setw(NumarMaxCaractere + 1) << " "
-                    << "Data" << setw(5 + 3) << " "
-                    << "Regizor" << endl;
-                fillLinieConsola(75);
-
-                for (unsigned int i = 1; i <= NumarPieseVechi; i++)
-                {
-                    cout << setw(5) << " " << c_piesa_veche[i].ID_Piesa << setw(5) << " " << c_piesa_veche[i].Nume_Piesa
-                        << setw(NumarMaxCaractere - strlen(c_piesa_veche[i].Nume_Piesa) + 5) << " " << c_piesa_veche[i].Data_Piesa << " "
-                        << setw(5) << " ";
-
-                    for (unsigned int j = 0; j <= NumarPersonalTeatru; j++)
-                        if (personalTeatru[j].ID_PersonalTeatru == piesa_veche[i].ID_PersonalTeatru)
-                            cout << personalTeatru[j].Nume_PersonalTeatru << " " << personalTeatru[j].Prenume_PersonalTeatru << endl;
-                }
-                fillLinieConsola(75);
+                              c_piesa_veche[i].Data_Piesa[0] == c_piesa_veche[i+1].Data_Piesa[0]) && c_piesa_veche[i].Data_Piesa[1] > c_piesa_veche[i+1].Data_Piesa[1]))
+                    {
+                        swap(c_piesa_veche[i], c_piesa_veche[i+1]);
+                        ok = 0;
+                    }
             }
-            _getch();
-            break;
+            while(ok == 0);
+
+            unsigned int NumarMaxCaractere = 0;
+
+            for (unsigned int i = 1; i <= NumarPieseVechi; i++)
+                if (strlen(c_piesa_veche[i].Nume_Piesa) > NumarMaxCaractere)
+                    NumarMaxCaractere = strlen(c_piesa_veche[i].Nume_Piesa);
+
+            cout << "\n\n"
+                 << setw(5) << " "
+                 << "ID" << setw(5 + 1) << " "
+                 << "Nume" << setw(NumarMaxCaractere + 1) << " "
+                 << "Data" << setw(5 + 3) << " "
+                 << "Regizor" << endl;
+            fillLinieConsola(75);
+
+            for (unsigned int i = 1; i <= NumarPieseVechi; i++)
+            {
+                cout << setw(5) << " " << c_piesa_veche[i].ID_Piesa << setw(5) << " " << c_piesa_veche[i].Nume_Piesa
+                     << setw(NumarMaxCaractere - strlen(c_piesa_veche[i].Nume_Piesa) + 5) << " " << c_piesa_veche[i].Data_Piesa << " "
+                     << setw(5) << " ";
+
+                for (unsigned int j = 0; j <= NumarPersonalTeatru; j++)
+                    if (personalTeatru[j].ID_PersonalTeatru == piesa_veche[i].ID_PersonalTeatru)
+                        cout << personalTeatru[j].Nume_PersonalTeatru << " " << personalTeatru[j].Prenume_PersonalTeatru << endl;
+            }
+            fillLinieConsola(75);
         }
-    }while(Meniu_sortari!=0);
+        _getch();
+        break;
+        }
+    }
+    while(Meniu_sortari!=0);
 }
 
 ///Ioana
@@ -2924,12 +3029,12 @@ void varsta_mai_mica_actori()
 
     cout << setw(5) << " " << "Nume" << setw(nrMaxCaractereNume) << " " << "Prenume" << setw(7) << " " << "Varsta" << '\n';
     fillLinieConsola(60);
-     for(i=0;i<NumarActori;i++)
+    for(i=0; i<NumarActori; i++)
         if(actorTeatru[i].Varsta_Actor<=varsta)
-           cout<< setw(4) << " " <<actorTeatru[i].Nume_Actor << setw(nrMaxCaractereNume + 5 - strlen(actorTeatru[i].Nume_Actor))
+            cout<< setw(4) << " " <<actorTeatru[i].Nume_Actor << setw(nrMaxCaractereNume + 5 - strlen(actorTeatru[i].Nume_Actor))
                 <<" "<<actorTeatru[i].Prenume_Actor << setw(nrMaxCaracterePrenume + 5 - strlen(actorTeatru[i].Prenume_Actor)) << " "
                 << actorTeatru[i].Varsta_Actor <<endl;
-     fillLinieConsola(60);
+    fillLinieConsola(60);
 
     cout << '\n' << setw(4) << " " << "Apasati enter pentru a va intoarce la meniul precedent...";
     _getch();
