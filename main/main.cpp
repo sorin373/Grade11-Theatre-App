@@ -1962,7 +1962,7 @@ void Meniu_Venituri_Piese()
 
             contor--;
             sort_venituri_ID_crescator();
-
+            
             /*
             for (unsigned int i = 1; i <= contorVenit; i++)
                 for (unsigned int j = 1; j <= contor; j++)
