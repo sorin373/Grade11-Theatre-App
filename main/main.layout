@@ -2,34 +2,24 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="main.cpp" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
+	<File name="main.cpp" open="1" top="1" tabpos="1" split="2" active="1" splitpos="1436" zoom_1="2" zoom_2="2">
 		<Cursor>
-			<Cursor1 position="53078" topLine="1287" />
+			<Cursor1 position="55690" topLine="1597" />
+			<Cursor2 position="0" topLine="0" />
+		</Cursor>
+		<Folding>
+			<Collapse line="490" />
+			<Collapse line="1670" />
+		</Folding>
+	</File>
+	<File name="piesa_veche.txt" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3515" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="piesa.txt" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="489" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="personaj.txt" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="4107" topLine="141" />
-		</Cursor>
-	</File>
-	<File name="bilet.txt" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="194" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="actor.txt" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="12979" topLine="79" />
-		</Cursor>
-	</File>
-	<File name="personal.txt" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="112" topLine="0" />
+			<Cursor1 position="750" topLine="0" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>
