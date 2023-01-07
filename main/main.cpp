@@ -564,6 +564,28 @@ void sort_venituri_ID_crescator()
 void afisare_piese_vechi()
 {
     unsigned int NumarMaxCaractere = 0;
+
+    for (unsigned int i = 1; i <= NumarPieseVechi; i++)
+        if (strlen(piesa_veche[i].Nume_Piesa) > NumarMaxCaractere)
+            NumarMaxCaractere = strlen(piesa_veche[i].Nume_Piesa);
+
+    cout << "\n\n"
+         << setw(5) << " "
+         << "ID" << setw(5 + 1) << " "
+         << "Nume" << setw(NumarMaxCaractere + 1) << " "
+         << "Data" << setw(5 + 3) << " "
+         << "Regizor" << endl;
+    fillLinieConsola(80);
+
+    for (unsigned int i = 1; i <= NumarPieseVechi; i++)
+    {
+        cout << setw(5) << " " << piesa_veche[i].ID_Piesa << setw(5) << " " << piesa_veche[i].Nume_Piesa
+             << setw(NumarMaxCaractere - strlen(piesa_veche[i].Nume_Piesa) + 5) << " " << piesa_veche[i].Data_Piesa << " "
+             << setw(5) << " ";
+
+        for (unsigned int j = 0; j <= NumarPersonalTeatru; j++)
+            if (personalTeatru[j].ID_PersonalTeatru == piesa_veche[i].ID_PersonalTeatru)
+                cout << personalTeatru[j].Nume_PersonalTeatru << " " << personalTeatru[j].Prenume_PersonalTeatru << endl;
     }
     fillLinieConsola(80);
 >>>>>>> 53c13ba6ba152dba9b1e98d5d1d66cfa56f1a96f
@@ -2310,6 +2332,8 @@ void sortari_piese()
     unsigned int Meniu_sortari;
     do
     {
+        system("CLS");
+        cout<<endl;
         cout << setw(5 - 1) << " "
             << "1. Sortare alfabetica." << endl;
         cout << setw(5 - 1) << " "
