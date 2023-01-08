@@ -286,11 +286,11 @@ void afisare_piese()
     cout << "\n\n"
          << setw(5) << " "
          << "ID" << setw(5 + 1) << " "
-         << "Nume" << setw(NumarMaxCaractere + 1) << " "
-         << "Data" << setw(5 + 2) << " "
+         << "Nume" << setw(NumarMaxCaractere + 4) << " "
+         << "Data" << setw(10) << " "
          << "Ora" << setw(5 + 3) << " "
          << "Regizor" << endl;
-    fillLinieConsola(85); // umple toate linia din consola cu  '_'
+    fillLinieConsola(90); // umple toate linia din consola cu  '_'
 
     for (unsigned int i = 1; i <= NumarPiese; i++)
     {
@@ -302,7 +302,7 @@ void afisare_piese()
             if (personalTeatru[j].ID_PersonalTeatru == piesaTeatru[i].ID_PersonalTeatru)
                 cout << personalTeatru[j].Nume_PersonalTeatru << " " << personalTeatru[j].Prenume_PersonalTeatru << endl;
     }
-    fillLinieConsola(85); // umple toate linia din consola cu  '_'
+    fillLinieConsola(90); // umple toate linia din consola cu  '_'
 }
 
 void afisare_istoric_piese()
@@ -516,13 +516,13 @@ void afisare_piese_vechi()
 void afisare_venituri()
 {
     cout << "\n\n";
-    cout << setw(5) << " " << "ID Piesa" << setw(5) << " " << "Data" << setw(5) << " " << "Venit" << '\n';
-    fillLinieConsola(35);
+    cout << setw(5) << " " << "ID Piesa" << setw(5) << " " << "Data piesei" << setw(5) << " " << "Venit" << '\n';
+    fillLinieConsola(85);
 
     for (unsigned int i = 1; i <= contorVenit; i++)
         cout << setw(10 - 2) << " " << venitPiesa[i].ID_Piesa << setw(10 - 1) << " " << venitPiesa[i].Data_Piesa << setw(10 - 6) << " "
-             << venitPiesa[i].suma << endl;
-    fillLinieConsola(35);
+             << venitPiesa[i].suma << " RON" << endl;
+    fillLinieConsola(85);
 }
 
 /// Sortari
@@ -2692,12 +2692,12 @@ void Meniu_Venituri_Piese()
             char matrix[3][11];
 
             cout << "\n\n";
-            cout << setw(5) << " " << "Introduceti data (FORMAT: DD.MM.YYYY): " << endl;
-            cout << "Zi: ";
+            cout << setw(5) << " " << "Introduceti data (FORMAT: DD.MM.YYYY): " << "\n\n";
+            cout << setw(5) << " " << "Ziua (DD): ";
             cin >> dataIntrodusa.zi;
-            cout << "Luna: ";
+            cout << setw(5) << " " << "Luna (MM): ";
             cin >> dataIntrodusa.luna;
-            cout << "An: ";
+            cout << setw(5) << " " << "An (YY): ";
             cin >> dataIntrodusa.an;
 
             for (unsigned int i = 1; i <= contorVenit; i++)
@@ -2783,23 +2783,39 @@ void Meniu_Venituri_Piese()
 
             sort_venituri_ID_crescator();
 
+            system("CLS");
+
+            cout << "\n\n";
+            cout << setw(5) << " " << "ID Piesa" << setw(5) << " " << "Data piesei" << setw(6) << " " << "Venit" << '\n';
+
+            fillLinieConsola(50);
+
             for (unsigned int i = 1; i <= contorVenit; i++)
                 for (unsigned int j = 1; j <= contor; j++)
                 {
                     if (venitPiesa[i].ID_Piesa == dataLoc[j].ID_Piesa)
                     {
                         if (dataLoc[j].an > dataIntrodusa.an)
-                            cout << venitPiesa[i].ID_Piesa << " " << venitPiesa[i].Data_Piesa << " " << venitPiesa[i].suma << endl;
+                            cout << setw(10 - 2) << " " << venitPiesa[i].ID_Piesa << setw(10 - 1) << " " << venitPiesa[i].Data_Piesa << setw(10 - 6) << " "
+                                 << venitPiesa[i].suma << " RON" << endl;
                         else if (dataLoc[j].an == dataIntrodusa.an)
                         {
                             if (dataLoc[j].luna > dataIntrodusa.luna)
-                                cout << venitPiesa[i].ID_Piesa << " " << venitPiesa[i].Data_Piesa << " " << venitPiesa[i].suma << endl;
+                                cout << setw(10 - 2) << " " << venitPiesa[i].ID_Piesa << setw(10 - 1) << " " << venitPiesa[i].Data_Piesa << setw(10 - 6) << " "
+                                     << venitPiesa[i].suma << " RON" << endl;
                             else if (dataLoc[j].luna == dataIntrodusa.luna)
                                 if (dataLoc[j].zi > dataIntrodusa.zi)
-                                    cout << venitPiesa[i].ID_Piesa << " " << venitPiesa[i].Data_Piesa << " " << venitPiesa[i].suma << endl;
+                                    cout << setw(10 - 2) << " " << venitPiesa[i].ID_Piesa << setw(10 - 1) << " " << venitPiesa[i].Data_Piesa << setw(10 - 6) << " "
+                                         << venitPiesa[i].suma << " RON" << endl;
                         }
                     }
                 }
+
+            fillLinieConsola(50);
+
+            cout << '\n'
+                 << setw(4) << " "
+                 << "Apasati enter pentru a va intoarce la meniul precedent...";
         }
         _getch();
         break;
