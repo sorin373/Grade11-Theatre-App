@@ -10,9 +10,6 @@
 
 #define _WIN32_WINNT 0x0502
 
-#define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
-#define DISABLE_NEWLINE_AUTO_RETURN 0x0008
-
 using namespace std;
 
 struct console
@@ -53,7 +50,7 @@ public:
     CONSOLE_SCREEN_BUFFER_INFO csbi;
 };
 
-console con(200, 10000);
+console con(100000, 100000);
 
 /// Declarare contoarelor
 unsigned int NumarActori = 1, NumarPiese = 1, NumarBilete = 1, NumarSali = 1, NumarPersonalTeatru = 1, NumarSpectatori = 1, NumarPersonaje = 1, NumarPieseVechi = 1, NumarSpectatoriVechi = 1;
@@ -2973,20 +2970,6 @@ void bilete_ieftine()
     bilete_ieftine();
 }
 
-/*void bilete_loja_vandute()
-{
-    cout << endl;
-    unsigned int nr_loja = 0, nr_scaune_normale = 0;
-    for (unsigned int i = 1; i <= NumarSpectatori; i++)
-        if (spectatorPiesa[i].loja == 1)
-            nr_loja++;
-        else (spectatorPiesa[i].loja == 0)
-            nr_scaune_normale++;
-
-    cout << "Au fost vandute " << nr_scaune_normale + nr_loja << " bilete pentru piesele din aceasta saptamana" << endl;
-    cout << "Au fost vandute " << nr_loja << " bilete pentru loja pentru piesele din aceasta saptamana.";
-}*/
-
 void bilete_pe_piesa()
 {
     system("CLS");
@@ -3860,7 +3843,7 @@ int main()
 
                 cout << setw(5 - 1) << " " << "1. Sorteaza piesele vechi alfabetic A-Z" << endl;
                 cout << setw(5 - 1) << " " << "2. Sorteaza piesele vechi alfabetic Z-A" << endl;
-                cout << setw(5 - 1) << " " << "3. Sorteaza veniturile in functie de data in care au fost jucate" << endl;
+                cout << setw(5 - 1) << " " << "3. Sorteaza piesele vechi in functie de data in care au fost jucate" << endl;
                 cout << setw(5 - 1) << " " << "0. Inapoi" << "\n\n";
 
                 cout << setw(5 - 1) << " "
