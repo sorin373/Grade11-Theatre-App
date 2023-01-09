@@ -2804,8 +2804,6 @@ void sali_cu_piesa()
 
     cin >> vID_Sala;
 
-
-
     for (unsigned int i = 1; i <= NumarPiese; i++)
         if (piesaTeatru[i].ID_Sala == vID_Sala)
         {
@@ -2822,7 +2820,6 @@ void sali_cu_piesa()
             cout << setw(5 - 1) << " "
                  << "Ora: " << piesaTeatru[i].Ora_Piesa << '\n';
         }
-
 }
 
 void cautare_actori_nume()
