@@ -1402,314 +1402,307 @@ void sortari_piese_vechi()
 }
 
 /// Componente main
-void cautare_piesa()
+void cautare_piesa_nume()
 {
     system("CLS");
     afisare_piese();
 
-    unsigned int Meniu_Cautare;
-    bool valid = false;
+    char vNume_Piesa[101];
 
-    do
+    cout << endl
+         << setw(5 - 1) << " "
+         << "Tasteaza numele piesei: ";
+    cin.get();
+    cin.get(vNume_Piesa, 101);
+
+    for (unsigned int i = 1; i <= NumarPiese; i++)
+        if (stricmp(piesaTeatru[i].Nume_Piesa, vNume_Piesa) == 0)
+        {
+            cout << '\n';
+
+            cout << setw(5 - 1) << " "
+                 << "ID: " << piesaTeatru[i].ID_Piesa << endl;
+            cout << setw(5 - 1) << " "
+                 << "Nume: " << piesaTeatru[i].Nume_Piesa << endl;
+            cout << setw(5 - 1) << " "
+                 << "Sala: " << piesaTeatru[i].ID_Sala << endl;
+            cout << setw(5 - 1) << " "
+                 << "Data: " << piesaTeatru[i].Data_Piesa << endl;
+            cout << setw(5 - 1) << " "
+                 << "Ora: " << piesaTeatru[i].Ora_Piesa << '\n';
+        }
+    cout << '\n';
+    cout << setw(5 - 1) << " "
+         << "Apasa enter pentru a te intoarce la meniul precedent...";
+
+}
+
+void cautare_piesa_ID()
+{
+    system("CLS");
+    afisare_piese();
+
+    unsigned int vID;
+    bool exit = false, valid = false;
+
+    cout << endl
+         << setw(5 - 1) << " "
+         << "Tasteaza ID-ul piesei: ";
+
+    while (!valid)
     {
-        cout << setw(5 - 1) << " "
-             << "Cum doriti sa cautati piesa dorita?"
-             << "\n\n";
-
-        cout << setw(5) << " "
-             << "1. Dupa numele piesei" << endl;
-        cout << setw(5) << " "
-             << "2. Dupa ID-ul piesei" << endl;
-        cout << setw(5) << " "
-             << "3. Dupa ora la care are loc piesa" << endl;
-        cout << setw(5) << " "
-             << "4. Dupa data in care are loc piesa" << endl;
-        cout << setw(5) << " "
-             << "5. Dupa regizorul piesei" << endl;
-        cout << setw(5) << " "
-             << "6. Dupa un anumit actor " << endl;
-        cout << setw(5) << " "
-             << "0. Inapoi"
-             << "\n\n";
-
-        cout << setw(5 - 1) << " "
-             << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: ";
-
-        while (!valid)
+        cin >> vID;
+        if (cin.fail())
         {
-            cin >> Meniu_Cautare;
-            if (cin.fail())
-            {
-                cin.clear();
-                cin.ignore();
-                cout << '\n';
-                cerr << setw(6 - 1) << " "
-                     << "Valoarea introdusa este invalida!" << endl;
-                Sleep(1500);
-                cautare_piesa();
-            }
-            else
-                valid = true;
-        }
-
-        switch (Meniu_Cautare)
-        {
-        case 1:
-        {
-            system("CLS");
-            afisare_piese();
-
-            char vNume_Piesa[101];
-
-            cout << endl
-                 << setw(5 - 1) << " "
-                 << "Tasteaza numele piesei: ";
-            cin.get();
-            cin.get(vNume_Piesa, 101);
-
-            for (unsigned int i = 1; i <= NumarPiese; i++)
-                if (stricmp(piesaTeatru[i].Nume_Piesa, vNume_Piesa) == 0)
-                {
-                    cout << '\n';
-
-                    cout << setw(5 - 1) << " "
-                         << "ID: " << piesaTeatru[i].ID_Piesa << endl;
-                    cout << setw(5 - 1) << " "
-                         << "Nume: " << piesaTeatru[i].Nume_Piesa << endl;
-                    cout << setw(5 - 1) << " "
-                         << "Sala: " << piesaTeatru[i].ID_Sala << endl;
-                    cout << setw(5 - 1) << " "
-                         << "Data: " << piesaTeatru[i].Data_Piesa << endl;
-                    cout << setw(5 - 1) << " "
-                         << "Ora: " << piesaTeatru[i].Ora_Piesa << '\n';
-                }
+            cin.clear();
+            cin.ignore();
             cout << '\n';
-            cout << setw(5 - 1) << " "
-                 << "Apasa enter pentru a te intoarce la meniul precedent...";
-            _getch();
-            cautare_piesa();
+            cerr << setw(6) << " "
+                 << "Valoarea introdusa este invalida!" << endl;
+            Sleep(1500);
+            cautare_piesa_ID();
         }
-        _getch();
-        break;
-        case 2:
+        else
+            valid = true;
+    }
+
+    for (unsigned int i = 1; i <= NumarPiese && !exit; i++)
+        if (piesaTeatru[i].ID_Piesa == vID)
         {
-            system("CLS");
-            afisare_piese();
-
-            unsigned int vID;
-            bool exit = false, valid = false;
-
-            cout << endl
-                 << setw(5 - 1) << " "
-                 << "Tasteaza ID-ul piesei: ";
-
-            while (!valid)
-            {
-                cin >> vID;
-                if (cin.fail())
-                {
-                    cin.clear();
-                    cin.ignore();
-                    cout << '\n';
-                    cerr << setw(6) << " "
-                         << "Valoarea introdusa este invalida!" << endl;
-                    Sleep(1500);
-                    cautare_piesa();
-                }
-                else
-                    valid = true;
-            }
-
-            for (unsigned int i = 1; i <= NumarPiese && !exit; i++)
-                if (piesaTeatru[i].ID_Piesa == vID)
-                {
-                    cout << '\n';
-
-                    cout << setw(5 - 1) << " "
-                         << "ID: " << piesaTeatru[i].ID_Piesa << endl;
-                    cout << setw(5 - 1) << " "
-                         << "Nume: " << piesaTeatru[i].Nume_Piesa << endl;
-                    cout << setw(5 - 1) << " "
-                         << "Sala: " << piesaTeatru[i].ID_Sala << endl;
-                    cout << setw(5 - 1) << " "
-                         << "Data: " << piesaTeatru[i].Data_Piesa << endl;
-                    cout << setw(5 - 1) << " "
-                         << "Ora: " << piesaTeatru[i].Ora_Piesa << '\n';
-
-                    exit = true;
-                }
             cout << '\n';
+
             cout << setw(5 - 1) << " "
-                 << "Apasa enter pentru a te intoarce la meniul precedent...";
-            _getch();
-            cautare_piesa();
+                 << "ID: " << piesaTeatru[i].ID_Piesa << endl;
+            cout << setw(5 - 1) << " "
+                 << "Nume: " << piesaTeatru[i].Nume_Piesa << endl;
+            cout << setw(5 - 1) << " "
+                 << "Sala: " << piesaTeatru[i].ID_Sala << endl;
+            cout << setw(5 - 1) << " "
+                 << "Data: " << piesaTeatru[i].Data_Piesa << endl;
+            cout << setw(5 - 1) << " "
+                 << "Ora: " << piesaTeatru[i].Ora_Piesa << '\n';
+
+            exit = true;
         }
-        _getch();
-        break;
-        case 3:
+    cout << '\n';
+    cout << setw(5 - 1) << " "
+         << "Apasa enter pentru a te intoarce la meniul precedent...";
+}
+
+void cautare_piesa_ora()
+{
+    system("CLS");
+    afisare_piese();
+
+    char vOraPiesa[6];
+    bool valid = false, exist = false;
+
+    cout << endl
+         << setw(5 - 1) << " "
+         << "Tasteaza ora (FORMAT: 00:00): ";
+
+    while (!valid)
+    {
+        cin.get();
+        cin.get(vOraPiesa, 6);
+
+        if (cin.fail() || strlen(vOraPiesa) != 5 || vOraPiesa[strlen(vOraPiesa) / 2] != ':')
         {
-            system("CLS");
-            afisare_piese();
-
-            char vOraPiesa[6];
-            bool valid = false, exist = false;
-
-            cout << endl
-                 << setw(5 - 1) << " "
-                 << "Tasteaza ora (FORMAT: 00:00): ";
-
-            while (!valid)
-            {
-                cin.get();
-                cin.get(vOraPiesa, 6);
-
-                if (cin.fail() || strlen(vOraPiesa) != 5 || vOraPiesa[strlen(vOraPiesa) / 2] != ':')
-                {
-                    cin.clear();
-                    cin.ignore();
-                    cout << '\n';
-                    cerr << setw(5 - 1) << " "
-                         << "Formatul orei introduse este invalid!" << endl;
-                    Sleep(1500);
-                    cautare_piesa();
-                }
-                else
-                    valid = true;
-            }
-
-            for (unsigned int i = 1; i <= NumarPiese; i++)
-                if (strcmp(piesaTeatru[i].Ora_Piesa, vOraPiesa) == 0)
-                {
-                    cout << '\n';
-
-                    cout << setw(5 - 1) << " "
-                         << "ID: " << piesaTeatru[i].ID_Piesa << endl;
-                    cout << setw(5 - 1) << " "
-                         << "Nume: " << piesaTeatru[i].Nume_Piesa << endl;
-                    cout << setw(5 - 1) << " "
-                         << "Sala: " << piesaTeatru[i].ID_Sala << endl;
-                    cout << setw(5 - 1) << " "
-                         << "Data: " << piesaTeatru[i].Data_Piesa << endl;
-                    cout << setw(5 - 1) << " "
-                         << "Ora: " << piesaTeatru[i].Ora_Piesa << '\n';
-
-                    exist = true;
-                }
-
-            if (!exist)
-            {
-                cout << '\n'
-                     << setw(5 - 1) << " "
-                     << "Nu exista piese la aceasta ora!";
-                Sleep(1500);
-                cautare_piesa();
-            }
-
+            cin.clear();
+            cin.ignore();
             cout << '\n';
-            cout << setw(5 - 1) << " "
-                 << "Apasa enter pentru a te intoarce la meniul precedent...";
-
-            _getch();
-            cautare_piesa();
+            cerr << setw(5 - 1) << " "
+                 << "Formatul orei introduse este invalid!" << endl;
+            Sleep(1500);
+            cautare_piesa_ora();
         }
-        _getch();
-        break;
-        case 4:
+        else
+            valid = true;
+    }
+
+    for (unsigned int i = 1; i <= NumarPiese; i++)
+        if (strcmp(piesaTeatru[i].Ora_Piesa, vOraPiesa) == 0)
         {
-            system("CLS");
-            afisare_piese();
-
-            char vDataPiesa[11];
-            bool valid = false, exist = false;
-
-            cout << endl
-                 << setw(5 - 1) << " "
-                 << "Tasteaza data (FORMAT: dd.mm): ";
-
-            while (!valid)
-            {
-                cin.get();
-                cin.get(vDataPiesa, 6);
-
-                if (cin.fail() || strlen(vDataPiesa) != 5 || vDataPiesa[strlen(vDataPiesa) / 2] != '.')
-                {
-                    cin.clear();
-                    cin.ignore();
-                    cout << '\n';
-                    cerr << setw(5 - 1) << " "
-                         << "Formatul datei introduse este invalid!" << endl;
-                    Sleep(1500);
-                    cautare_piesa();
-                }
-                else
-                    valid = true;
-            }
-
-            for (unsigned int i = 1; i <= NumarPiese; i++)
-                if (strcmp(piesaTeatru[i].Data_Piesa, vDataPiesa) == 0)
-                {
-                    cout << '\n';
-
-                    cout << setw(5 - 1) << " "
-                         << "ID: " << piesaTeatru[i].ID_Piesa << endl;
-                    cout << setw(5 - 1) << " "
-                         << "Nume: " << piesaTeatru[i].Nume_Piesa << endl;
-                    cout << setw(5 - 1) << " "
-                         << "Sala: " << piesaTeatru[i].ID_Sala << endl;
-                    cout << setw(5 - 1) << " "
-                         << "Data: " << piesaTeatru[i].Data_Piesa << endl;
-                    cout << setw(5 - 1) << " "
-                         << "Ora: " << piesaTeatru[i].Ora_Piesa << '\n';
-
-                    exist = true;
-                }
-
-            if (!exist)
-            {
-                cout << '\n'
-                     << setw(5 - 1) << " "
-                     << "Nu exista piese in aceasta data!";
-                Sleep(1500);
-                cautare_piesa();
-            }
-
             cout << '\n';
-            cout << setw(5 - 1) << " "
-                 << "Apasa enter pentru a te intoarce la meniul precedent...";
 
-            _getch();
-            cautare_piesa();
+            cout << setw(5 - 1) << " "
+                 << "ID: " << piesaTeatru[i].ID_Piesa << endl;
+            cout << setw(5 - 1) << " "
+                 << "Nume: " << piesaTeatru[i].Nume_Piesa << endl;
+            cout << setw(5 - 1) << " "
+                 << "Sala: " << piesaTeatru[i].ID_Sala << endl;
+            cout << setw(5 - 1) << " "
+                 << "Data: " << piesaTeatru[i].Data_Piesa << endl;
+            cout << setw(5 - 1) << " "
+                 << "Ora: " << piesaTeatru[i].Ora_Piesa << '\n';
+
+            exist = true;
         }
-        _getch();
-        break;
-        case 5:
+
+    if (!exist)
+    {
+        cout << '\n'
+             << setw(5 - 1) << " "
+             << "Nu exista piese la aceasta ora!";
+        Sleep(1500);
+        //cautare_piesa();
+    }
+
+    cout << '\n';
+    cout << setw(5 - 1) << " "
+         << "Apasa enter pentru a te intoarce la meniul precedent...";
+
+}
+
+void cautare_piesa_data()
+{
+    system("CLS");
+    afisare_piese();
+
+    char vDataPiesa[11];
+    bool valid = false, exist = false;
+
+    cout << endl
+         << setw(5 - 1) << " "
+         << "Tasteaza data (FORMAT: DD.MM.YYYY): ";
+
+    while (!valid)
+    {
+        cin.get();
+        cin.get(vDataPiesa, 11);
+
+        if (cin.fail() || strlen(vDataPiesa) != 10 || vDataPiesa[strlen(vDataPiesa) / 2] != '.' || vDataPiesa[strlen(vDataPiesa) / 2 - 3] != '.')
         {
-            system("CLS");
-            afisare_piese();
+            cin.clear();
+            cin.ignore();
+            cout << '\n';
+            cerr << setw(5 - 1) << " "
+                 << "Formatul datei introduse este invalid!" << endl;
+            Sleep(1500);
+            cautare_piesa_data();
+        }
+        else
+            valid = true;
+    }
 
-            char vNumeRegizor[101], vPrenumeRegizor[101];
-            bool exist = false;
-
-            cout << endl
-                 << setw(5 - 1) << " "
-                 << "Tasteaza numele regizorului: ";
-
-            cin.get();
-            cin.get(vNumeRegizor, 101);
+    for (unsigned int i = 1; i <= NumarPiese; i++)
+        if (strcmp(piesaTeatru[i].Data_Piesa, vDataPiesa) == 0)
+        {
+            cout << '\n';
 
             cout << setw(5 - 1) << " "
-                 << "Tasteaza prenumele regizorului: ";
+                 << "ID: " << piesaTeatru[i].ID_Piesa << endl;
+            cout << setw(5 - 1) << " "
+                 << "Nume: " << piesaTeatru[i].Nume_Piesa << endl;
+            cout << setw(5 - 1) << " "
+                 << "Sala: " << piesaTeatru[i].ID_Sala << endl;
+            cout << setw(5 - 1) << " "
+                 << "Data: " << piesaTeatru[i].Data_Piesa << endl;
+            cout << setw(5 - 1) << " "
+                 << "Ora: " << piesaTeatru[i].Ora_Piesa << '\n';
 
-            cin.get();
-            cin.get(vPrenumeRegizor, 101);
+            exist = true;
+        }
 
-            unsigned int copieID = 0;
-            for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
-                if (stricmp(vNumeRegizor, personalTeatru[i].Nume_PersonalTeatru) == 0 && stricmp(vPrenumeRegizor, personalTeatru[i].Prenume_PersonalTeatru) == 0)
-                    copieID = personalTeatru[i].ID_PersonalTeatru;
+    if (!exist)
+    {
+        cout << '\n'
+             << setw(5 - 1) << " "
+             << "Nu exista piese in aceasta data!";
+        Sleep(1500);
+        cautare_piesa_data();
+    }
 
+    cout << '\n';
+    cout << setw(5 - 1) << " "
+         << "Apasa enter pentru a te intoarce la meniul precedent...";
+}
+
+void cautare_piesa_regizor()
+{
+    system("CLS");
+    afisare_piese();
+
+    char vNumeRegizor[101], vPrenumeRegizor[101];
+    bool exist = false;
+
+    cout << endl
+         << setw(5 - 1) << " "
+         << "Tasteaza numele regizorului: ";
+
+    cin.get();
+    cin.get(vNumeRegizor, 101);
+
+    cout << setw(5 - 1) << " "
+         << "Tasteaza prenumele regizorului: ";
+
+    cin.get();
+    cin.get(vPrenumeRegizor, 101);
+
+    unsigned int copieID = 0;
+    for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
+        if (stricmp(vNumeRegizor, personalTeatru[i].Nume_PersonalTeatru) == 0 && stricmp(vPrenumeRegizor, personalTeatru[i].Prenume_PersonalTeatru) == 0)
+            copieID = personalTeatru[i].ID_PersonalTeatru;
+
+    for (unsigned int j = 1; j <= NumarPiese; j++)
+        if (copieID == piesaTeatru[j].ID_PersonalTeatru)
+        {
+            cout << '\n';
+
+            cout << setw(5 - 1) << " "
+                 << "ID: " << piesaTeatru[j].ID_Piesa << endl;
+            cout << setw(5 - 1) << " "
+                 << "Nume: " << piesaTeatru[j].Nume_Piesa << endl;
+            cout << setw(5 - 1) << " "
+                 << "Sala: " << piesaTeatru[j].ID_Sala << endl;
+            cout << setw(5 - 1) << " "
+                 << "Data: " << piesaTeatru[j].Data_Piesa << endl;
+            cout << setw(5 - 1) << " "
+                 << "Ora: " << piesaTeatru[j].Ora_Piesa << '\n';
+
+            exist = true;
+        }
+
+    if (!exist)
+    {
+        cout << '\n'
+             << setw(5 - 1) << " "
+             << "Nu exista piese puse in scena de regizorul respectiv!";
+        Sleep(1500);
+        cautare_piesa_regizor();
+    }
+
+    cout << '\n';
+    cout << setw(5 - 1) << " "
+         << "Apasa enter pentru a te intoarce la meniul precedent...";
+}
+
+void cautare_piesa_actor()
+{
+    system("CLS");
+    afisare_piese();
+
+    char vNumeActor[101], vPrenumeActor[101];
+
+    cout << endl
+         << setw(5 - 1) << " "
+         << "Tasteaza numele actorului: ";
+
+    cin.get();
+    cin.get(vNumeActor, 101);
+
+    cout << setw(5 - 1) << " "
+         << "Tasteaza prenumele actorului: ";
+
+    cin.get();
+    cin.get(vPrenumeActor, 101);
+
+    bool exist = false;
+
+    for (unsigned int i = 1; i <= NumarActori; i++)
+        if (strcmp(actorTeatru[i].Nume_Actor, vNumeActor) == 0 && strcmp(actorTeatru[i].Prenume_Actor, vPrenumeActor) == 0)
             for (unsigned int j = 1; j <= NumarPiese; j++)
-                if (copieID == piesaTeatru[j].ID_PersonalTeatru)
+                if (piesaTeatru[j].ID_Piesa == actorTeatru[i].ID_Piesa)
                 {
                     cout << '\n';
 
@@ -1727,88 +1720,19 @@ void cautare_piesa()
                     exist = true;
                 }
 
-            if (!exist)
-            {
-                cout << '\n'
-                     << setw(5 - 1) << " "
-                     << "Nu exista piese puse in scena de regizorul respectiv!";
-                Sleep(1500);
-                cautare_piesa();
-            }
-
-            cout << '\n';
-            cout << setw(5 - 1) << " "
-                 << "Apasa enter pentru a te intoarce la meniul precedent...";
-
-            _getch();
-            afisare_piese();
-        }
-        _getch();
-        break;
-        case 6:
-        {
-            system("CLS");
-            afisare_piese();
-
-            char vNumeActor[101], vPrenumeActor[101];
-
-            cout << endl
-                 << setw(5 - 1) << " "
-                 << "Tasteaza numele actorului: ";
-
-            cin.get();
-            cin.get(vNumeActor, 101);
-
-            cout << setw(5 - 1) << " "
-                 << "Tasteaza prenumele actorului: ";
-
-            cin.get();
-            cin.get(vPrenumeActor, 101);
-
-            bool exist = false;
-
-            for (unsigned int i = 1; i <= NumarActori; i++)
-                if (strcmp(actorTeatru[i].Nume_Actor, vNumeActor) == 0 && strcmp(actorTeatru[i].Prenume_Actor, vPrenumeActor) == 0)
-                    for (unsigned int j = 1; j <= NumarPiese; j++)
-                        if (piesaTeatru[j].ID_Piesa == actorTeatru[i].ID_Piesa)
-                        {
-                            cout << '\n';
-
-                            cout << setw(5 - 1) << " "
-                                 << "ID: " << piesaTeatru[j].ID_Piesa << endl;
-                            cout << setw(5 - 1) << " "
-                                 << "Nume: " << piesaTeatru[j].Nume_Piesa << endl;
-                            cout << setw(5 - 1) << " "
-                                 << "Sala: " << piesaTeatru[j].ID_Sala << endl;
-                            cout << setw(5 - 1) << " "
-                                 << "Data: " << piesaTeatru[j].Data_Piesa << endl;
-                            cout << setw(5 - 1) << " "
-                                 << "Ora: " << piesaTeatru[j].Ora_Piesa << '\n';
-
-                            exist = true;
-                        }
-
-            if (!exist)
-            {
-                cout << '\n'
-                     << setw(5 - 1) << " "
-                     << "Nu exista piese jucate de actorul respectiv!";
-                Sleep(1500);
-                cautare_piesa();
-            }
-
-            cout << '\n';
-            cout << setw(5 - 1) << " "
-                 << "Apasa enter pentru a te intoarce la meniul precedent...";
-
-            _getch();
-            cautare_piesa();
-        }
-        _getch();
-        break;
-        }
+    if (!exist)
+    {
+        cout << '\n'
+             << setw(5 - 1) << " "
+             << "Nu exista piese jucate de actorul respectiv!";
+        Sleep(1500);
+        cautare_piesa_actor();
     }
-    while (Meniu_Cautare != 0);
+
+    cout << '\n';
+    cout << setw(5 - 1) << " "
+         << "Apasa enter pentru a te intoarce la meniul precedent...";
+
 }
 
 void cautare_Piesa_ID_Actori()
@@ -1882,29 +1806,10 @@ void cautare_Piesa_ID_Actori()
         cout << "\n";
         cout << setw(5 - 1) << " "
              << "Apasati enter pentru a va intoarce la meniul precedent...";
+
+        _getch();
+        cautare_Piesa_ID_Actori();
     }
-}
-
-void profituri_vanzare_bilete() // cauta piesa dupa ID si afiseaza profitul adus de o anumita piesa (lei)
-{
-    unsigned int vID_Piesa;
-    unsigned int ok = 0, v = 0;
-
-    cout << endl
-         << "Tasteaza ID-ul piesei cautate: ";
-    cin >> vID_Piesa;
-
-    for (unsigned int i = 1; i <= NumarPiese && ok == 0; i++)
-        if (piesaTeatru[i].ID_Piesa == vID_Piesa)
-        {
-            for (unsigned int j = 1; j <= NumarSpectatori; j++)
-                if (spectatorPiesa[j].ID_Piesa == piesaTeatru[i].ID_Piesa)
-                    v = v + biletPiesa[spectatorPiesa[j].ID_Bilet].Pret_Bilet;
-            ok = 1;
-        }
-    cout << "Biletele cumparate pentru aceasta piesa alcatuiesc " << v << " lei."
-         << "\n\n";
-    cout << "Apasati enter pentru a va intoarce la meniul precedent..." << endl;
 }
 
 void Adaugare_Sali()
@@ -1955,7 +1860,7 @@ void Stergere_Sali()
     copie_ID_Sala_Max--;
 
     ofstream fiserSala("sala.txt");
-    for (unsigned int i = 0; i <= NumarSali; i++)
+    for (unsigned int i = 1; i <= NumarSali; i++)
         fiserSala << salaTeatru[i].ID_Sala << " " << salaTeatru[i].Nr_Scaune << " " << salaTeatru[i].Nr_Scaune_Loja << endl;
     fiserSala.close();
 }
@@ -2119,6 +2024,138 @@ void Stergere_Actori()
     }
 }
 
+void Adaugare_Personal()
+{
+    system("CLS");
+    afisare_personal();
+
+    copie_ID_Personal_Max++;
+    NumarPersonalTeatru++;
+
+    cout << "\n\n";
+    cout << setw(4) << " "
+         << "Introduceti datele noului angajat (administratie teatru):"
+         << "\n\n";
+    cout << setw(6) << " "
+         << "ID-ul angajatului: " << copie_ID_Personal_Max << endl;
+    personalTeatru[NumarPersonalTeatru].ID_PersonalTeatru = copie_ID_Personal_Max;
+
+    cout << setw(6) << " "
+         << "Functie: ";
+    char vFunctiePersonalTeatru[1001];
+    cin.get();
+    cin.get(vFunctiePersonalTeatru, 1001);
+
+    for (unsigned int i = 0; i < strlen(vFunctiePersonalTeatru); i++)
+        if (vFunctiePersonalTeatru[i] == ' ')
+            vFunctiePersonalTeatru[i] = '_';
+    strcpy(personalTeatru[NumarPersonalTeatru].Functie_PersonalTeatru, vFunctiePersonalTeatru);
+
+    cout << setw(6) << " "
+         << "Nume angajat: ";
+    cin >> personalTeatru[NumarPersonalTeatru].Nume_PersonalTeatru;
+    cout << setw(6) << " "
+         << "Prenume angajat: ";
+    cin >> personalTeatru[NumarPersonalTeatru].Prenume_PersonalTeatru;
+    cout << setw(6) << " "
+         << "CNP angajat: ";
+
+    bool valid = false;
+    while (!valid)
+    {
+        cin >> personalTeatru[NumarPersonalTeatru].CNP_PersonalTeatru;
+        if (cin.fail() || strlen(personalTeatru[NumarPersonalTeatru].CNP_PersonalTeatru) != 13)
+        {
+            cin.clear();
+            cin.ignore();
+            cout << '\n';
+            cerr << setw(6) << " "
+                 << "Valoarea introdusa in campul CNP este invalida!" << endl;
+            Sleep(1500);
+            copie_ID_Personal_Max--;
+            NumarPersonalTeatru--;
+            Adaugare_Personal();
+        }
+        else
+            valid = true;
+    }
+
+    cout << setw(6) << " "
+         << "Varsta angajat: ";
+    cin >> personalTeatru[NumarPersonalTeatru].Varsta_PersonalTeatru;
+
+    ofstream fisierPersonalTeatru;
+    fisierPersonalTeatru.open("personal.txt", ios::out | ios::app);
+    fisierPersonalTeatru << personalTeatru[NumarPersonalTeatru].ID_PersonalTeatru << " "
+                         << personalTeatru[NumarPersonalTeatru].Functie_PersonalTeatru << " "
+                         << personalTeatru[NumarPersonalTeatru].Nume_PersonalTeatru << " "
+                         << personalTeatru[NumarPersonalTeatru].Prenume_PersonalTeatru << " "
+                         << personalTeatru[NumarPersonalTeatru].CNP_PersonalTeatru << " "
+                         << personalTeatru[NumarPersonalTeatru].Varsta_PersonalTeatru << endl;
+    fisierPersonalTeatru.close();
+}
+
+void Stergere_Personal()
+{
+    system("CLS");
+    afisare_personal();
+
+    unsigned int vID;
+
+    bool valid = false;
+
+    cout << "\n\n";
+    cout << setw(5) << " "
+         << "APASA TASTA '0' PENTRU A ANULA";
+    cout << "\n\n";
+    cout << setw(5) << " "
+         << "Introduceti ID-ul angajatului pe care doriti sa il stergeti din baza de date: ";
+
+    while (!valid)
+    {
+        cin >> vID;
+        if (cin.fail())
+        {
+            cin.clear();
+            cin.ignore();
+            cout << '\n';
+            cerr << setw(6 - 1) << " "
+                 << "Valoarea introdusa in campul ID PIESA este invalida!" << endl;
+            Sleep(1500);
+            Stergere_Personal();
+        }
+        else
+            valid = true;
+    }
+
+    if (vID == 0)
+        return;
+    else
+    {
+        for (unsigned int i = vID; i <= NumarPersonalTeatru; i++)
+        {
+            personalTeatru[i].ID_PersonalTeatru = personalTeatru[i + 1].ID_PersonalTeatru - 1;
+            strcpy(personalTeatru[i].Functie_PersonalTeatru, personalTeatru[i + 1].Functie_PersonalTeatru);
+            strcpy(personalTeatru[i].Nume_PersonalTeatru, personalTeatru[i + 1].Nume_PersonalTeatru);
+            strcpy(personalTeatru[i].Prenume_PersonalTeatru, personalTeatru[i + 1].Prenume_PersonalTeatru);
+            strcpy(personalTeatru[i].CNP_PersonalTeatru, personalTeatru[i + 1].CNP_PersonalTeatru);
+            personalTeatru[i].Varsta_PersonalTeatru = personalTeatru[i + 1].Varsta_PersonalTeatru;
+        }
+        NumarPersonalTeatru--;
+        copie_ID_Personal_Max--;
+    }
+
+    ofstream fisierPersonalTeatru("personal.txt");
+    for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
+        fisierPersonalTeatru << personalTeatru[i].ID_PersonalTeatru << " "
+                             << personalTeatru[i].Functie_PersonalTeatru << " "
+                             << personalTeatru[i].Nume_PersonalTeatru << " "
+                             << personalTeatru[i].Prenume_PersonalTeatru << " "
+                             << personalTeatru[i].CNP_PersonalTeatru << " "
+                             << personalTeatru[i].Varsta_PersonalTeatru << endl;
+    fisierPersonalTeatru.close();
+}
+
 void Adaugare_Piese()
 {
     bool valid = false;
@@ -2159,8 +2196,7 @@ void Adaugare_Piese()
 
     char vNumeRegizor[101], vPrenumeRegizor[101];
 
-    cout << endl
-         << setw(5 + 1) << " "
+    cout << setw(5 + 1) << " "
          << "Tasteaza numele regizorului: ";
 
     cin.get();
@@ -2172,14 +2208,42 @@ void Adaugare_Piese()
     cin.get();
     cin.get(vPrenumeRegizor, 101);
 
-    unsigned int copieID = 0;
+    unsigned int copieID = 0, ID_Personal_Locala = 0;
     for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
+    {
         if (stricmp(vNumeRegizor, personalTeatru[i].Nume_PersonalTeatru) == 0 && stricmp(vPrenumeRegizor, personalTeatru[i].Prenume_PersonalTeatru) == 0)
             copieID = personalTeatru[i].ID_PersonalTeatru;
+        ID_Personal_Locala = personalTeatru[i].ID_PersonalTeatru;
+    }
 
     if (copieID == 0)
     {
-        cerr << "Regizorul respectiv nu exista in baza de date!" << endl;
+        cout << '\n';
+        cerr << setw(5 + 1) << " " << "Regizorul respectiv nu exista in baza de date!" << endl;
+        Sleep(1500);
+        system("CLS");
+
+        cout << "\n\n";
+        cout << setw(5 + 1) << " " << "Doresti sa adaugi un nou angajat?" << "\n\n";
+        cout << setw(5 + 1) << " " << "1. Adauga un nou angajat" << endl;
+        cout << setw(5 + 1) << " " << "0. Inapoi" << "\n\n";
+
+        unsigned int alegereUtilizator;
+        cout << setw(5 + 1) << " "
+             << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: ";
+        cin >> alegereUtilizator;
+
+        if (alegereUtilizator == 1)
+        {
+            Adaugare_Personal();
+            piesaTeatru[NumarPiese].ID_PersonalTeatru = ID_Personal_Locala + 1;
+        }
+        else
+        {
+            copie_ID_Piesa_Max--;
+            NumarPiese--;
+            return;
+        }
     }
     else
         piesaTeatru[NumarPiese].ID_PersonalTeatru = copieID;
@@ -2202,6 +2266,8 @@ void Adaugare_Piese()
     cout << '\n'
          << setw(4) << " "
          << "Apasati enter pentru a va intoarce la meniul precedent...";
+
+    _getch();
 
     ofstream fisierPiesa;
     fisierPiesa.open("piesa.txt", ios::out | ios::app);
@@ -2391,137 +2457,6 @@ void Stergere_Bilet()
     for (unsigned int i = 1; i <= NumarBilete; i++)
         fisierBilet << biletPiesa[i].ID_Bilet << " " << biletPiesa[i].Tip_Bilet << " " << biletPiesa[i].Pret_Bilet << endl;
     fisierBilet.close();
-}
-
-void Adaugare_Personal()
-{
-    system("CLS");
-    afisare_personal();
-
-    copie_ID_Personal_Max++;
-    NumarPersonalTeatru++;
-
-    cout << "\n\n";
-    cout << setw(4) << " "
-         << "Introduceti datele noului angajat (administratie teatru):"
-         << "\n\n";
-    cout << setw(6) << " "
-         << "ID-ul angajatului: " << copie_ID_Personal_Max << endl;
-    personalTeatru[NumarPersonalTeatru].ID_PersonalTeatru = copie_ID_Personal_Max;
-
-    cout << setw(6) << " "
-         << "Functie: ";
-    char vFunctiePersonalTeatru[1001];
-    cin.get();
-    cin.get(vFunctiePersonalTeatru, 1001);
-
-    for (unsigned int i = 0; i < strlen(vFunctiePersonalTeatru); i++)
-        if (vFunctiePersonalTeatru[i] == ' ')
-            vFunctiePersonalTeatru[i] = '_';
-    strcpy(personalTeatru[NumarPersonalTeatru].Functie_PersonalTeatru, vFunctiePersonalTeatru);
-
-    cout << setw(6) << " "
-         << "Nume angajat: ";
-    cin >> personalTeatru[NumarPersonalTeatru].Nume_PersonalTeatru;
-    cout << setw(6) << " "
-         << "Prenume angajat: ";
-    cin >> personalTeatru[NumarPersonalTeatru].Prenume_PersonalTeatru;
-    cout << setw(6) << " "
-         << "CNP angajat: ";
-
-    bool valid = false;
-    while (!valid)
-    {
-        cin >> personalTeatru[NumarPersonalTeatru].CNP_PersonalTeatru;
-        if (cin.fail() || strlen(personalTeatru[NumarPersonalTeatru].CNP_PersonalTeatru) != 13)
-        {
-            cin.clear();
-            cin.ignore();
-            cout << '\n';
-            cerr << setw(6) << " "
-                 << "Valoarea introdusa in campul PRET BILET este invalida!" << endl;
-            Sleep(1500);
-            copie_ID_Personal_Max--;
-            Adaugare_Personal();
-        }
-        else
-            valid = true;
-    }
-
-    cout << setw(6) << " "
-         << "Varsta angajat: ";
-    cin >> personalTeatru[NumarPersonalTeatru].Varsta_PersonalTeatru;
-
-    ofstream fisierPersonalTeatru;
-    fisierPersonalTeatru.open("personal.txt", ios::out | ios::app);
-    fisierPersonalTeatru << personalTeatru[NumarPersonalTeatru].ID_PersonalTeatru << " "
-                         << personalTeatru[NumarPersonalTeatru].Functie_PersonalTeatru << " "
-                         << personalTeatru[NumarPersonalTeatru].Nume_PersonalTeatru << " "
-                         << personalTeatru[NumarPersonalTeatru].Prenume_PersonalTeatru << " "
-                         << personalTeatru[NumarPersonalTeatru].CNP_PersonalTeatru << " "
-                         << personalTeatru[NumarPersonalTeatru].Varsta_PersonalTeatru << endl;
-    fisierPersonalTeatru.close();
-}
-
-void Stergere_Personal()
-{
-    system("CLS");
-    afisare_personal();
-
-    unsigned int vID;
-
-    bool valid = false;
-
-    cout << "\n\n";
-    cout << setw(5) << " "
-         << "APASA TASTA '0' PENTRU A ANULA";
-    cout << "\n\n";
-    cout << setw(5) << " "
-         << "Introduceti ID-ul angajatului pe care doriti sa il stergeti din baza de date: ";
-
-    while (!valid)
-    {
-        cin >> vID;
-        if (cin.fail())
-        {
-            cin.clear();
-            cin.ignore();
-            cout << '\n';
-            cerr << setw(6 - 1) << " "
-                 << "Valoarea introdusa in campul ID PIESA este invalida!" << endl;
-            Sleep(1500);
-            Stergere_Personal();
-        }
-        else
-            valid = true;
-    }
-
-    if (vID == 0)
-        return;
-    else
-    {
-        for (unsigned int i = vID; i <= NumarPersonalTeatru; i++)
-        {
-            personalTeatru[i].ID_PersonalTeatru = personalTeatru[i + 1].ID_PersonalTeatru - 1;
-            strcpy(personalTeatru[i].Functie_PersonalTeatru, personalTeatru[i + 1].Functie_PersonalTeatru);
-            strcpy(personalTeatru[i].Nume_PersonalTeatru, personalTeatru[i + 1].Nume_PersonalTeatru);
-            strcpy(personalTeatru[i].Prenume_PersonalTeatru, personalTeatru[i + 1].Prenume_PersonalTeatru);
-            strcpy(personalTeatru[i].CNP_PersonalTeatru, personalTeatru[i + 1].CNP_PersonalTeatru);
-            personalTeatru[i].Varsta_PersonalTeatru = personalTeatru[i + 1].Varsta_PersonalTeatru;
-        }
-        NumarPersonalTeatru--;
-        copie_ID_Personal_Max--;
-    }
-
-    ofstream fisierPersonalTeatru("personal.txt");
-    for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
-        fisierPersonalTeatru << personalTeatru[i].ID_PersonalTeatru << " "
-                             << personalTeatru[i].Functie_PersonalTeatru << " "
-                             << personalTeatru[i].Nume_PersonalTeatru << " "
-                             << personalTeatru[i].Prenume_PersonalTeatru << " "
-                             << personalTeatru[i].CNP_PersonalTeatru << " "
-                             << personalTeatru[i].Varsta_PersonalTeatru << endl;
-    fisierPersonalTeatru.close();
 }
 
 void Venituri()
@@ -2830,7 +2765,6 @@ void Meniu_Venituri_Piese()
     while (Meniu_Venituri != 0);
 }
 
-
 /// MATEI
 void piese_dupa_data()
 {
@@ -2861,19 +2795,40 @@ void piese_dupa_data()
 
 void sali_cu_piesa()
 {
-    cout << endl
-         << "Tasteaza numele piesei: ";
-    char vNume_Piesa[101];
-    cin.get();
-    cin.get(vNume_Piesa, 101);
-    cout << "Aceasta piesa va fi jucata in: " << endl;
+    system("CLS");
+    afisare_sali();
+
+    cout << endl << setw(5 - 1) << " "
+         << "Tasteaza ID-ul salii: ";
+    unsigned int vID_Sala;
+
+    cin >> vID_Sala;
+
+
+
     for (unsigned int i = 1; i <= NumarPiese; i++)
-        if (stricmp(piesaTeatru[i].Nume_Piesa, vNume_Piesa) == 0)
-            cout << "-sala " << piesaTeatru[i].ID_Sala << " pe data de " << piesaTeatru[i].Data_Piesa << ", la ora " << piesaTeatru[i].Ora_Piesa << endl;
+        if (piesaTeatru[i].ID_Sala == vID_Sala)
+        {
+            cout << '\n';
+
+            cout << setw(5 - 1) << " "
+                 << "ID: " << piesaTeatru[i].ID_Piesa << endl;
+            cout << setw(5 - 1) << " "
+                 << "Nume: " << piesaTeatru[i].Nume_Piesa << endl;
+            cout << setw(5 - 1) << " "
+                 << "Sala: " << piesaTeatru[i].ID_Sala << endl;
+            cout << setw(5 - 1) << " "
+                 << "Data: " << piesaTeatru[i].Data_Piesa << endl;
+            cout << setw(5 - 1) << " "
+                 << "Ora: " << piesaTeatru[i].Ora_Piesa << '\n';
+        }
+
 }
 
 void cautare_actori_nume()
 {
+    system("CLS");
+
     unsigned int Meniu_subprogram;
     cout << endl;
     cout << setw(5 - 1) << " "
@@ -2887,7 +2842,10 @@ void cautare_actori_nume()
     cin >> Meniu_subprogram;
     if (Meniu_subprogram == 1)
     {
-        cout << endl
+        system("CLS");
+
+        cout << endl;
+        cout << setw(5 - 1) << " "
              << "Tasteaza prenumele actorului: ";
         char vPrenume_Actor[101];
         cin.get();
@@ -2930,10 +2888,19 @@ void cautare_actori_nume()
                      << setw(NumarMaxCaracterePrenume - strlen(actorTeatru[i].Prenume_Actor) + 15) << " " << actorTeatru[i].Varsta_Actor << " ani"
                      << setw(10) << " " << actorTeatru[i].Email_Actor << setw(NumarMaxCaractereEmail - strlen(actorTeatru[i].Email_Actor) + 10)
                      << " " << actorTeatru[i].CNP_Actor << setw(8) << " " << actorTeatru[i].Sex_Actor << setw(10) << "\n";
+
+        fillLinieConsola(150);
+
+        cout << '\n'
+             << setw(4) << " "
+             << "Apasati enter pentru a va intoarce la meniul precedent...";
     }
     else
     {
-        cout << endl
+        system("CLS");
+
+        cout << endl;
+        cout << setw(5 - 1) << " "
              << "Tasteaza numele de familie al actorului: ";
         char vNume_Actor[101];
         cin.get();
@@ -2976,39 +2943,98 @@ void cautare_actori_nume()
                      << setw(NumarMaxCaracterePrenume - strlen(actorTeatru[i].Prenume_Actor) + 15) << " " << actorTeatru[i].Varsta_Actor << " ani"
                      << setw(10) << " " << actorTeatru[i].Email_Actor << setw(NumarMaxCaractereEmail - strlen(actorTeatru[i].Email_Actor) + 10)
                      << " " << actorTeatru[i].CNP_Actor << setw(8) << " " << actorTeatru[i].Sex_Actor << setw(10) << "\n";
+
+        fillLinieConsola(150);
+
+        cout << '\n'
+             << setw(4) << " "
+             << "Apasati enter pentru a va intoarce la meniul precedent...";
     }
 }
 
 void bilete_ieftine()
 {
+    system("CLS");
+    afisare_bilete();
+
     float vPret;
-    cout << endl
+    cout << endl;
+    cout << setw(5 - 1) << " "
          << "Tasteaza pretul: ";
     cin >> vPret;
+
+    cout << '\n';
     for (unsigned int i = 1; i <= NumarBilete; i++)
         if (biletPiesa[i].Pret_Bilet < vPret)
-            cout << biletPiesa[i].ID_Bilet << ": " << biletPiesa[i].Tip_Bilet << ", " << biletPiesa[i].Pret_Bilet << endl;
+            cout << setw(5 - 1) << " " << biletPiesa[i].ID_Bilet << ": " << biletPiesa[i].Tip_Bilet << ", " << biletPiesa[i].Pret_Bilet << endl;
 }
 
-void bilete_loja_vandute()
+/*void bilete_loja_vandute()
 {
     cout << endl;
-    unsigned int nr_loja = 0;
+    unsigned int nr_loja = 0, nr_scaune_normale = 0;
     for (unsigned int i = 1; i <= NumarSpectatori; i++)
         if (spectatorPiesa[i].loja == 1)
             nr_loja++;
+        else (spectatorPiesa[i].loja == 0)
+            nr_scaune_normale++;
+
+    cout << "Au fost vandute " << nr_scaune_normale + nr_loja << " bilete pentru piesele din aceasta saptamana" << endl;
     cout << "Au fost vandute " << nr_loja << " bilete pentru loja pentru piesele din aceasta saptamana.";
-}
+}*/
 
 void bilete_pe_piesa()
 {
-    cout << endl;
+    system("CLS");
+    afisare_bilete();
+
     unsigned int vID_Piesa;
     unsigned int ok = 0, bilete = 0, bilete_loja = 0;
 
-    cout << endl
+    bool piesaVeche = false;
+
+    cout << '\n';
+    cout << setw(5 - 1) << " "
+         << "APASA TASTA '0' PENTRU A ANULA";
+    cout << "\n\n";
+    cout << setw(5 - 1) << " "
          << "Tasteaza ID-ul piesei cautate: ";
-    cin >> vID_Piesa;
+
+    bool valid = false;
+    while (!valid)
+    {
+        cin >> vID_Piesa;
+        if (cin.fail())
+        {
+            cin.clear();
+            cin.ignore();
+            cout << '\n';
+            cerr << setw(4) << " "
+                 << "Valoarea introdusa este invalida!" << endl;
+            Sleep(1500);
+            bilete_pe_piesa();
+        }
+        else
+            valid = true;
+    }
+
+    if (vID_Piesa == 0)
+        return;
+
+    for (unsigned int i = 1; i <= NumarPieseVechi && ok == 0; i++)
+        if (piesa_veche[i].ID_Piesa == vID_Piesa)
+        {
+            piesaVeche = true;
+
+            for (unsigned int j = 1; j <= NumarSpectatori; j++)
+                if (spectatorPiesa[j].ID_Piesa == piesaTeatru[i].ID_Piesa)
+                {
+                    bilete++;
+                    if (spectatorPiesa[j].loja == 1)
+                        bilete_loja++;
+                }
+            ok = 1;
+        }
 
     for (unsigned int i = 1; i <= NumarPiese && ok == 0; i++)
         if (piesaTeatru[i].ID_Piesa == vID_Piesa)
@@ -3022,45 +3048,101 @@ void bilete_pe_piesa()
                 }
             ok = 1;
         }
-    cout << "Pentru aceasta piesa s-au vandut " << bilete << " bilete, dintre care " << bilete_loja << " pentru loja.";
+
+    cout << '\n';
+    if (piesaVeche == true)
+    {
+        cout << setw(5 - 1) << " " << "Pentru piesa '" << piesa_veche[vID_Piesa].Nume_Piesa << "' s-au vandut " << bilete
+             << " bilete, dintre care " << bilete_loja << " pentru loja " << "(" << piesa_veche[vID_Piesa].Data_Piesa << ")." << '\n';
+
+        cout << "\n\n"
+             << setw(4) << " "
+             << "Apasati enter pentru a va intoarce la meniul precedent...";
+    }
+
+    else
+    {
+        char dataPiesaLocala[11], numePiesaLocal[101];
+
+        for (unsigned int i = 1; i <= NumarPiese; i++)
+            if (piesaTeatru[i].ID_Piesa == vID_Piesa)
+            {
+                strcpy(dataPiesaLocala, piesaTeatru[i].Data_Piesa);
+                strcpy(numePiesaLocal, piesaTeatru[i].Nume_Piesa);
+            }
+
+        cout << setw(5 - 1) << " " << "Pentru piesa '" << numePiesaLocal << "' s-au vandut " << bilete
+             << " bilete, dintre care " << bilete_loja << " pentru loja " << "(" << dataPiesaLocala << ")." << '\n';
+
+        cout << "\n\n"
+             << setw(4) << " "
+             << "Apasati enter pentru a va intoarce la meniul precedent...";
+    }
+    _getch();
 }
 
 void bilete_nevandute()
 {
+    system("CLS");
+    afisare_bilete();
+
     cout << endl;
     unsigned int bilete_vandute[201] = {0};
     for (unsigned int i = 1; i <= NumarSpectatoriVechi; i++)
         bilete_vandute[spectator_vechi[i].ID_Piesa]++;
     unsigned int meniu_subprogram;
-    cout << "1. Numarul de bilete nevandute intr-o piesa." << endl
-         << "2. Numarul de bilete nevandute in total."
+
+    cout << setw(5) << " " << "1. Numarul de bilete nevandute intr-o piesa." << endl
+         << setw(5) << " " << "2. Numarul de bilete nevandute in total." << endl
+         << setw(5) << " " << "0. Inapoi"
          << "\n\n";
-    cout << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: ";
+    cout << setw(5 - 1) << " " << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: ";
     cin >> meniu_subprogram;
+
     if (meniu_subprogram == 1)
     {
+        system("CLS");
+        afisare_bilete();
+
         cout << endl
-             << "Tastati numele piesei: ";
+             << setw(5 - 1) << " " << "Tastati numele piesei: ";
         char vPiesaVeche[101];
         cin >> vPiesaVeche;
         unsigned int v = 0;
         for (unsigned int i = 1; i <= NumarPieseVechi; i++)
             if (strcmp(piesa_veche[i].Nume_Piesa, vPiesaVeche) == 0)
                 v = v + (salaTeatru[piesa_veche[i].ID_Sala].Nr_Scaune + salaTeatru[piesa_veche[i].ID_Sala].Nr_Scaune_Loja - bilete_vandute[piesa_veche[i].ID_Piesa]);
-        cout << "In total, aceasta piesa a avut " << v << " bilete nevandute.";
+        cout << '\n' << setw(5 - 1) << " " << "In total, aceasta piesa a avut " << v << " bilete nevandute." << endl;
+
+        cout << "\n\n"
+             << setw(4) << " "
+             << "Apasati enter pentru a va intoarce la meniul precedent...";
+
     }
+    else if (meniu_subprogram == 0)
+        return;
     else
     {
+        system("CLS");
+        afisare_bilete();
+
         unsigned int v = 0;
         for (unsigned int i = 1; i <= NumarPieseVechi; i++)
             v = v + (salaTeatru[piesa_veche[i].ID_Sala].Nr_Scaune + salaTeatru[piesa_veche[i].ID_Sala].Nr_Scaune_Loja - bilete_vandute[piesa_veche[i].ID_Piesa]);
-        cout << "In total, " << v << " bilete au ramas nevandute.";
+
+        cout << setw(5 - 1) << " " << "In total, " << v << " bilete au ramas nevandute.";
+
+        cout << "\n\n"
+             << setw(4) << " "
+             << "Apasati enter pentru a va intoarce la meniul precedent...";
     }
 }
 
 void top5_piese()
 {
-    cout << endl;
+    system("CLS");
+    afisare_piese();
+
     piesa_v c_piesa_veche[201];
     for (unsigned int i = 1; i <= NumarPieseVechi; i++)
         c_piesa_veche[i] = piesa_veche[i];
@@ -3114,19 +3196,23 @@ void top5_piese()
     }
 
     cout << setw(5) << " "
-         << "1. " << max1_p << ", cu " << max1 << " bilete vandute in total;" << endl
+         << "1. " << max1_p << ", cu " << max1 << " bilete vandute in total" << endl
          << setw(5) << " "
-         << "2. " << max2_p << ", cu " << max2 << " bilete vandute in total;" << endl
+         << "2. " << max2_p << ", cu " << max2 << " bilete vandute in total" << endl
          << setw(5) << " "
-         << "3. " << max3_p << ", cu " << max3 << " bilete vandute in total;" << endl
+         << "3. " << max3_p << ", cu " << max3 << " bilete vandute in total" << endl
          << setw(5) << " "
-         << "4. " << max4_p << ", cu " << max4 << " bilete vandute in total;" << endl
+         << "4. " << max4_p << ", cu " << max4 << " bilete vandute in total" << endl
          << setw(5) << " "
-         << "5. " << max5_p << ", cu " << max5 << " bilete vandute in total." << endl;
+         << "5. " << max5_p << ", cu " << max5 << " bilete vandute in total" << endl;
+
+    cout << '\n'
+         << setw(4) << " "
+         << "Apasati enter pentru a va intoarce la meniul precedent...";
 }
 
 /// Ioana
-/// Afisati toate piesele care se tin dupa oraâ€¦(ora va fi introdusa de la tastatura)
+/// Afisati toate piesele care se tin dupa ora…(ora va fi introdusa de la tastatura)
 
 void piese_dupa_ora()
 {
@@ -3177,7 +3263,7 @@ void cele_mai_mari_3_sali()
     _getch();
 }
 
-/// Afisarea tuturor actorilor a caror varsta este mai mare sau egala cu â€¦ ani.
+/// Afisarea tuturor actorilor a caror varsta este mai mare sau egala cu … ani.
 void varsta_mai_mare_actori()
 {
     unsigned int nrMaxCaractereNume = 0;
@@ -3224,7 +3310,8 @@ void varsta_mai_mare_actori()
          << "Apasati enter pentru a va intoarce la meniul precedent...";
     _getch();
 }
-/// Afisarea tuturor actorilor a caror varsta este mai mica sau egala cu â€¦ ani
+
+/// Afisarea tuturor actorilor a caror varsta este mai mica sau egala cu … ani
 void varsta_mai_mica_actori()
 {
 
@@ -3257,6 +3344,7 @@ void varsta_mai_mica_actori()
          << "Nume" << setw(nrMaxCaractereNume) << " "
          << "Prenume" << setw(7) << " "
          << "Varsta" << '\n';
+
     fillLinieConsola(60);
     for (i = 0; i < NumarActori; i++)
         if (actorTeatru[i].Varsta_Actor <= varsta)
@@ -3342,7 +3430,7 @@ int main()
                 cout << setw(5 - 1) << " "
                      << "2. Personajele care joaca in piesele de teatru si actorii corespunzatori acestora" << endl;
                 cout << setw(5 - 1) << " "
-                     << "3. Profit si cheltuieli" << endl;
+                     << "3. Top 5 cele mai frecventate piese din trecut" << endl;
                 cout << setw(5 - 1) << " "
                      << "4. Modificarea datelor" << endl;
                 cout << setw(5 - 1) << " "
@@ -3360,7 +3448,79 @@ int main()
 
                 case 1:
                 {
-                    cautare_piesa();
+                    unsigned int Meniu_Cautare;
+
+                    do
+                    {
+                        system("CLS");
+                        afisare_piese();
+                        bool valid = false;
+                        cout << setw(5 - 1) << " "
+                             << "Cum doriti sa cautati piesa dorita?"
+                             << "\n\n";
+
+                        cout << setw(5) << " "
+                             << "1. Dupa numele piesei" << endl;
+                        cout << setw(5) << " "
+                             << "2. Dupa ID-ul piesei" << endl;
+                        cout << setw(5) << " "
+                             << "3. Dupa ora la care are loc piesa" << endl;
+                        cout << setw(5) << " "
+                             << "4. Dupa data in care are loc piesa" << endl;
+                        cout << setw(5) << " "
+                             << "5. Dupa regizorul piesei" << endl;
+                        cout << setw(5) << " "
+                             << "6. Dupa un anumit actor " << endl;
+                        cout << setw(5) << " "
+                             << "0. Inapoi"
+                             << "\n\n";
+
+                        cout << setw(5 - 1) << " "
+                             << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: ";
+                        cin >> Meniu_Cautare;
+
+                        switch (Meniu_Cautare)
+                        {
+                        case 1:
+                        {
+                            cautare_piesa_nume();
+                        }
+                        _getch();
+                        break;
+                        case 2:
+                        {
+                            cautare_piesa_ID();
+                        }
+                        _getch();
+                        break;
+                        case 3:
+                        {
+                            cautare_piesa_ora();
+                        }
+                        _getch();
+                        break;
+                        case 4:
+                        {
+                            cautare_piesa_data();
+                        }
+                        _getch();
+                        break;
+                        case 5:
+                        {
+                            cautare_piesa_regizor();
+                        }
+                        _getch();
+                        break;
+                        case 6:
+                        {
+                            cautare_piesa_actor();
+                        }
+                        _getch();
+                        break;
+                        }
+                    }
+                    while (Meniu_Cautare != 0);
+                    system("CLS");
                 }
                 break;
 
@@ -3368,12 +3528,11 @@ int main()
                 {
                     cautare_Piesa_ID_Actori();
                 }
-                _getch();
                 break;
 
                 case 3:
                 {
-                    profituri_vanzare_bilete();
+                    top5_piese();
                 }
                 _getch();
                 break;
@@ -3421,45 +3580,77 @@ int main()
         break;
         case 2:
         {
-            unsigned int Meniu_Mod_Sali;
+            unsigned int Meniu_Sali;
 
             do
             {
                 system("CLS");
                 afisare_sali();
                 cout << '\n';
-                cout << setw(5 - 1) << " "
-                     << "MODIFICAREA DATELOR"
-                     << "\n\n";
                 cout << setw(6) << " "
-                     << "1. Adauga sali" << '\n';
+                     << "1. Afisarea pieselor ca se joaca intr-o anumita sala" << '\n';
                 cout << setw(6) << " "
-                     << "2. Sterge sali" << '\n';
+                     << "2. Modificare date" << '\n';
                 cout << setw(6) << " "
                      << "0. Inapoi"
                      << "\n\n";
 
                 cout << setw(5 - 1) << " "
                      << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: ";
-                cin >> Meniu_Mod_Sali;
+                cin >> Meniu_Sali;
 
-                switch (Meniu_Mod_Sali)
+                switch (Meniu_Sali)
                 {
                 case 1:
-                    Adaugare_Sali();
+                    sali_cu_piesa();
                     _getch();
                     break;
                 case 2:
-                    Stergere_Sali();
-                    break;
+                {
+                    unsigned int Meniu_Mod_Sali;
+
+                    do
+                    {
+                        system("CLS");
+                        afisare_sali();
+                        cout << '\n';
+                        cout << setw(5 - 1) << " "
+                             << "MODIFICAREA DATELOR"
+                             << "\n\n";
+                        cout << setw(6) << " "
+                             << "1. Adauga sali" << '\n';
+                        cout << setw(6) << " "
+                             << "2. Sterge sali" << '\n';
+                        cout << setw(6) << " "
+                             << "0. Inapoi"
+                             << "\n\n";
+
+                        cout << setw(5 - 1) << " "
+                             << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: ";
+                        cin >> Meniu_Mod_Sali;
+
+                        switch (Meniu_Mod_Sali)
+                        {
+                        case 1:
+                            Adaugare_Sali();
+                            _getch();
+                            break;
+                        case 2:
+                            Stergere_Sali();
+                            break;
+                        }
+                    }
+                    while (Meniu_Mod_Sali != 0);
+                }
+                break;
                 }
             }
-            while (Meniu_Mod_Sali != 0);
+            while (Meniu_Sali != 0);
         }
         break;
         case 3:
         {
-            unsigned int Meniu_Mod_Bilet;
+            unsigned int Meniu_Bilet;
 
             do
             {
@@ -3467,38 +3658,83 @@ int main()
                 afisare_bilete();
 
                 cout << '\n';
-                cout << setw(5 - 1) << " "
-                     << "MODIFICAREA DATELOR"
-                     << "\n\n";
                 cout << setw(6) << " "
-                     << "1. Adauga tip de bilet" << '\n';
+                     << "1. Afisarea biletelor in functie de pret" << '\n';
                 cout << setw(6) << " "
-                     << "2. Sterge tip de bilet" << '\n';
+                     << "2. Numarul biletelor vandute pentru fiecare piesa" << '\n';
+                cout << setw(6) << " "
+                     << "3. Numarul biletelor nevandute pentru piesele din trecut" << '\n';
+                cout << setw(6) << " "
+                     << "4. Modificarea datelor" << '\n';
                 cout << setw(6) << " "
                      << "0. Inapoi"
                      << "\n\n";
 
                 cout << setw(5 - 1) << " "
                      << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: ";
-                cin >> Meniu_Mod_Bilet;
+                cin >> Meniu_Bilet;
 
-                switch (Meniu_Mod_Bilet)
+                switch (Meniu_Bilet)
                 {
                 case 1:
-                    Adaugare_Bilet();
+                    bilete_ieftine();
                     _getch();
                     break;
                 case 2:
-                    Stergere_Bilet();
+                    bilete_pe_piesa();
                     break;
+                case 3:
+                    bilete_nevandute();
+                    _getch();
+                    break;
+                case 4:
+                {
+                    unsigned int Meniu_Mod_Bilet;
+
+                    do
+                    {
+                        system("CLS");
+                        afisare_bilete();
+
+                        cout << '\n';
+                        cout << setw(5 - 1) << " "
+                             << "MODIFICAREA DATELOR"
+                             << "\n\n";
+                        cout << setw(6) << " "
+                             << "1. Adauga tip de bilet" << '\n';
+                        cout << setw(6) << " "
+                             << "2. Sterge tip de bilet" << '\n';
+                        cout << setw(6) << " "
+                             << "0. Inapoi"
+                             << "\n\n";
+
+                        cout << setw(5 - 1) << " "
+                             << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: ";
+                        cin >> Meniu_Mod_Bilet;
+
+                        switch (Meniu_Mod_Bilet)
+                        {
+                        case 1:
+                            Adaugare_Bilet();
+                            _getch();
+                            break;
+                        case 2:
+                            Stergere_Bilet();
+                            break;
+                        }
+                    }
+                    while (Meniu_Mod_Bilet != 0);
+                }
+                _getch();
+                break;
                 }
             }
-            while (Meniu_Mod_Bilet != 0);
+            while (Meniu_Bilet != 0);
         }
         break;
         case 4:
         {
-            unsigned int Meniu_Mod_Actori;
+            unsigned int Meniu_Actori;
 
             do
             {
@@ -3506,33 +3742,66 @@ int main()
                 afisare_actori();
 
                 cout << '\n';
-                cout << setw(5 - 1) << " "
-                     << "MODIFICAREA DATELOR"
-                     << "\n\n";
                 cout << setw(6) << " "
-                     << "1. Adauga actori" << '\n';
+                     << "1. Cautare actori" << '\n';
                 cout << setw(6) << " "
-                     << "2. Sterge actori" << '\n';
+                     << "2. Modificarea datelor" << '\n';
                 cout << setw(6) << " "
                      << "0. Inapoi"
                      << "\n\n";
 
                 cout << setw(5 - 1) << " "
                      << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: ";
-                cin >> Meniu_Mod_Actori;
+                cin >> Meniu_Actori;
 
-                switch (Meniu_Mod_Actori)
+                switch (Meniu_Actori)
                 {
                 case 1:
-                    Adaugare_Actori();
+                    cautare_actori_nume();
                     _getch();
                     break;
                 case 2:
-                    Stergere_Actori();
-                    break;
+                {
+                    unsigned int Meniu_Mod_Actori;
+
+                    do
+                    {
+                        system("CLS");
+                        afisare_actori();
+
+                        cout << '\n';
+                        cout << setw(5 - 1) << " "
+                             << "MODIFICAREA DATELOR"
+                             << "\n\n";
+                        cout << setw(6) << " "
+                             << "1. Adauga actori" << '\n';
+                        cout << setw(6) << " "
+                             << "2. Sterge actori" << '\n';
+                        cout << setw(6) << " "
+                             << "0. Inapoi"
+                             << "\n\n";
+
+                        cout << setw(5 - 1) << " "
+                             << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: ";
+                        cin >> Meniu_Mod_Actori;
+
+                        switch (Meniu_Mod_Actori)
+                        {
+                        case 1:
+                            Adaugare_Actori();
+                            _getch();
+                            break;
+                        case 2:
+                            Stergere_Actori();
+                            break;
+                        }
+                    }
+                    while (Meniu_Mod_Actori != 0);
+                }
+                break;
                 }
             }
-            while (Meniu_Mod_Actori != 0);
+            while (Meniu_Actori != 0);
         }
         break;
         case 5:
