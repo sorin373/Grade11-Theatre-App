@@ -55,7 +55,7 @@ public:
 
 console con(200, 10000);
 
-// Declarare contoarelor
+/// Declarare contoarelor
 unsigned int NumarActori = 1, NumarPiese = 1, NumarBilete = 1, NumarSali = 1, NumarPersonalTeatru = 1, NumarSpectatori = 1, NumarPersonaje = 1, NumarPieseVechi = 1, NumarSpectatoriVechi = 1;
 unsigned int copie_ID_Sala_Max = 0, copie_ID_Actor_Max = 0, copie_ID_Piesa_Max = 0, copie_ID_Bilet_Max = 0, copie_ID_Personal_Max = 0, copie_ID_Piesa_Veche_Max = 0;
 unsigned int contorVenit = 1;
@@ -148,7 +148,7 @@ public:
     float suma;
 } venitPiesa[1001];
 
-// Functii ajutatoare
+/// Functii ajutatoare
 void fillLinieConsola(const unsigned int vWidth)
 {
     cout << setw(5 - 2) << " ";
@@ -333,10 +333,6 @@ void afisare_istoric_piese()
                 cout << personalTeatru[j].Nume_PersonalTeatru << " " << personalTeatru[j].Prenume_PersonalTeatru << endl;
     }
     fillLinieConsola(85); // umple toate linia din consola cu  '_'
-
-    cout << '\n';
-    cout << setw(5 - 1) << " "
-         << "Apasa enter pentru a te intoarce la meniul precedent...";
 }
 
 void afisare_sali()
@@ -502,7 +498,7 @@ void afisare_piese_vechi()
          << "Nume" << setw(NumarMaxCaractere + 1) << " "
          << "Data" << setw(5 + 3) << " "
          << "Regizor" << endl;
-    fillLinieConsola(80);
+    fillLinieConsola(90);
 
     for (unsigned int i = 1; i <= NumarPieseVechi; i++)
     {
@@ -514,7 +510,7 @@ void afisare_piese_vechi()
             if (personalTeatru[j].ID_PersonalTeatru == piesa_veche[i].ID_PersonalTeatru)
                 cout << personalTeatru[j].Nume_PersonalTeatru << " " << personalTeatru[j].Prenume_PersonalTeatru << endl;
     }
-    fillLinieConsola(80);
+    fillLinieConsola(90);
 }
 
 void afisare_venituri()
@@ -1281,129 +1277,165 @@ void sortari_personal()
     while (Meniu_sortari != 0);
 }
 
-void sortari_piese_vechi()
+void sortari_istoricPiese_alfabeti_A_Z()
 {
-    unsigned int Meniu_sortari;
+    system("CLS");
+
+    unsigned int ok;
+    piesa_v c_piesa_veche[401];
+    for (unsigned int i = 1; i <= NumarPieseVechi; i++)
+        c_piesa_veche[i] = piesa_veche[i];
     do
     {
-        system("CLS");
-        cout << endl;
-        cout << setw(5 - 1) << " "
-             << "1. Sortare alfabetica." << endl;
-        cout << setw(5 - 1) << " "
-             << "2. Sortare dupa data." << endl;
-        cout << setw(5 - 1) << " "
-             << "0. Inapoi"
-             << "\n\n";
-
-        cout << setw(5 - 1) << " "
-             << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: ";
-        cin >> Meniu_sortari;
-        switch (Meniu_sortari)
-        {
-        case 1:
-        {
-            unsigned int ok;
-            piesa_v c_piesa_veche[401];
-            for (unsigned int i = 1; i <= NumarPieseVechi; i++)
-                c_piesa_veche[i] = piesa_veche[i];
-            do
+        ok = 1;
+        for (unsigned int i = 1; i < NumarPieseVechi; i++)
+            if (stricmp(c_piesa_veche[i].Nume_Piesa, c_piesa_veche[i + 1].Nume_Piesa) > 0)
             {
-                ok = 1;
-                for (unsigned int i = 1; i < NumarPieseVechi; i++)
-                    if (stricmp(c_piesa_veche[i].Nume_Piesa, c_piesa_veche[i + 1].Nume_Piesa) > 0)
-                    {
-                        swap(c_piesa_veche[i], c_piesa_veche[i + 1]);
-                        ok = 0;
-                    }
+                swap(c_piesa_veche[i], c_piesa_veche[i + 1]);
+                ok = 0;
             }
-            while (ok == 0);
-
-            unsigned int NumarMaxCaractere = 0;
-
-            for (unsigned int i = 1; i <= NumarPieseVechi; i++)
-                if (strlen(c_piesa_veche[i].Nume_Piesa) > NumarMaxCaractere)
-                    NumarMaxCaractere = strlen(c_piesa_veche[i].Nume_Piesa);
-
-            cout << "\n\n"
-                 << setw(5) << " "
-                 << "ID" << setw(5 + 1) << " "
-                 << "Nume" << setw(NumarMaxCaractere + 1) << " "
-                 << "Data" << setw(5 + 3) << " "
-                 << "Regizor" << endl;
-            fillLinieConsola(75);
-
-            for (unsigned int i = 1; i <= NumarPieseVechi; i++)
-            {
-                cout << setw(5) << " " << c_piesa_veche[i].ID_Piesa << setw(5) << " " << c_piesa_veche[i].Nume_Piesa
-                     << setw(NumarMaxCaractere - strlen(c_piesa_veche[i].Nume_Piesa) + 5) << " " << c_piesa_veche[i].Data_Piesa << " "
-                     << setw(5) << " ";
-
-                for (unsigned int j = 0; j <= NumarPersonalTeatru; j++)
-                    if (personalTeatru[j].ID_PersonalTeatru == piesa_veche[i].ID_PersonalTeatru)
-                        cout << personalTeatru[j].Nume_PersonalTeatru << " " << personalTeatru[j].Prenume_PersonalTeatru << endl;
-            }
-            fillLinieConsola(75);
-        }
-        _getch();
-        break;
-
-        case 2:
-        {
-            unsigned int ok;
-            piesa_v c_piesa_veche[401];
-            for (unsigned int i = 1; i <= NumarPieseVechi; i++)
-                c_piesa_veche[i] = piesa_veche[i];
-            do
-            {
-                ok = 1;
-                for (unsigned int i = 1; i < NumarPieseVechi; i++)
-                    if ((c_piesa_veche[i].Data_Piesa[4] > c_piesa_veche[i + 1].Data_Piesa[4] ||
-                            (c_piesa_veche[i].Data_Piesa[4] == c_piesa_veche[i + 1].Data_Piesa[4] && c_piesa_veche[i].Data_Piesa[5] > c_piesa_veche[i + 1].Data_Piesa[5]) ||
-                            ((c_piesa_veche[i].Data_Piesa[4] == c_piesa_veche[i + 1].Data_Piesa[4] && c_piesa_veche[i].Data_Piesa[5] == c_piesa_veche[i + 1].Data_Piesa[5]) &&
-                             c_piesa_veche[i].Data_Piesa[0] > c_piesa_veche[i + 1].Data_Piesa[0])) ||
-                            (((c_piesa_veche[i].Data_Piesa[4] == c_piesa_veche[i + 1].Data_Piesa[4] && c_piesa_veche[i].Data_Piesa[5] == c_piesa_veche[i + 1].Data_Piesa[5]) &&
-                              c_piesa_veche[i].Data_Piesa[0] == c_piesa_veche[i + 1].Data_Piesa[0]) &&
-                             c_piesa_veche[i].Data_Piesa[1] > c_piesa_veche[i + 1].Data_Piesa[1]))
-                    {
-                        swap(c_piesa_veche[i], c_piesa_veche[i + 1]);
-                        ok = 0;
-                    }
-            }
-            while (ok == 0);
-
-            unsigned int NumarMaxCaractere = 0;
-
-            for (unsigned int i = 1; i <= NumarPieseVechi; i++)
-                if (strlen(c_piesa_veche[i].Nume_Piesa) > NumarMaxCaractere)
-                    NumarMaxCaractere = strlen(c_piesa_veche[i].Nume_Piesa);
-
-            cout << "\n\n"
-                 << setw(5) << " "
-                 << "ID" << setw(5 + 1) << " "
-                 << "Nume" << setw(NumarMaxCaractere + 1) << " "
-                 << "Data" << setw(5 + 3) << " "
-                 << "Regizor" << endl;
-            fillLinieConsola(75);
-
-            for (unsigned int i = 1; i <= NumarPieseVechi; i++)
-            {
-                cout << setw(5) << " " << c_piesa_veche[i].ID_Piesa << setw(5) << " " << c_piesa_veche[i].Nume_Piesa
-                     << setw(NumarMaxCaractere - strlen(c_piesa_veche[i].Nume_Piesa) + 5) << " " << c_piesa_veche[i].Data_Piesa << " "
-                     << setw(5) << " ";
-
-                for (unsigned int j = 0; j <= NumarPersonalTeatru; j++)
-                    if (personalTeatru[j].ID_PersonalTeatru == piesa_veche[i].ID_PersonalTeatru)
-                        cout << personalTeatru[j].Nume_PersonalTeatru << " " << personalTeatru[j].Prenume_PersonalTeatru << endl;
-            }
-            fillLinieConsola(75);
-        }
-        _getch();
-        break;
-        }
     }
-    while (Meniu_sortari != 0);
+    while (ok == 0);
+
+    unsigned int NumarMaxCaractere = 0;
+
+    for (unsigned int i = 1; i <= NumarPieseVechi; i++)
+        if (strlen(c_piesa_veche[i].Nume_Piesa) > NumarMaxCaractere)
+            NumarMaxCaractere = strlen(c_piesa_veche[i].Nume_Piesa);
+
+    cout << "\n\n"
+         << setw(5) << " "
+         << "ID" << setw(5 + 1) << " "
+         << "Nume" << setw(NumarMaxCaractere + 1) << " "
+         << "Data" << setw(5 + 3) << " "
+         << "Regizor" << endl;
+    fillLinieConsola(90);
+
+    for (unsigned int i = 1; i <= NumarPieseVechi; i++)
+    {
+        cout << setw(5) << " " << c_piesa_veche[i].ID_Piesa << setw(5) << " " << c_piesa_veche[i].Nume_Piesa
+             << setw(NumarMaxCaractere - strlen(c_piesa_veche[i].Nume_Piesa) + 5) << " " << c_piesa_veche[i].Data_Piesa << " "
+             << setw(5) << " ";
+
+        for (unsigned int j = 0; j <= NumarPersonalTeatru; j++)
+            if (personalTeatru[j].ID_PersonalTeatru == piesa_veche[i].ID_PersonalTeatru)
+                cout << personalTeatru[j].Nume_PersonalTeatru << " " << personalTeatru[j].Prenume_PersonalTeatru << endl;
+    }
+    fillLinieConsola(90);
+
+    cout << '\n'
+         << setw(4) << " "
+         << "Apasati enter pentru a va intoarce la meniul precedent...";
 }
+
+void sortari_istoricPiese_alfabeti_Z_A()
+{
+    system("CLS");
+
+    unsigned int ok;
+    piesa_v c_piesa_veche[401];
+    for (unsigned int i = 1; i <= NumarPieseVechi; i++)
+        c_piesa_veche[i] = piesa_veche[i];
+    do
+    {
+        ok = 1;
+        for (unsigned int i = 1; i < NumarPieseVechi; i++)
+            if (stricmp(c_piesa_veche[i].Nume_Piesa, c_piesa_veche[i + 1].Nume_Piesa) < 0)
+            {
+                swap(c_piesa_veche[i], c_piesa_veche[i + 1]);
+                ok = 0;
+            }
+    }
+    while (ok == 0);
+
+    unsigned int NumarMaxCaractere = 0;
+
+    for (unsigned int i = 1; i <= NumarPieseVechi; i++)
+        if (strlen(c_piesa_veche[i].Nume_Piesa) > NumarMaxCaractere)
+            NumarMaxCaractere = strlen(c_piesa_veche[i].Nume_Piesa);
+
+    cout << "\n\n"
+         << setw(5) << " "
+         << "ID" << setw(5 + 1) << " "
+         << "Nume" << setw(NumarMaxCaractere + 1) << " "
+         << "Data" << setw(5 + 3) << " "
+         << "Regizor" << endl;
+    fillLinieConsola(90);
+
+    for (unsigned int i = 1; i <= NumarPieseVechi; i++)
+    {
+        cout << setw(5) << " " << c_piesa_veche[i].ID_Piesa << setw(5) << " " << c_piesa_veche[i].Nume_Piesa
+             << setw(NumarMaxCaractere - strlen(c_piesa_veche[i].Nume_Piesa) + 5) << " " << c_piesa_veche[i].Data_Piesa << " "
+             << setw(5) << " ";
+
+        for (unsigned int j = 0; j <= NumarPersonalTeatru; j++)
+            if (personalTeatru[j].ID_PersonalTeatru == piesa_veche[i].ID_PersonalTeatru)
+                cout << personalTeatru[j].Nume_PersonalTeatru << " " << personalTeatru[j].Prenume_PersonalTeatru << endl;
+    }
+    fillLinieConsola(90);
+
+    cout << '\n'
+         << setw(4) << " "
+         << "Apasati enter pentru a va intoarce la meniul precedent...";
+}
+
+void sortari_istoricPiese_data()
+{
+    system("CLS");
+
+    unsigned int ok;
+    piesa_v c_piesa_veche[401];
+    for (unsigned int i = 1; i <= NumarPieseVechi; i++)
+        c_piesa_veche[i] = piesa_veche[i];
+    do
+    {
+        ok = 1;
+        for (unsigned int i = 1; i < NumarPieseVechi; i++)
+            if ((c_piesa_veche[i].Data_Piesa[4] > c_piesa_veche[i + 1].Data_Piesa[4] ||
+                    (c_piesa_veche[i].Data_Piesa[4] == c_piesa_veche[i + 1].Data_Piesa[4] && c_piesa_veche[i].Data_Piesa[5] > c_piesa_veche[i + 1].Data_Piesa[5]) ||
+                    ((c_piesa_veche[i].Data_Piesa[4] == c_piesa_veche[i + 1].Data_Piesa[4] && c_piesa_veche[i].Data_Piesa[5] == c_piesa_veche[i + 1].Data_Piesa[5]) &&
+                     c_piesa_veche[i].Data_Piesa[0] > c_piesa_veche[i + 1].Data_Piesa[0])) ||
+                    (((c_piesa_veche[i].Data_Piesa[4] == c_piesa_veche[i + 1].Data_Piesa[4] && c_piesa_veche[i].Data_Piesa[5] == c_piesa_veche[i + 1].Data_Piesa[5]) &&
+                      c_piesa_veche[i].Data_Piesa[0] == c_piesa_veche[i + 1].Data_Piesa[0]) &&
+                     c_piesa_veche[i].Data_Piesa[1] > c_piesa_veche[i + 1].Data_Piesa[1]))
+            {
+                swap(c_piesa_veche[i], c_piesa_veche[i + 1]);
+                ok = 0;
+            }
+    }
+    while (ok == 0);
+
+    unsigned int NumarMaxCaractere = 0;
+
+    for (unsigned int i = 1; i <= NumarPieseVechi; i++)
+        if (strlen(c_piesa_veche[i].Nume_Piesa) > NumarMaxCaractere)
+            NumarMaxCaractere = strlen(c_piesa_veche[i].Nume_Piesa);
+
+    cout << "\n\n"
+         << setw(5) << " "
+         << "ID" << setw(5 + 1) << " "
+         << "Nume" << setw(NumarMaxCaractere + 1) << " "
+         << "Data" << setw(5 + 3) << " "
+         << "Regizor" << endl;
+    fillLinieConsola(75);
+
+    for (unsigned int i = 1; i <= NumarPieseVechi; i++)
+    {
+        cout << setw(5) << " " << c_piesa_veche[i].ID_Piesa << setw(5) << " " << c_piesa_veche[i].Nume_Piesa
+             << setw(NumarMaxCaractere - strlen(c_piesa_veche[i].Nume_Piesa) + 5) << " " << c_piesa_veche[i].Data_Piesa << " "
+             << setw(5) << " ";
+
+        for (unsigned int j = 0; j <= NumarPersonalTeatru; j++)
+            if (personalTeatru[j].ID_PersonalTeatru == piesa_veche[i].ID_PersonalTeatru)
+                cout << personalTeatru[j].Nume_PersonalTeatru << " " << personalTeatru[j].Prenume_PersonalTeatru << endl;
+    }
+    fillLinieConsola(75);
+
+    cout << '\n'
+         << setw(4) << " "
+         << "Apasati enter pentru a va intoarce la meniul precedent...";
+}
+
 
 /// Componente main
 void cautare_piesa_nume()
@@ -3819,20 +3851,57 @@ int main()
         break;
         case 6:
         {
-            system("CLS");
-            afisare_istoric_piese();
+            unsigned int Meniu_sortari;
+
+            do
+            {
+                system("CLS");
+                afisare_piese_vechi();
+
+                cout << setw(5 - 1) << " " << "1. Sorteaza piesele vechi alfabetic A-Z" << endl;
+                cout << setw(5 - 1) << " " << "2. Sorteaza piesele vechi alfabetic Z-A" << endl;
+                cout << setw(5 - 1) << " " << "3. Sorteaza veniturile in functie de data in care au fost jucate" << endl;
+                cout << setw(5 - 1) << " " << "0. Inapoi" << "\n\n";
+
+                cout << setw(5 - 1) << " "
+                     << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: ";
+                cin >> Meniu_sortari;
+                switch (Meniu_sortari)
+                {
+                case 1:
+                {
+                    sortari_istoricPiese_alfabeti_A_Z();
+                }
+                _getch();
+                break;
+
+                case 2:
+                {
+                    sortari_istoricPiese_alfabeti_Z_A();
+                }
+                _getch();
+                break;
+
+                case 3:
+                {
+                    sortari_istoricPiese_data();
+                }
+                _getch();
+                break;
+                }
+            }
+            while (Meniu_sortari != 0);
         }
-        _getch();
         break;
         case 7:
         {
             Venituri();
 
             unsigned int Meniu_Venituri;
-            bool valid = false;
 
             do
             {
+                bool valid = false;
                 system("CLS");
                 afisare_venituri();
 
