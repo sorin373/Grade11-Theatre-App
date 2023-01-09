@@ -2,86 +2,9 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="personal.txt" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="main.cpp" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2473" topLine="10" />
-		</Cursor>
-	</File>
-	<File name="main.cpp" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="101563" topLine="151" />
-		</Cursor>
-		<Folding>
-			<Collapse line="18" />
-			<Collapse line="64" />
-			<Collapse line="72" />
-			<Collapse line="85" />
-			<Collapse line="96" />
-			<Collapse line="104" />
-			<Collapse line="112" />
-			<Collapse line="124" />
-			<Collapse line="133" />
-			<Collapse line="143" />
-			<Collapse line="152" />
-			<Collapse line="165" />
-			<Collapse line="177" />
-			<Collapse line="190" />
-			<Collapse line="204" />
-			<Collapse line="217" />
-			<Collapse line="230" />
-			<Collapse line="243" />
-			<Collapse line="252" />
-			<Collapse line="266" />
-			<Collapse line="276" />
-			<Collapse line="308" />
-			<Collapse line="338" />
-			<Collapse line="354" />
-			<Collapse line="391" />
-			<Collapse line="438" />
-			<Collapse line="487" />
-			<Collapse line="516" />
-			<Collapse line="529" />
-			<Collapse line="572" />
-			<Collapse line="603" />
-			<Collapse line="773" />
-			<Collapse line="983" />
-			<Collapse line="1280" />
-			<Collapse line="1405" />
-			<Collapse line="1440" />
-			<Collapse line="1492" />
-			<Collapse line="1557" />
-			<Collapse line="1621" />
-			<Collapse line="1680" />
-			<Collapse line="1738" />
-			<Collapse line="1815" />
-			<Collapse line="1845" />
-			<Collapse line="1868" />
-			<Collapse line="1969" />
-			<Collapse line="2027" />
-			<Collapse line="2098" />
-			<Collapse line="2159" />
-			<Collapse line="2462" />
-			<Collapse line="2506" />
-			<Collapse line="2796" />
-			<Collapse line="2825" />
-			<Collapse line="2952" />
-			<Collapse line="2968" />
-			<Collapse line="3359" />
-		</Folding>
-	</File>
-	<File name="piesa.txt" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="830" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="bilet.txt" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="194" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="sala.txt" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="0" />
+			<Cursor1 position="0" topLine="3803" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

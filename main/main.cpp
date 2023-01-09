@@ -333,6 +333,10 @@ void afisare_istoric_piese()
                 cout << personalTeatru[j].Nume_PersonalTeatru << " " << personalTeatru[j].Prenume_PersonalTeatru << endl;
     }
     fillLinieConsola(85); // umple toate linia din consola cu  '_'
+
+    cout << '\n';
+    cout << setw(5 - 1) << " "
+         << "Apasa enter pentru a te intoarce la meniul precedent...";
 }
 
 void afisare_sali()
@@ -1551,7 +1555,6 @@ void cautare_piesa_ora()
     cout << '\n';
     cout << setw(5 - 1) << " "
          << "Apasa enter pentru a te intoarce la meniul precedent...";
-
 }
 
 void cautare_piesa_data()
@@ -1913,7 +1916,6 @@ void Adaugare_Actori()
     while (!valid)
     {
         cin >> actorTeatru[NumarActori].Varsta_Actor;
-        ;
         if (cin.fail())
         {
             cin.clear();
@@ -1956,6 +1958,7 @@ void Adaugare_Actori()
 
     cout << setw(6) << " "
          << "Sex-ul actorului (F/M): ";
+    cin.get();
     cin >> actorTeatru[NumarActori].Sex_Actor;
 
     ofstream fisierActor;
@@ -1969,6 +1972,7 @@ void Adaugare_Actori()
 void Stergere_Actori()
 {
     system("CLS");
+    afisare_actori();
 
     unsigned int vID;
     bool valid = false;
@@ -2027,7 +2031,6 @@ void Stergere_Actori()
 void Adaugare_Personal()
 {
     system("CLS");
-    afisare_personal();
 
     copie_ID_Personal_Max++;
     NumarPersonalTeatru++;
@@ -2097,9 +2100,6 @@ void Adaugare_Personal()
 
 void Stergere_Personal()
 {
-    system("CLS");
-    afisare_personal();
-
     unsigned int vID;
 
     bool valid = false;
@@ -2503,266 +2503,216 @@ void Venituri()
     contorVenit--;
 }
 
-void Meniu_Venituri_Piese()
+void sortare_venituri_crescator_sumaAcumulata()
 {
-    unsigned int Meniu_Venituri;
-    bool valid = false;
+    bool vSort = true;
 
     do
     {
-        system("CLS");
-        afisare_venituri();
-
-        cout << setw(5 - 1) << " " << "1. Sorteaza veniturile in ordine crescatoare in functie de suma acumulata" << endl;
-        cout << setw(5 - 1) << " " << "2. Sorteaza veniturile in ordine crescatoare in functie de suma acumulata" << endl;
-        cout << setw(5 - 1) << " " << "3. Afiseaza veniturile pieselor dupa o anumita data" << endl;
-        cout << setw(5 - 1) << " " << "4. Reseteaza afisarea veniturilor" << endl;
-        cout << setw(5 - 1) << " " << "0. Inapoi" << "\n\n";
-
-        cout << setw(5 - 1) << " "
-             << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: ";
-
-        valid = false;
-        while (!valid)
-        {
-            cin >> Meniu_Venituri;
-            if (cin.fail())
+        vSort = true;
+        for (unsigned int i = 1; i <= contorVenit - 1; i++)
+            if (venitPiesa[i].suma > venitPiesa[i + 1].suma)
             {
-                cin.clear();
-                cin.ignore();
-                cout << '\n';
-                cerr << setw(5 - 1) << " "
-                     << "Valoarea introdusa este invalida!" << endl;
-                Sleep(1500);
-                Meniu_Venituri_Piese();
+                unsigned int aux;
+                aux = venitPiesa[i].ID_Piesa;
+                venitPiesa[i].ID_Piesa = venitPiesa[i + 1].ID_Piesa;
+                venitPiesa[i + 1].ID_Piesa = aux;
+
+                char DataAux[11];
+                strcpy(DataAux, venitPiesa[i].Data_Piesa);
+                strcpy(venitPiesa[i].Data_Piesa, venitPiesa[i + 1].Data_Piesa);
+                strcpy(venitPiesa[i + 1].Data_Piesa, DataAux);
+
+                float SumaAux;
+                SumaAux = venitPiesa[i].suma;
+                venitPiesa[i].suma = venitPiesa[i + 1].suma;
+                venitPiesa[i + 1].suma = SumaAux;
+
+                vSort = false;
             }
-            else
-                valid = true;
+    }
+    while (!vSort);
+}
+
+void sortare_venituri_descrescator_sumaAcumulata()
+{
+    bool vSort = true;
+
+    do
+    {
+        vSort = true;
+        for (unsigned int i = 1; i <= contorVenit - 1; i++)
+            if (venitPiesa[i].suma < venitPiesa[i + 1].suma)
+            {
+                unsigned int aux;
+                aux = venitPiesa[i].ID_Piesa;
+                venitPiesa[i].ID_Piesa = venitPiesa[i + 1].ID_Piesa;
+                venitPiesa[i + 1].ID_Piesa = aux;
+
+                char DataAux[11];
+                strcpy(DataAux, venitPiesa[i].Data_Piesa);
+                strcpy(venitPiesa[i].Data_Piesa, venitPiesa[i + 1].Data_Piesa);
+                strcpy(venitPiesa[i + 1].Data_Piesa, DataAux);
+
+                float SumaAux;
+                SumaAux = venitPiesa[i].suma;
+                venitPiesa[i].suma = venitPiesa[i + 1].suma;
+                venitPiesa[i + 1].suma = SumaAux;
+
+                vSort = false;
+            }
+    }
+    while (!vSort);
+}
+
+void sortare_venituri_data()
+{
+    system("CLS");
+
+    struct dataPiesa
+    {
+        unsigned int ID_Piesa;
+        unsigned int zi;
+        unsigned int luna;
+        unsigned int an;
+    } dataLoc[1001], dataIntrodusa;
+
+    unsigned int contorData = 0, contor = 1;
+    unsigned int vectorZi[2], vectorLuna[2], vectorAn[4];
+    unsigned int ziFinala = 0, lunaFinala = 0, anFinal = 0;
+
+    char matrix[3][11];
+
+    cout << "\n\n";
+    cout << setw(5) << " " << "Introduceti data (FORMAT: DD.MM.YYYY): " << "\n\n";
+    cout << setw(5) << " " << "Ziua (DD): ";
+    cin >> dataIntrodusa.zi;
+    cout << setw(5) << " " << "Luna (MM): ";
+    cin >> dataIntrodusa.luna;
+    cout << setw(5) << " " << "An (YY): ";
+    cin >> dataIntrodusa.an;
+
+    for (unsigned int i = 1; i <= contorVenit; i++)
+    {
+        ziFinala = 0;
+        lunaFinala = 0;
+        anFinal = 0;
+
+        for (unsigned int j = 0; j < strlen(venitPiesa[i].Data_Piesa); j++)
+            if (venitPiesa[i].Data_Piesa[j] == '.')
+                venitPiesa[i].Data_Piesa[j] = ' ';
+
+        char copieData[11];
+        strcpy(copieData, venitPiesa[i].Data_Piesa);
+
+        for (unsigned int j = 0; j < strlen(venitPiesa[i].Data_Piesa); j++)
+            if (venitPiesa[i].Data_Piesa[j] == ' ')
+                venitPiesa[i].Data_Piesa[j] = '.';
+
+        char *p = strtok(copieData, " ");
+
+        contorData = 0;
+
+        while (p != NULL)
+        {
+            strcpy(matrix[contorData], p);
+            contorData++;
+            p = strtok(NULL, " ");
         }
 
-        switch (Meniu_Venituri)
+        if (matrix[0][0] == '0')
         {
-        case 1:
-        {
-            bool vSort = true;
-
-            do
-            {
-                vSort = true;
-                for (unsigned int i = 1; i <= contorVenit - 1; i++)
-                    if (venitPiesa[i].suma > venitPiesa[i + 1].suma)
-                    {
-                        unsigned int aux;
-                        aux = venitPiesa[i].ID_Piesa;
-                        venitPiesa[i].ID_Piesa = venitPiesa[i + 1].ID_Piesa;
-                        venitPiesa[i + 1].ID_Piesa = aux;
-
-                        char DataAux[11];
-                        strcpy(DataAux, venitPiesa[i].Data_Piesa);
-                        strcpy(venitPiesa[i].Data_Piesa, venitPiesa[i + 1].Data_Piesa);
-                        strcpy(venitPiesa[i + 1].Data_Piesa, DataAux);
-
-                        float SumaAux;
-                        SumaAux = venitPiesa[i].suma;
-                        venitPiesa[i].suma = venitPiesa[i + 1].suma;
-                        venitPiesa[i + 1].suma = SumaAux;
-
-                        vSort = false;
-                    }
-            }
-            while (!vSort);
-
-            Meniu_Venituri_Piese();
+            matrix[0][0] = matrix[0][1];
+            matrix[0][1] = NULL;
         }
-        break;
-        case 2:
+
+        if (matrix[1][0] == '0')
         {
-            bool vSort = true;
-
-            do
-            {
-                vSort = true;
-                for (unsigned int i = 1; i <= contorVenit - 1; i++)
-                    if (venitPiesa[i].suma < venitPiesa[i + 1].suma)
-                    {
-                        unsigned int aux;
-                        aux = venitPiesa[i].ID_Piesa;
-                        venitPiesa[i].ID_Piesa = venitPiesa[i + 1].ID_Piesa;
-                        venitPiesa[i + 1].ID_Piesa = aux;
-
-                        char DataAux[11];
-                        strcpy(DataAux, venitPiesa[i].Data_Piesa);
-                        strcpy(venitPiesa[i].Data_Piesa, venitPiesa[i + 1].Data_Piesa);
-                        strcpy(venitPiesa[i + 1].Data_Piesa, DataAux);
-
-                        float SumaAux;
-                        SumaAux = venitPiesa[i].suma;
-                        venitPiesa[i].suma = venitPiesa[i + 1].suma;
-                        venitPiesa[i + 1].suma = SumaAux;
-
-                        vSort = false;
-                    }
-            }
-            while (!vSort);
-
-            Meniu_Venituri_Piese();
+            matrix[1][0] = matrix[1][1];
+            matrix[1][1] = NULL;
         }
-        break;
-        case 3:
+
+        if (strlen(matrix[0]) == 2)
         {
-            system("CLS");
+            vectorZi[0] = (unsigned int)(matrix[0][0]) - 48;
+            vectorZi[1] = (unsigned int)(matrix[0][1]) - 48;
 
-            struct dataPiesa
+            for (unsigned int i = 0; i < 2; i++)
+                ziFinala = ziFinala * 10 + vectorZi[i];
+        }
+        else
+            ziFinala = (unsigned int)(matrix[0][0]) - 48;
+
+        if (strlen(matrix[1]) == 2)
+        {
+            vectorLuna[0] = (unsigned int)(matrix[1][0]) - 48;
+            vectorLuna[1] = (unsigned int)(matrix[1][1]) - 48;
+
+            for (unsigned int i = 0; i < 2; i++)
+                lunaFinala = lunaFinala * 10 + vectorLuna[i];
+        }
+        else
+            lunaFinala = (unsigned int)(matrix[1][0]) - 48;
+
+
+        vectorAn[0] = (unsigned int)(matrix[2][0]) - 48;
+        vectorAn[1] = (unsigned int)(matrix[2][1]) - 48;
+        vectorAn[2] = (unsigned int)(matrix[2][2]) - 48;
+        vectorAn[3] = (unsigned int)(matrix[2][3]) - 48;
+
+        for (unsigned int i = 0; i < 4; i++)
+            anFinal = anFinal * 10 + vectorAn[i];
+
+        dataLoc[contor].ID_Piesa = venitPiesa[i].ID_Piesa;
+        dataLoc[contor].zi = ziFinala;
+        dataLoc[contor].luna = lunaFinala;
+        dataLoc[contor].an = anFinal;
+
+        contor++;
+    }
+
+    contor--;
+
+    sort_venituri_ID_crescator();
+
+    system("CLS");
+
+    cout << "\n\n";
+    cout << setw(5) << " " << "ID Piesa" << setw(5) << " " << "Data piesei" << setw(6) << " " << "Venit" << '\n';
+
+    fillLinieConsola(50);
+
+    for (unsigned int i = 1; i <= contorVenit; i++)
+        for (unsigned int j = 1; j <= contor; j++)
+        {
+            if (venitPiesa[i].ID_Piesa == dataLoc[j].ID_Piesa)
             {
-                unsigned int ID_Piesa;
-                unsigned int zi;
-                unsigned int luna;
-                unsigned int an;
-            } dataLoc[1001], dataIntrodusa;
-
-            unsigned int contorData = 0, contor = 1;
-            unsigned int vectorZi[2], vectorLuna[2], vectorAn[4];
-            unsigned int ziFinala = 0, lunaFinala = 0, anFinal = 0;
-
-            char matrix[3][11];
-
-            cout << "\n\n";
-            cout << setw(5) << " " << "Introduceti data (FORMAT: DD.MM.YYYY): " << "\n\n";
-            cout << setw(5) << " " << "Ziua (DD): ";
-            cin >> dataIntrodusa.zi;
-            cout << setw(5) << " " << "Luna (MM): ";
-            cin >> dataIntrodusa.luna;
-            cout << setw(5) << " " << "An (YY): ";
-            cin >> dataIntrodusa.an;
-
-            for (unsigned int i = 1; i <= contorVenit; i++)
-            {
-                ziFinala = 0;
-                lunaFinala = 0;
-                anFinal = 0;
-
-                for (unsigned int j = 0; j < strlen(venitPiesa[i].Data_Piesa); j++)
-                    if (venitPiesa[i].Data_Piesa[j] == '.')
-                        venitPiesa[i].Data_Piesa[j] = ' ';
-
-                char copieData[11];
-                strcpy(copieData, venitPiesa[i].Data_Piesa);
-
-                for (unsigned int j = 0; j < strlen(venitPiesa[i].Data_Piesa); j++)
-                    if (venitPiesa[i].Data_Piesa[j] == ' ')
-                        venitPiesa[i].Data_Piesa[j] = '.';
-
-                char *p = strtok(copieData, " ");
-
-                contorData = 0;
-
-                while (p != NULL)
+                if (dataLoc[j].an > dataIntrodusa.an)
+                    cout << setw(10 - 2) << " " << venitPiesa[i].ID_Piesa << setw(10 - 1) << " " << venitPiesa[i].Data_Piesa << setw(10 - 6) << " "
+                         << venitPiesa[i].suma << " RON" << endl;
+                else if (dataLoc[j].an == dataIntrodusa.an)
                 {
-                    strcpy(matrix[contorData], p);
-                    contorData++;
-                    p = strtok(NULL, " ");
-                }
-
-                if (matrix[0][0] == '0')
-                {
-                    matrix[0][0] = matrix[0][1];
-                    matrix[0][1] = NULL;
-                }
-
-                if (matrix[1][0] == '0')
-                {
-                    matrix[1][0] = matrix[1][1];
-                    matrix[1][1] = NULL;
-                }
-
-                if (strlen(matrix[0]) == 2)
-                {
-                    vectorZi[0] = (unsigned int)(matrix[0][0]) - 48;
-                    vectorZi[1] = (unsigned int)(matrix[0][1]) - 48;
-
-                    for (unsigned int i = 0; i < 2; i++)
-                        ziFinala = ziFinala * 10 + vectorZi[i];
-                }
-                else
-                    ziFinala = (unsigned int)(matrix[0][0]) - 48;
-
-                if (strlen(matrix[1]) == 2)
-                {
-                    vectorLuna[0] = (unsigned int)(matrix[1][0]) - 48;
-                    vectorLuna[1] = (unsigned int)(matrix[1][1]) - 48;
-
-                    for (unsigned int i = 0; i < 2; i++)
-                        lunaFinala = lunaFinala * 10 + vectorLuna[i];
-                }
-                else
-                    lunaFinala = (unsigned int)(matrix[1][0]) - 48;
-
-
-                vectorAn[0] = (unsigned int)(matrix[2][0]) - 48;
-                vectorAn[1] = (unsigned int)(matrix[2][1]) - 48;
-                vectorAn[2] = (unsigned int)(matrix[2][2]) - 48;
-                vectorAn[3] = (unsigned int)(matrix[2][3]) - 48;
-
-                for (unsigned int i = 0; i < 4; i++)
-                    anFinal = anFinal * 10 + vectorAn[i];
-
-                dataLoc[contor].ID_Piesa = venitPiesa[i].ID_Piesa;
-                dataLoc[contor].zi = ziFinala;
-                dataLoc[contor].luna = lunaFinala;
-                dataLoc[contor].an = anFinal;
-
-                contor++;
-            }
-
-            contor--;
-
-            sort_venituri_ID_crescator();
-
-            system("CLS");
-
-            cout << "\n\n";
-            cout << setw(5) << " " << "ID Piesa" << setw(5) << " " << "Data piesei" << setw(6) << " " << "Venit" << '\n';
-
-            fillLinieConsola(50);
-
-            for (unsigned int i = 1; i <= contorVenit; i++)
-                for (unsigned int j = 1; j <= contor; j++)
-                {
-                    if (venitPiesa[i].ID_Piesa == dataLoc[j].ID_Piesa)
-                    {
-                        if (dataLoc[j].an > dataIntrodusa.an)
+                    if (dataLoc[j].luna > dataIntrodusa.luna)
+                        cout << setw(10 - 2) << " " << venitPiesa[i].ID_Piesa << setw(10 - 1) << " " << venitPiesa[i].Data_Piesa << setw(10 - 6) << " "
+                             << venitPiesa[i].suma << " RON" << endl;
+                    else if (dataLoc[j].luna == dataIntrodusa.luna)
+                        if (dataLoc[j].zi > dataIntrodusa.zi)
                             cout << setw(10 - 2) << " " << venitPiesa[i].ID_Piesa << setw(10 - 1) << " " << venitPiesa[i].Data_Piesa << setw(10 - 6) << " "
                                  << venitPiesa[i].suma << " RON" << endl;
-                        else if (dataLoc[j].an == dataIntrodusa.an)
-                        {
-                            if (dataLoc[j].luna > dataIntrodusa.luna)
-                                cout << setw(10 - 2) << " " << venitPiesa[i].ID_Piesa << setw(10 - 1) << " " << venitPiesa[i].Data_Piesa << setw(10 - 6) << " "
-                                     << venitPiesa[i].suma << " RON" << endl;
-                            else if (dataLoc[j].luna == dataIntrodusa.luna)
-                                if (dataLoc[j].zi > dataIntrodusa.zi)
-                                    cout << setw(10 - 2) << " " << venitPiesa[i].ID_Piesa << setw(10 - 1) << " " << venitPiesa[i].Data_Piesa << setw(10 - 6) << " "
-                                         << venitPiesa[i].suma << " RON" << endl;
-                        }
-                    }
                 }
+            }
+        }
 
-            fillLinieConsola(50);
+    fillLinieConsola(50);
 
-            cout << '\n'
-                 << setw(4) << " "
-                 << "Apasati enter pentru a va intoarce la meniul precedent...";
-        }
-        _getch();
-        break;
-        case 4:
-        {
-            sort_venituri_ID_crescator();
-            Meniu_Venituri_Piese();
-        }
-        break;
-        }
-    }
-    while (Meniu_Venituri != 0);
+    cout << '\n'
+         << setw(4) << " "
+         << "Apasati enter pentru a va intoarce la meniul precedent...";
+}
+
+void resetare_afisare_venituri()
+{
+    sort_venituri_ID_crescator();
 }
 
 /// MATEI
@@ -2820,6 +2770,10 @@ void sali_cu_piesa()
             cout << setw(5 - 1) << " "
                  << "Ora: " << piesaTeatru[i].Ora_Piesa << '\n';
         }
+
+    cout << '\n'
+         << setw(4) << " "
+         << "Apasati enter pentru a va intoarce la meniul precedent...";
 }
 
 void cautare_actori_nume()
@@ -2827,11 +2781,14 @@ void cautare_actori_nume()
     system("CLS");
 
     unsigned int Meniu_subprogram;
+
     cout << endl;
     cout << setw(5 - 1) << " "
          << "1. Cautare dupa prenume." << endl;
     cout << setw(5 - 1) << " "
-         << "2. Cautare dupa nume de familie."
+         << "2. Cautare dupa nume de familie." << endl;
+    cout << setw(5 - 1) << " "
+         << "0. Inapoi"
          << "\n\n";
 
     cout << setw(5 - 1) << " "
@@ -2892,6 +2849,8 @@ void cautare_actori_nume()
              << setw(4) << " "
              << "Apasati enter pentru a va intoarce la meniul precedent...";
     }
+    else if (Meniu_subprogram == 0)
+        return;
     else
     {
         system("CLS");
@@ -2947,6 +2906,8 @@ void cautare_actori_nume()
              << setw(4) << " "
              << "Apasati enter pentru a va intoarce la meniul precedent...";
     }
+    _getch();
+    cautare_actori_nume();
 }
 
 void bilete_ieftine()
@@ -2955,15 +2916,29 @@ void bilete_ieftine()
     afisare_bilete();
 
     float vPret;
-    cout << endl;
+
+    cout << setw(5 - 1) << " "
+         << "APASA TASTA '0' PENTRU A ANULA";
+
+    cout << "\n\n";
     cout << setw(5 - 1) << " "
          << "Tasteaza pretul: ";
     cin >> vPret;
+
+    if (vPret == 0)
+        return;
 
     cout << '\n';
     for (unsigned int i = 1; i <= NumarBilete; i++)
         if (biletPiesa[i].Pret_Bilet < vPret)
             cout << setw(5 - 1) << " " << biletPiesa[i].ID_Bilet << ": " << biletPiesa[i].Tip_Bilet << ", " << biletPiesa[i].Pret_Bilet << endl;
+
+    cout << '\n'
+         << setw(4) << " "
+         << "Apasati enter pentru a va intoarce la meniul precedent...";
+
+    _getch();
+    bilete_ieftine();
 }
 
 /*void bilete_loja_vandute()
@@ -3017,65 +2992,71 @@ void bilete_pe_piesa()
 
     if (vID_Piesa == 0)
         return;
-
-    for (unsigned int i = 1; i <= NumarPieseVechi && ok == 0; i++)
-        if (piesa_veche[i].ID_Piesa == vID_Piesa)
-        {
-            piesaVeche = true;
-
-            for (unsigned int j = 1; j <= NumarSpectatori; j++)
-                if (spectatorPiesa[j].ID_Piesa == piesaTeatru[i].ID_Piesa)
-                {
-                    bilete++;
-                    if (spectatorPiesa[j].loja == 1)
-                        bilete_loja++;
-                }
-            ok = 1;
-        }
-
-    for (unsigned int i = 1; i <= NumarPiese && ok == 0; i++)
-        if (piesaTeatru[i].ID_Piesa == vID_Piesa)
-        {
-            for (unsigned int j = 1; j <= NumarSpectatori; j++)
-                if (spectatorPiesa[j].ID_Piesa == piesaTeatru[i].ID_Piesa)
-                {
-                    bilete++;
-                    if (spectatorPiesa[j].loja == 1)
-                        bilete_loja++;
-                }
-            ok = 1;
-        }
-
-    cout << '\n';
-    if (piesaVeche == true)
-    {
-        cout << setw(5 - 1) << " " << "Pentru piesa '" << piesa_veche[vID_Piesa].Nume_Piesa << "' s-au vandut " << bilete
-             << " bilete, dintre care " << bilete_loja << " pentru loja " << "(" << piesa_veche[vID_Piesa].Data_Piesa << ")." << '\n';
-
-        cout << "\n\n"
-             << setw(4) << " "
-             << "Apasati enter pentru a va intoarce la meniul precedent...";
-    }
-
     else
     {
-        char dataPiesaLocala[11], numePiesaLocal[101];
+        system("CLS");
+        afisare_bilete();
 
-        for (unsigned int i = 1; i <= NumarPiese; i++)
-            if (piesaTeatru[i].ID_Piesa == vID_Piesa)
+        for (unsigned int i = 1; i <= NumarPieseVechi && ok == 0; i++)
+            if (piesa_veche[i].ID_Piesa == vID_Piesa)
             {
-                strcpy(dataPiesaLocala, piesaTeatru[i].Data_Piesa);
-                strcpy(numePiesaLocal, piesaTeatru[i].Nume_Piesa);
+                piesaVeche = true;
+
+                for (unsigned int j = 1; j <= NumarSpectatori; j++)
+                    if (spectatorPiesa[j].ID_Piesa == piesaTeatru[i].ID_Piesa)
+                    {
+                        bilete++;
+                        if (spectatorPiesa[j].loja == 1)
+                            bilete_loja++;
+                    }
+                ok = 1;
             }
 
-        cout << setw(5 - 1) << " " << "Pentru piesa '" << numePiesaLocal << "' s-au vandut " << bilete
-             << " bilete, dintre care " << bilete_loja << " pentru loja " << "(" << dataPiesaLocala << ")." << '\n';
+        for (unsigned int i = 1; i <= NumarPiese && ok == 0; i++)
+            if (piesaTeatru[i].ID_Piesa == vID_Piesa)
+            {
+                for (unsigned int j = 1; j <= NumarSpectatori; j++)
+                    if (spectatorPiesa[j].ID_Piesa == piesaTeatru[i].ID_Piesa)
+                    {
+                        bilete++;
+                        if (spectatorPiesa[j].loja == 1)
+                            bilete_loja++;
+                    }
+                ok = 1;
+            }
 
-        cout << "\n\n"
-             << setw(4) << " "
-             << "Apasati enter pentru a va intoarce la meniul precedent...";
+        cout << '\n';
+        if (piesaVeche == true)
+        {
+            cout << setw(5 - 1) << " " << "Pentru piesa '" << piesa_veche[vID_Piesa].Nume_Piesa << "' s-au vandut " << bilete
+                 << " bilete, dintre care " << bilete_loja << " pentru loja " << "(" << piesa_veche[vID_Piesa].Data_Piesa << ")." << '\n';
+
+            cout << "\n\n"
+                 << setw(4) << " "
+                 << "Apasati enter pentru a va intoarce la meniul precedent...";
+        }
+
+        else
+        {
+            char dataPiesaLocala[11], numePiesaLocal[101];
+
+            for (unsigned int i = 1; i <= NumarPiese; i++)
+                if (piesaTeatru[i].ID_Piesa == vID_Piesa)
+                {
+                    strcpy(dataPiesaLocala, piesaTeatru[i].Data_Piesa);
+                    strcpy(numePiesaLocal, piesaTeatru[i].Nume_Piesa);
+                }
+
+            cout << setw(5 - 1) << " " << "Pentru piesa '" << numePiesaLocal << "' s-au vandut " << bilete
+                 << " bilete, dintre care " << bilete_loja << " pentru loja " << "(" << dataPiesaLocala << ")." << '\n';
+
+            cout << "\n\n"
+                 << setw(4) << " "
+                 << "Apasati enter pentru a va intoarce la meniul precedent...";
+        }
     }
     _getch();
+    bilete_pe_piesa();
 }
 
 void bilete_nevandute()
@@ -3133,6 +3114,8 @@ void bilete_nevandute()
              << setw(4) << " "
              << "Apasati enter pentru a va intoarce la meniul precedent...";
     }
+    _getch();
+    bilete_nevandute();
 }
 
 void top5_piese()
@@ -3675,14 +3658,12 @@ int main()
                 {
                 case 1:
                     bilete_ieftine();
-                    _getch();
                     break;
                 case 2:
                     bilete_pe_piesa();
                     break;
                 case 3:
                     bilete_nevandute();
-                    _getch();
                     break;
                 case 4:
                 {
@@ -3755,7 +3736,6 @@ int main()
                 {
                 case 1:
                     cautare_actori_nume();
-                    _getch();
                     break;
                 case 2:
                 {
@@ -3764,7 +3744,6 @@ int main()
                     do
                     {
                         system("CLS");
-                        afisare_actori();
 
                         cout << '\n';
                         cout << setw(5 - 1) << " "
@@ -3786,7 +3765,6 @@ int main()
                         {
                         case 1:
                             Adaugare_Actori();
-                            _getch();
                             break;
                         case 2:
                             Stergere_Actori();
@@ -3849,7 +3827,68 @@ int main()
         case 7:
         {
             Venituri();
-            Meniu_Venituri_Piese();
+
+            unsigned int Meniu_Venituri;
+            bool valid = false;
+
+            do
+            {
+                system("CLS");
+                afisare_venituri();
+
+                cout << setw(5 - 1) << " " << "1. Sorteaza veniturile in ordine crescatoare in functie de suma acumulata" << endl;
+                cout << setw(5 - 1) << " " << "2. Sorteaza veniturile in ordine crescatoare in functie de suma acumulata" << endl;
+                cout << setw(5 - 1) << " " << "3. Afiseaza veniturile pieselor dupa o anumita data" << endl;
+                cout << setw(5 - 1) << " " << "4. Reseteaza afisarea veniturilor" << endl;
+                cout << setw(5 - 1) << " " << "0. Inapoi" << "\n\n";
+
+                cout << setw(5 - 1) << " "
+                     << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: ";
+
+                valid = false;
+                while (!valid)
+                {
+                    cin >> Meniu_Venituri;
+                    if (cin.fail())
+                    {
+                        cin.clear();
+                        cin.ignore();
+                        cout << '\n';
+                        cerr << setw(5 - 1) << " "
+                             << "Valoarea introdusa este invalida!" << endl;
+                        Sleep(1500);
+                        break;
+                    }
+                    else
+                        valid = true;
+                }
+
+                switch (Meniu_Venituri)
+                {
+                case 1:
+                {
+                    sortare_venituri_crescator_sumaAcumulata();
+                }
+                break;
+                case 2:
+                {
+                    sortare_venituri_descrescator_sumaAcumulata();
+                }
+                break;
+                case 3:
+                {
+                    sortare_venituri_data();
+                }
+                _getch();
+                break;
+                case 4:
+                {
+                    resetare_afisare_venituri();
+                }
+                break;
+                }
+            }
+            while (Meniu_Venituri != 0);
         }
         break;
         }
