@@ -1434,6 +1434,7 @@ void cautare_piesa_nume()
         cout << setw(5 - 1) << " "
              << "Apasa enter pentru a te intoarce la meniul precedent...";
         _getch();
+        cautare_piesa_nume();
     }
 }
 
@@ -1570,8 +1571,11 @@ void cautare_piesa_ora()
         cout << '\n';
         cout << setw(5 - 1) << " "
              << "Apasa enter pentru a te intoarce la meniul precedent...";
+
+        _getch();
+        cautare_piesa_ora();
     }
-    _getch();
+
 }
 
 void cautare_piesa_data()
@@ -1644,8 +1648,10 @@ void cautare_piesa_data()
         cout << '\n';
         cout << setw(5 - 1) << " "
              << "Apasa enter pentru a te intoarce la meniul precedent...";
+        _getch();
+        cautare_piesa_data();
     }
-    _getch();
+
 }
 
 void cautare_piesa_regizor()
@@ -1717,9 +1723,12 @@ void cautare_piesa_regizor()
             cout << '\n';
             cout << setw(5 - 1) << " "
                  << "Apasa enter pentru a te intoarce la meniul precedent...";
+
+            _getch();
+            cautare_piesa_regizor();
         }
     }
-    _getch();
+
 }
 
 void cautare_piesa_actor()
@@ -2123,7 +2132,7 @@ void Adaugare_Personal()
     while (!valid)
     {
         cin >> personalTeatru[NumarPersonalTeatru].CNP_PersonalTeatru;
-        if (cin.fail() || strlen(personalTeatru[NumarPersonalTeatru].CNP_PersonalTeatru) != 13)
+        if (cin.fail())
         {
             cin.clear();
             cin.ignore();
