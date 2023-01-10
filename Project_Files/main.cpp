@@ -7,8 +7,6 @@
 #include <conio.h>
 #include <windows.h>
 
-#define _WIN32_WINNT 0x0502
-
 using namespace std;
 
 /// Declarare contoarelor
@@ -3258,7 +3256,7 @@ void top5_piese()
 }
 
 ///Ioana
-///Afisati toate piesele care incep cu litera … (litera va fi introdus de la tastatura)
+///Afisati toate piesele care incep cu litera ï¿½ (litera va fi introdus de la tastatura)
 void afisare_prima_litera()
 {
     system("CLS");
@@ -3295,7 +3293,7 @@ void afisare_prima_litera()
     }
 }
 
-/// Afisati toate piesele care se tin dupa ora…(ora va fi introdusa de la tastatura)
+/// Afisati toate piesele care se tin dupa oraï¿½(ora va fi introdusa de la tastatura)
 void piese_dupa_ora()
 {
     system("CLS");
@@ -3373,7 +3371,7 @@ void cele_mai_mari_3_sali()
     _getch();
 }
 
-/// Afisarea tuturor actorilor a caror varsta este mai mare sau egala cu … ani.
+/// Afisarea tuturor actorilor a caror varsta este mai mare sau egala cu ï¿½ ani.
 void varsta_mai_mare_actori()
 {
     system("CLS");
@@ -3427,7 +3425,7 @@ void varsta_mai_mare_actori()
     }
 }
 
-/// Afisarea tuturor actorilor a caror varsta este mai mica sau egala cu … ani
+/// Afisarea tuturor actorilor a caror varsta este mai mica sau egala cu ï¿½ ani
 void varsta_mai_mica_actori()
 {
     system("CLS");
@@ -3480,7 +3478,7 @@ void varsta_mai_mica_actori()
     }
 }
 
-///Afisati toti actorii cu genul… (genul va fi introdus de la tastatura)
+///Afisati toti actorii cu genulï¿½ (genul va fi introdus de la tastatura)
 void gen_actori()
 {
     system("CLS");
@@ -3553,7 +3551,7 @@ void gen_actori()
     }
 }
 
-///Afisati tot personalul cu ocupatia… (numele ocupatiei va fi introdus de la tastatura)
+///Afisati tot personalul cu ocupatiaï¿½ (numele ocupatiei va fi introdus de la tastatura)
 void ocupatie_personal()
 {
     system("CLS");
@@ -3627,7 +3625,7 @@ void ocupatie_personal()
     }
 }
 
-///Afisarea personalului cu varsta mai mare sau egala cu … ani.
+///Afisarea personalului cu varsta mai mare sau egala cu ï¿½ ani.
 void varsta_mai_mare_personal()
 {
     system("CLS");
@@ -3695,7 +3693,7 @@ void varsta_mai_mare_personal()
     }
 }
 
-/// Afisarea personalului cu varsta mai mica sau egala cu … ani
+/// Afisarea personalului cu varsta mai mica sau egala cu ï¿½ ani
 void varsta_mai_mica_personal()
 {
     system("CLS");
