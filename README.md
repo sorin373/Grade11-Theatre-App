@@ -8,7 +8,7 @@
 - The project is recommanded to be ran on **windows** only, since there are some issues with the used C++ libraries on **Linux** and **MacOS**.
 
 ## Project Status
-- The project has beed completed on the 10th of January 2023.
+- The project has been completed on the 10th of January 2023.
 
 ## Contact
 - sorin.andrei.tudose@gmail.com / tudose.sorinandrei@cncosbuc.ro
