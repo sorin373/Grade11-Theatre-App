@@ -1,8 +1,3 @@
-# Highschool project - Theatre data base simulation
-
-## General Information
-- This project was made by me and two other students from [Colegiul National Bilingv George Cosbuc](http://cosbucbilingv.ro/). It simulates a theatre data base using files as the data storage space. We created different data-structures which represent all the data from the files which we take as input. 
-- The project was built in **CodeBlocks V20.03**.
 
 ## Requirements
 - The project can be ran on both **Windows** and **Linux**.
