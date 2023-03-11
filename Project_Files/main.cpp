@@ -2,10 +2,19 @@
 #include <fstream>
 #include <cstring>
 #include <iomanip>
+#include <cstdlib>
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <conio.h>
+#include <unistd.h>
+#include <termios.h>
+#include <ctype.h>
+
+#ifdef _WIN32
 #include <windows.h>
+#else
+#include <unistd.h>
+#endif // _WIN32
 
 using namespace std;
 
@@ -113,6 +122,48 @@ void fillLinieConsola(const unsigned int vWidth)
     cout << '_' << endl;
     cout.fill(fillLine);
     cout << endl;
+}
+
+void clear_screen()
+{
+#ifdef WINDOWS
+    std::clear_screen();
+#else
+    // Assume POSIX
+    std::system("clear");
+#endif
+}
+
+void sleepcp(int milliseconds) // Cross-platform sleep function
+{
+#ifdef _WIN32
+    sleep(milliseconds);
+#else
+    usleep(milliseconds * 1000);
+#endif // _WIN32
+}
+
+char getch(void)
+{
+    char buf = 0;
+    struct termios old = {0};
+    fflush(stdout);
+    if (tcgetattr(0, &old) < 0)
+        perror("tcsetattr()");
+    old.c_lflag &= ~ICANON;
+    old.c_lflag &= ~ECHO;
+    old.c_cc[VMIN] = 1;
+    old.c_cc[VTIME] = 0;
+    if (tcsetattr(0, TCSANOW, &old) < 0)
+        perror("tcsetattr ICANON");
+    if (read(0, &buf, 1) < 0)
+        perror("read()");
+    old.c_lflag |= ICANON;
+    old.c_lflag |= ECHO;
+    if (tcsetattr(0, TCSADRAIN, &old) < 0)
+        perror("tcsetattr ~ICANON");
+    printf("%c\n", buf);
+    return buf;
 }
 
 /// Citire date din fisier
@@ -470,7 +521,10 @@ void afisare_piese_vechi()
 void afisare_venituri()
 {
     cout << "\n\n";
-    cout << setw(5) << " " << "ID Piesa" << setw(5) << " " << "Data piesei" << setw(5) << " " << "Venit" << '\n';
+    cout << setw(5) << " "
+         << "ID Piesa" << setw(5) << " "
+         << "Data piesei" << setw(5) << " "
+         << "Venit" << '\n';
     fillLinieConsola(85);
 
     for (unsigned int i = 1; i <= contorVenit; i++)
@@ -519,8 +573,7 @@ void sort_piese_ID_crescator()
 
                 vSort = false;
             }
-    }
-    while (!vSort);
+    } while (!vSort);
 }
 
 void sort_venituri_ID_crescator()
@@ -550,8 +603,7 @@ void sort_venituri_ID_crescator()
 
                 vSort = false;
             }
-    }
-    while (!vSort);
+    } while (!vSort);
 }
 
 void sortari_piese()
@@ -559,7 +611,7 @@ void sortari_piese()
     unsigned int Meniu_sortari;
     do
     {
-        system("CLS");
+        clear_screen();
         cout << endl;
         cout << setw(5 - 1) << " "
              << "1. Sortare alfabetica." << endl;
@@ -586,13 +638,12 @@ void sortari_piese()
             {
                 ok = 1;
                 for (unsigned int i = 1; i < NumarPiese; i++)
-                    if (stricmp(s_piesaTeatru[i].Nume_Piesa, s_piesaTeatru[i + 1].Nume_Piesa) > 0)
+                    if (strcasecmp(s_piesaTeatru[i].Nume_Piesa, s_piesaTeatru[i + 1].Nume_Piesa) > 0)
                     {
                         swap(s_piesaTeatru[i], s_piesaTeatru[i + 1]);
                         ok = 0;
                     }
-            }
-            while (ok == 0);
+            } while (ok == 0);
 
             unsigned int NumarMaxCaractere = 0;
             for (unsigned int i = 1; i <= NumarPiese; i++)
@@ -619,8 +670,8 @@ void sortari_piese()
             }
             fillLinieConsola(85);
         }
-        _getch();
-        break;
+            getch();
+            break;
 
         case 2:
         {
@@ -633,18 +684,17 @@ void sortari_piese()
                 ok = 1;
                 for (unsigned int i = 1; i < NumarPiese; i++)
                     if ((s_piesaTeatru[i].Data_Piesa[4] > s_piesaTeatru[i + 1].Data_Piesa[4] ||
-                            (s_piesaTeatru[i].Data_Piesa[4] == s_piesaTeatru[i + 1].Data_Piesa[4] && s_piesaTeatru[i].Data_Piesa[5] > s_piesaTeatru[i + 1].Data_Piesa[5]) ||
-                            ((s_piesaTeatru[i].Data_Piesa[4] == s_piesaTeatru[i + 1].Data_Piesa[4] && s_piesaTeatru[i].Data_Piesa[5] == s_piesaTeatru[i + 1].Data_Piesa[5]) &&
-                             s_piesaTeatru[i].Data_Piesa[0] > s_piesaTeatru[i + 1].Data_Piesa[0])) ||
-                            (((s_piesaTeatru[i].Data_Piesa[4] == s_piesaTeatru[i + 1].Data_Piesa[4] && s_piesaTeatru[i].Data_Piesa[5] == s_piesaTeatru[i + 1].Data_Piesa[5]) &&
-                              s_piesaTeatru[i].Data_Piesa[0] == s_piesaTeatru[i + 1].Data_Piesa[0]) &&
-                             s_piesaTeatru[i].Data_Piesa[1] > s_piesaTeatru[i + 1].Data_Piesa[1]))
+                         (s_piesaTeatru[i].Data_Piesa[4] == s_piesaTeatru[i + 1].Data_Piesa[4] && s_piesaTeatru[i].Data_Piesa[5] > s_piesaTeatru[i + 1].Data_Piesa[5]) ||
+                         ((s_piesaTeatru[i].Data_Piesa[4] == s_piesaTeatru[i + 1].Data_Piesa[4] && s_piesaTeatru[i].Data_Piesa[5] == s_piesaTeatru[i + 1].Data_Piesa[5]) &&
+                          s_piesaTeatru[i].Data_Piesa[0] > s_piesaTeatru[i + 1].Data_Piesa[0])) ||
+                        (((s_piesaTeatru[i].Data_Piesa[4] == s_piesaTeatru[i + 1].Data_Piesa[4] && s_piesaTeatru[i].Data_Piesa[5] == s_piesaTeatru[i + 1].Data_Piesa[5]) &&
+                          s_piesaTeatru[i].Data_Piesa[0] == s_piesaTeatru[i + 1].Data_Piesa[0]) &&
+                         s_piesaTeatru[i].Data_Piesa[1] > s_piesaTeatru[i + 1].Data_Piesa[1]))
                     {
                         swap(s_piesaTeatru[i], s_piesaTeatru[i + 1]);
                         ok = 0;
                     }
-            }
-            while (ok == 0);
+            } while (ok == 0);
 
             unsigned int NumarMaxCaractere = 0;
             for (unsigned int i = 1; i <= NumarPiese; i++)
@@ -671,8 +721,8 @@ void sortari_piese()
             }
             fillLinieConsola(85);
         }
-        _getch();
-        break;
+            getch();
+            break;
 
         case 3:
         {
@@ -689,8 +739,7 @@ void sortari_piese()
                         swap(s_piesaTeatru[i], s_piesaTeatru[i + 1]);
                         ok = 0;
                     }
-            }
-            while (ok == 0);
+            } while (ok == 0);
 
             unsigned int NumarMaxCaractere = 0;
             for (unsigned int i = 1; i <= NumarPiese; i++)
@@ -717,11 +766,10 @@ void sortari_piese()
             }
             fillLinieConsola(85);
         }
-        _getch();
-        break;
+            getch();
+            break;
         }
-    }
-    while (Meniu_sortari != 0);
+    } while (Meniu_sortari != 0);
 }
 
 void sortari_actori()
@@ -729,7 +777,7 @@ void sortari_actori()
     unsigned int Meniu_sortari;
     do
     {
-        system("CLS");
+        clear_screen();
         cout << endl;
 
         cout << setw(5 - 1) << " "
@@ -757,13 +805,12 @@ void sortari_actori()
             {
                 ok = 1;
                 for (unsigned int i = 1; i < NumarActori; i++)
-                    if (stricmp(c_actor[i].Nume_Actor, c_actor[i + 1].Nume_Actor) > 0)
+                    if (strcasecmp(c_actor[i].Nume_Actor, c_actor[i + 1].Nume_Actor) > 0)
                     {
                         swap(c_actor[i], c_actor[i + 1]);
                         ok = 0;
                     }
-            }
-            while (ok == 0);
+            } while (ok == 0);
 
             unsigned int NumarMaxCaractereNume = 0;
 
@@ -805,8 +852,8 @@ void sortari_actori()
 
             fillLinieConsola(115);
         }
-        _getch();
-        break;
+            getch();
+            break;
 
         case 2:
         {
@@ -818,13 +865,12 @@ void sortari_actori()
             {
                 ok = 1;
                 for (unsigned int i = 1; i < NumarActori; i++)
-                    if (stricmp(c_actor[i].Prenume_Actor, c_actor[i + 1].Prenume_Actor) > 0)
+                    if (strcasecmp(c_actor[i].Prenume_Actor, c_actor[i + 1].Prenume_Actor) > 0)
                     {
                         swap(c_actor[i], c_actor[i + 1]);
                         ok = 0;
                     }
-            }
-            while (ok == 0);
+            } while (ok == 0);
 
             unsigned int NumarMaxCaractereNume = 0;
 
@@ -866,8 +912,8 @@ void sortari_actori()
 
             fillLinieConsola(115);
         }
-        _getch();
-        break;
+            getch();
+            break;
 
         case 3:
         {
@@ -884,8 +930,7 @@ void sortari_actori()
                         swap(c_actor[i], c_actor[i + 1]);
                         ok = 0;
                     }
-            }
-            while (ok == 0);
+            } while (ok == 0);
 
             unsigned int NumarMaxCaractereNume = 0;
 
@@ -927,11 +972,10 @@ void sortari_actori()
 
             fillLinieConsola(115);
         }
-        _getch();
-        break;
+            getch();
+            break;
         }
-    }
-    while (Meniu_sortari != 0);
+    } while (Meniu_sortari != 0);
 }
 
 void sortari_personal()
@@ -939,7 +983,7 @@ void sortari_personal()
     unsigned int Meniu_sortari;
     do
     {
-        system("CLS");
+        clear_screen();
         cout << endl;
 
         cout << setw(5 - 1) << " "
@@ -969,13 +1013,12 @@ void sortari_personal()
             {
                 ok = 1;
                 for (unsigned int i = 1; i < NumarPersonalTeatru; i++)
-                    if (stricmp(c_personal[i].Nume_PersonalTeatru, c_personal[i + 1].Nume_PersonalTeatru) > 0)
+                    if (strcasecmp(c_personal[i].Nume_PersonalTeatru, c_personal[i + 1].Nume_PersonalTeatru) > 0)
                     {
                         swap(c_personal[i], c_personal[i + 1]);
                         ok = 0;
                     }
-            }
-            while (ok == 0);
+            } while (ok == 0);
 
             unsigned int nrMaxCaractereFunctie = 0;
             for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
@@ -1023,8 +1066,8 @@ void sortari_personal()
 
             fillLinieConsola(110);
         }
-        _getch();
-        break;
+            getch();
+            break;
 
         case 2:
         {
@@ -1036,13 +1079,12 @@ void sortari_personal()
             {
                 ok = 1;
                 for (unsigned int i = 1; i < NumarPersonalTeatru; i++)
-                    if (stricmp(c_personal[i].Prenume_PersonalTeatru, c_personal[i + 1].Prenume_PersonalTeatru) > 0)
+                    if (strcasecmp(c_personal[i].Prenume_PersonalTeatru, c_personal[i + 1].Prenume_PersonalTeatru) > 0)
                     {
                         swap(c_personal[i], c_personal[i + 1]);
                         ok = 0;
                     }
-            }
-            while (ok == 0);
+            } while (ok == 0);
 
             unsigned int nrMaxCaractereFunctie = 0;
             for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
@@ -1090,8 +1132,8 @@ void sortari_personal()
 
             fillLinieConsola(110);
         }
-        _getch();
-        break;
+            getch();
+            break;
 
         case 3:
         {
@@ -1108,8 +1150,7 @@ void sortari_personal()
                         swap(c_personal[i], c_personal[i + 1]);
                         ok = 0;
                     }
-            }
-            while (ok == 0);
+            } while (ok == 0);
 
             unsigned int nrMaxCaractereFunctie = 0;
             for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
@@ -1157,8 +1198,8 @@ void sortari_personal()
 
             fillLinieConsola(110);
         }
-        _getch();
-        break;
+            getch();
+            break;
 
         case 4:
         {
@@ -1170,13 +1211,12 @@ void sortari_personal()
             {
                 ok = 1;
                 for (unsigned int i = 1; i < NumarPersonalTeatru; i++)
-                    if (stricmp(c_personal[i].Functie_PersonalTeatru, c_personal[i + 1].Functie_PersonalTeatru) > 0)
+                    if (strcasecmp(c_personal[i].Functie_PersonalTeatru, c_personal[i + 1].Functie_PersonalTeatru) > 0)
                     {
                         swap(c_personal[i], c_personal[i + 1]);
                         ok = 0;
                     }
-            }
-            while (ok == 0);
+            } while (ok == 0);
 
             unsigned int nrMaxCaractereFunctie = 0;
             for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
@@ -1224,16 +1264,15 @@ void sortari_personal()
 
             fillLinieConsola(110);
         }
-        _getch();
-        break;
+            getch();
+            break;
         }
-    }
-    while (Meniu_sortari != 0);
+    } while (Meniu_sortari != 0);
 }
 
 void sortari_istoricPiese_alfabeti_A_Z()
 {
-    system("CLS");
+    clear_screen();
 
     unsigned int ok;
     piesa_v c_piesa_veche[401];
@@ -1243,13 +1282,12 @@ void sortari_istoricPiese_alfabeti_A_Z()
     {
         ok = 1;
         for (unsigned int i = 1; i < NumarPieseVechi; i++)
-            if (stricmp(c_piesa_veche[i].Nume_Piesa, c_piesa_veche[i + 1].Nume_Piesa) > 0)
+            if (strcasecmp(c_piesa_veche[i].Nume_Piesa, c_piesa_veche[i + 1].Nume_Piesa) > 0)
             {
                 swap(c_piesa_veche[i], c_piesa_veche[i + 1]);
                 ok = 0;
             }
-    }
-    while (ok == 0);
+    } while (ok == 0);
 
     unsigned int NumarMaxCaractere = 0;
 
@@ -1284,7 +1322,7 @@ void sortari_istoricPiese_alfabeti_A_Z()
 
 void sortari_istoricPiese_alfabeti_Z_A()
 {
-    system("CLS");
+    clear_screen();
 
     unsigned int ok;
     piesa_v c_piesa_veche[401];
@@ -1294,13 +1332,12 @@ void sortari_istoricPiese_alfabeti_Z_A()
     {
         ok = 1;
         for (unsigned int i = 1; i < NumarPieseVechi; i++)
-            if (stricmp(c_piesa_veche[i].Nume_Piesa, c_piesa_veche[i + 1].Nume_Piesa) < 0)
+            if (strcasecmp(c_piesa_veche[i].Nume_Piesa, c_piesa_veche[i + 1].Nume_Piesa) < 0)
             {
                 swap(c_piesa_veche[i], c_piesa_veche[i + 1]);
                 ok = 0;
             }
-    }
-    while (ok == 0);
+    } while (ok == 0);
 
     unsigned int NumarMaxCaractere = 0;
 
@@ -1335,7 +1372,7 @@ void sortari_istoricPiese_alfabeti_Z_A()
 
 void sortari_istoricPiese_data()
 {
-    system("CLS");
+    clear_screen();
 
     unsigned int ok;
     piesa_v c_piesa_veche[401];
@@ -1346,18 +1383,17 @@ void sortari_istoricPiese_data()
         ok = 1;
         for (unsigned int i = 1; i < NumarPieseVechi; i++)
             if ((c_piesa_veche[i].Data_Piesa[4] > c_piesa_veche[i + 1].Data_Piesa[4] ||
-                    (c_piesa_veche[i].Data_Piesa[4] == c_piesa_veche[i + 1].Data_Piesa[4] && c_piesa_veche[i].Data_Piesa[5] > c_piesa_veche[i + 1].Data_Piesa[5]) ||
-                    ((c_piesa_veche[i].Data_Piesa[4] == c_piesa_veche[i + 1].Data_Piesa[4] && c_piesa_veche[i].Data_Piesa[5] == c_piesa_veche[i + 1].Data_Piesa[5]) &&
-                     c_piesa_veche[i].Data_Piesa[0] > c_piesa_veche[i + 1].Data_Piesa[0])) ||
-                    (((c_piesa_veche[i].Data_Piesa[4] == c_piesa_veche[i + 1].Data_Piesa[4] && c_piesa_veche[i].Data_Piesa[5] == c_piesa_veche[i + 1].Data_Piesa[5]) &&
-                      c_piesa_veche[i].Data_Piesa[0] == c_piesa_veche[i + 1].Data_Piesa[0]) &&
-                     c_piesa_veche[i].Data_Piesa[1] > c_piesa_veche[i + 1].Data_Piesa[1]))
+                 (c_piesa_veche[i].Data_Piesa[4] == c_piesa_veche[i + 1].Data_Piesa[4] && c_piesa_veche[i].Data_Piesa[5] > c_piesa_veche[i + 1].Data_Piesa[5]) ||
+                 ((c_piesa_veche[i].Data_Piesa[4] == c_piesa_veche[i + 1].Data_Piesa[4] && c_piesa_veche[i].Data_Piesa[5] == c_piesa_veche[i + 1].Data_Piesa[5]) &&
+                  c_piesa_veche[i].Data_Piesa[0] > c_piesa_veche[i + 1].Data_Piesa[0])) ||
+                (((c_piesa_veche[i].Data_Piesa[4] == c_piesa_veche[i + 1].Data_Piesa[4] && c_piesa_veche[i].Data_Piesa[5] == c_piesa_veche[i + 1].Data_Piesa[5]) &&
+                  c_piesa_veche[i].Data_Piesa[0] == c_piesa_veche[i + 1].Data_Piesa[0]) &&
+                 c_piesa_veche[i].Data_Piesa[1] > c_piesa_veche[i + 1].Data_Piesa[1]))
             {
                 swap(c_piesa_veche[i], c_piesa_veche[i + 1]);
                 ok = 0;
             }
-    }
-    while (ok == 0);
+    } while (ok == 0);
 
     unsigned int NumarMaxCaractere = 0;
 
@@ -1393,7 +1429,7 @@ void sortari_istoricPiese_data()
 /// Componente main
 void cautare_piesa_nume()
 {
-    system("CLS");
+    clear_screen();
     afisare_piese();
 
     char vNume_Piesa[101];
@@ -1413,7 +1449,7 @@ void cautare_piesa_nume()
     else
     {
         for (unsigned int i = 1; i <= NumarPiese; i++)
-            if (stricmp(piesaTeatru[i].Nume_Piesa, vNume_Piesa) == 0)
+            if (strcasecmp(piesaTeatru[i].Nume_Piesa, vNume_Piesa) == 0)
             {
                 cout << '\n';
 
@@ -1431,14 +1467,14 @@ void cautare_piesa_nume()
         cout << '\n';
         cout << setw(5 - 1) << " "
              << "Apasa enter pentru a te intoarce la meniul precedent...";
-        _getch();
+        getch();
         cautare_piesa_nume();
     }
 }
 
 void cautare_piesa_ID()
 {
-    system("CLS");
+    clear_screen();
     afisare_piese();
 
     unsigned int vID;
@@ -1455,14 +1491,14 @@ void cautare_piesa_ID()
     while (!valid)
     {
         cin >> vID;
-        if (cin.fail() || vID > copie_ID_Piesa_Max )
+        if (cin.fail() || vID > copie_ID_Piesa_Max)
         {
             cin.clear();
             cin.ignore();
             cout << '\n';
             cerr << setw(5) << " "
                  << "Valoarea introdusa este invalida!" << endl;
-            Sleep(1500);
+            sleepcp(1500);
             cautare_piesa_ID();
         }
         else
@@ -1494,14 +1530,14 @@ void cautare_piesa_ID()
         cout << '\n';
         cout << setw(5 - 1) << " "
              << "Apasa enter pentru a te intoarce la meniul precedent...";
-        _getch();
+        getch();
         cautare_piesa_ID();
     }
 }
 
 void cautare_piesa_ora()
 {
-    system("CLS");
+    clear_screen();
     afisare_piese();
 
     char vOraPiesa[6];
@@ -1527,7 +1563,7 @@ void cautare_piesa_ora()
             cout << '\n';
             cerr << setw(5 - 1) << " "
                  << "Formatul orei introduse este invalid!" << endl;
-            Sleep(1500);
+            sleepcp(1500);
             cautare_piesa_ora();
         }
         else
@@ -1562,7 +1598,7 @@ void cautare_piesa_ora()
             cout << '\n'
                  << setw(5 - 1) << " "
                  << "Nu exista piese la aceasta ora!";
-            Sleep(1500);
+            sleepcp(1500);
             cautare_piesa_ora();
         }
 
@@ -1570,15 +1606,14 @@ void cautare_piesa_ora()
         cout << setw(5 - 1) << " "
              << "Apasa enter pentru a te intoarce la meniul precedent...";
 
-        _getch();
+        getch();
         cautare_piesa_ora();
     }
-
 }
 
 void cautare_piesa_data()
 {
-    system("CLS");
+    clear_screen();
     afisare_piese();
 
     char vDataPiesa[11];
@@ -1604,7 +1639,7 @@ void cautare_piesa_data()
             cout << '\n';
             cerr << setw(5 - 1) << " "
                  << "Formatul datei introduse este invalid!" << endl;
-            Sleep(1500);
+            sleepcp(1500);
             cautare_piesa_data();
         }
         else
@@ -1639,22 +1674,21 @@ void cautare_piesa_data()
             cout << '\n'
                  << setw(5 - 1) << " "
                  << "Nu exista piese in aceasta data!";
-            Sleep(1500);
+            sleepcp(1500);
             cautare_piesa_data();
         }
 
         cout << '\n';
         cout << setw(5 - 1) << " "
              << "Apasa enter pentru a te intoarce la meniul precedent...";
-        _getch();
+        getch();
         cautare_piesa_data();
     }
-
 }
 
 void cautare_piesa_regizor()
 {
-    system("CLS");
+    clear_screen();
     afisare_piese();
 
     char vNumeRegizor[101], vPrenumeRegizor[101];
@@ -1687,7 +1721,7 @@ void cautare_piesa_regizor()
         {
             unsigned int copieID = 0;
             for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
-                if (stricmp(vNumeRegizor, personalTeatru[i].Nume_PersonalTeatru) == 0 && stricmp(vPrenumeRegizor, personalTeatru[i].Prenume_PersonalTeatru) == 0)
+                if (strcasecmp(vNumeRegizor, personalTeatru[i].Nume_PersonalTeatru) == 0 && strcasecmp(vPrenumeRegizor, personalTeatru[i].Prenume_PersonalTeatru) == 0)
                     copieID = personalTeatru[i].ID_PersonalTeatru;
 
             for (unsigned int j = 1; j <= NumarPiese; j++)
@@ -1714,7 +1748,7 @@ void cautare_piesa_regizor()
                 cout << '\n'
                      << setw(5 - 1) << " "
                      << "Nu exista piese puse in scena de regizorul respectiv!";
-                Sleep(1500);
+                sleepcp(1500);
                 cautare_piesa_regizor();
             }
 
@@ -1722,16 +1756,15 @@ void cautare_piesa_regizor()
             cout << setw(5 - 1) << " "
                  << "Apasa enter pentru a te intoarce la meniul precedent...";
 
-            _getch();
+            getch();
             cautare_piesa_regizor();
         }
     }
-
 }
 
 void cautare_piesa_actor()
 {
-    system("CLS");
+    clear_screen();
     afisare_piese();
 
     char vNumeActor[101], vPrenumeActor[101];
@@ -1789,7 +1822,7 @@ void cautare_piesa_actor()
                 cout << '\n'
                      << setw(5 - 1) << " "
                      << "Nu exista piese jucate de actorul respectiv!";
-                Sleep(1500);
+                sleepcp(1500);
                 cautare_piesa_actor();
             }
 
@@ -1798,12 +1831,12 @@ void cautare_piesa_actor()
                  << "Apasa enter pentru a te intoarce la meniul precedent...";
         }
     }
-    _getch();
+    getch();
 }
 
 void cautare_Piesa_ID_Actori()
 {
-    system("CLS");
+    clear_screen();
 
     afisare_piese();
 
@@ -1826,7 +1859,7 @@ void cautare_Piesa_ID_Actori()
             cout << '\n';
             cerr << setw(5 - 1) << " "
                  << "Valoarea introdusa in campul ID PIESA este invalida!" << endl;
-            Sleep(1500);
+            sleepcp(1500);
             cautare_Piesa_ID_Actori();
         }
         else
@@ -1837,7 +1870,7 @@ void cautare_Piesa_ID_Actori()
         return;
     else
     {
-        system("CLS");
+        clear_screen();
 
         char copieNumePiesa[101];
 
@@ -1873,14 +1906,14 @@ void cautare_Piesa_ID_Actori()
         cout << setw(5 - 1) << " "
              << "Apasati enter pentru a va intoarce la meniul precedent...";
 
-        _getch();
+        getch();
         cautare_Piesa_ID_Actori();
     }
 }
 
 void Adaugare_Sali()
 {
-    system("CLS");
+    clear_screen();
     copie_ID_Sala_Max++;
     NumarSali++;
 
@@ -1910,7 +1943,7 @@ void Adaugare_Sali()
 
 void Stergere_Sali()
 {
-    system("CLS");
+    clear_screen();
     unsigned int vID;
     cout << "\n\n";
     cout << setw(5) << " "
@@ -1935,7 +1968,7 @@ void Adaugare_Actori()
 {
     bool valid = false;
 
-    system("CLS");
+    clear_screen();
     copie_ID_Actor_Max++;
     NumarActori++;
     cout << "\n\n";
@@ -1958,7 +1991,7 @@ void Adaugare_Actori()
             cout << '\n';
             cerr << setw(6) << " "
                  << "Valoarea introdusa in campul ID PIESA este invalida!" << endl;
-            Sleep(1500);
+            sleepcp(1500);
             copie_ID_Actor_Max--;
             Adaugare_Actori();
         }
@@ -1986,7 +2019,7 @@ void Adaugare_Actori()
             cout << '\n';
             cerr << setw(6) << " "
                  << "Valoarea introdusa in campul VARSTA este invalida!" << endl;
-            Sleep(1500);
+            sleepcp(1500);
             copie_ID_Actor_Max--;
             Adaugare_Actori();
         }
@@ -2011,7 +2044,7 @@ void Adaugare_Actori()
             cout << '\n';
             cerr << setw(6) << " "
                  << "Valoarea introdusa in campul CNP este invalida!" << endl;
-            Sleep(1500);
+            sleepcp(1500);
             copie_ID_Actor_Max--;
             Adaugare_Actori();
         }
@@ -2034,7 +2067,7 @@ void Adaugare_Actori()
 
 void Stergere_Actori()
 {
-    system("CLS");
+    clear_screen();
     afisare_actori();
 
     unsigned int vID;
@@ -2057,7 +2090,7 @@ void Stergere_Actori()
             cout << '\n';
             cerr << setw(6 - 1) << " "
                  << "Valoarea introdusa in campul ID ACTOR este invalida!" << endl;
-            Sleep(1500);
+            sleepcp(1500);
             Stergere_Actori();
         }
         else
@@ -2093,7 +2126,7 @@ void Stergere_Actori()
 
 void Adaugare_Personal()
 {
-    system("CLS");
+    clear_screen();
 
     copie_ID_Personal_Max++;
     NumarPersonalTeatru++;
@@ -2137,7 +2170,7 @@ void Adaugare_Personal()
             cout << '\n';
             cerr << setw(6) << " "
                  << "Valoarea introdusa in campul CNP este invalida!" << endl;
-            Sleep(1500);
+            sleepcp(1500);
             copie_ID_Personal_Max--;
             NumarPersonalTeatru--;
             Adaugare_Personal();
@@ -2184,7 +2217,7 @@ void Stergere_Personal()
             cout << '\n';
             cerr << setw(6 - 1) << " "
                  << "Valoarea introdusa in campul ID PIESA este invalida!" << endl;
-            Sleep(1500);
+            sleepcp(1500);
             Stergere_Personal();
         }
         else
@@ -2223,7 +2256,7 @@ void Adaugare_Piese()
 {
     bool valid = false;
 
-    system("CLS");
+    clear_screen();
     copie_ID_Piesa_Max++;
     NumarPiese++;
 
@@ -2247,7 +2280,7 @@ void Adaugare_Piese()
             cout << '\n';
             cerr << setw(6 - 1) << " "
                  << "Valoarea introdusa in campul ID SALA este invalida!" << endl;
-            Sleep(1500);
+            sleepcp(1500);
             Adaugare_Piese();
         }
         else
@@ -2274,7 +2307,7 @@ void Adaugare_Piese()
     unsigned int copieID = 0, ID_Personal_Locala = 0;
     for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
     {
-        if (stricmp(vNumeRegizor, personalTeatru[i].Nume_PersonalTeatru) == 0 && stricmp(vPrenumeRegizor, personalTeatru[i].Prenume_PersonalTeatru) == 0)
+        if (strcasecmp(vNumeRegizor, personalTeatru[i].Nume_PersonalTeatru) == 0 && strcasecmp(vPrenumeRegizor, personalTeatru[i].Prenume_PersonalTeatru) == 0)
             copieID = personalTeatru[i].ID_PersonalTeatru;
         ID_Personal_Locala = personalTeatru[i].ID_PersonalTeatru;
     }
@@ -2282,14 +2315,20 @@ void Adaugare_Piese()
     if (copieID == 0)
     {
         cout << '\n';
-        cerr << setw(5 + 1) << " " << "Regizorul respectiv nu exista in baza de date!" << endl;
-        Sleep(1500);
-        system("CLS");
+        cerr << setw(5 + 1) << " "
+             << "Regizorul respectiv nu exista in baza de date!" << endl;
+        sleepcp(1500);
+        clear_screen();
 
         cout << "\n\n";
-        cout << setw(5 + 1) << " " << "Doresti sa adaugi un nou angajat?" << "\n\n";
-        cout << setw(5 + 1) << " " << "1. Adauga un nou angajat" << endl;
-        cout << setw(5 + 1) << " " << "0. Inapoi" << "\n\n";
+        cout << setw(5 + 1) << " "
+             << "Doresti sa adaugi un nou angajat?"
+             << "\n\n";
+        cout << setw(5 + 1) << " "
+             << "1. Adauga un nou angajat" << endl;
+        cout << setw(5 + 1) << " "
+             << "0. Inapoi"
+             << "\n\n";
 
         unsigned int alegereUtilizator;
         cout << setw(5 + 1) << " "
@@ -2330,7 +2369,7 @@ void Adaugare_Piese()
          << setw(4) << " "
          << "Apasati enter pentru a va intoarce la meniul precedent...";
 
-    _getch();
+    getch();
 
     ofstream fisierPiesa;
     fisierPiesa.open("piesa.txt", ios::out | ios::app);
@@ -2342,7 +2381,7 @@ void Adaugare_Piese()
 
 void Stergere_Piese()
 {
-    system("CLS");
+    clear_screen();
 
     afisare_piese();
 
@@ -2366,7 +2405,7 @@ void Stergere_Piese()
             cout << '\n';
             cerr << setw(6 - 1) << " "
                  << "Valoarea introdusa in campul ID PIESA este invalida!" << endl;
-            Sleep(1500);
+            sleepcp(1500);
             Stergere_Actori();
         }
         else
@@ -2398,7 +2437,7 @@ void Stergere_Piese()
 
 void Adaugare_Bilet()
 {
-    system("CLS");
+    clear_screen();
     afisare_bilete();
 
     bool valid = false;
@@ -2423,7 +2462,7 @@ void Adaugare_Bilet()
     if (strlen(descriereBilet) > 100)
     {
         cerr << "Prea multe caractere in descrierea biletului!";
-        Sleep(1500);
+        sleepcp(1500);
         Adaugare_Bilet();
     }
     else
@@ -2448,7 +2487,7 @@ void Adaugare_Bilet()
                 cout << '\n';
                 cerr << setw(6) << " "
                      << "Valoarea introdusa in campul PRET BILET este invalida!" << endl;
-                Sleep(1500);
+                sleepcp(1500);
                 copie_ID_Bilet_Max--;
                 Adaugare_Bilet();
             }
@@ -2471,7 +2510,7 @@ void Adaugare_Bilet()
 
 void Stergere_Bilet()
 {
-    system("CLS");
+    clear_screen();
     afisare_bilete();
 
     unsigned int vID;
@@ -2495,7 +2534,7 @@ void Stergere_Bilet()
             cout << '\n';
             cerr << setw(6 - 1) << " "
                  << "Valoarea introdusa in campul ID PIESA este invalida!" << endl;
-            Sleep(1500);
+            sleepcp(1500);
             Stergere_Actori();
         }
         else
@@ -2593,8 +2632,7 @@ void sortare_venituri_crescator_sumaAcumulata()
 
                 vSort = false;
             }
-    }
-    while (!vSort);
+    } while (!vSort);
 }
 
 void sortare_venituri_descrescator_sumaAcumulata()
@@ -2624,13 +2662,12 @@ void sortare_venituri_descrescator_sumaAcumulata()
 
                 vSort = false;
             }
-    }
-    while (!vSort);
+    } while (!vSort);
 }
 
 void sortare_venituri_data()
 {
-    system("CLS");
+    clear_screen();
 
     struct dataPiesa
     {
@@ -2647,12 +2684,17 @@ void sortare_venituri_data()
     char matrix[3][11];
 
     cout << "\n\n";
-    cout << setw(5) << " " << "Introduceti data (FORMAT: DD.MM.YYYY): " << "\n\n";
-    cout << setw(5) << " " << "Ziua (DD): ";
+    cout << setw(5) << " "
+         << "Introduceti data (FORMAT: DD.MM.YYYY): "
+         << "\n\n";
+    cout << setw(5) << " "
+         << "Ziua (DD): ";
     cin >> dataIntrodusa.zi;
-    cout << setw(5) << " " << "Luna (MM): ";
+    cout << setw(5) << " "
+         << "Luna (MM): ";
     cin >> dataIntrodusa.luna;
-    cout << setw(5) << " " << "An (YYYY): ";
+    cout << setw(5) << " "
+         << "An (YYYY): ";
     cin >> dataIntrodusa.an;
 
     for (unsigned int i = 1; i <= contorVenit; i++)
@@ -2717,7 +2759,6 @@ void sortare_venituri_data()
         else
             lunaFinala = (unsigned int)(matrix[1][0]) - 48;
 
-
         vectorAn[0] = (unsigned int)(matrix[2][0]) - 48;
         vectorAn[1] = (unsigned int)(matrix[2][1]) - 48;
         vectorAn[2] = (unsigned int)(matrix[2][2]) - 48;
@@ -2738,10 +2779,13 @@ void sortare_venituri_data()
 
     sort_venituri_ID_crescator();
 
-    system("CLS");
+    clear_screen();
 
     cout << "\n\n";
-    cout << setw(5) << " " << "ID Piesa" << setw(5) << " " << "Data piesei" << setw(6) << " " << "Venit" << '\n';
+    cout << setw(5) << " "
+         << "ID Piesa" << setw(5) << " "
+         << "Data piesei" << setw(6) << " "
+         << "Venit" << '\n';
 
     fillLinieConsola(50);
 
@@ -2808,14 +2852,15 @@ void piese_dupa_data()
 
 void sali_cu_piesa()
 {
-    system("CLS");
+    clear_screen();
     afisare_sali();
 
     cout << setw(5 - 1) << " "
          << "APASA TASTA '0' PENTRU A ANULA";
     cout << "\n\n";
 
-    cout << endl << setw(5 - 1) << " "
+    cout << endl
+         << setw(5 - 1) << " "
          << "Tasteaza ID-ul salii: ";
     unsigned int vID_Sala;
 
@@ -2846,14 +2891,14 @@ void sali_cu_piesa()
              << setw(4) << " "
              << "Apasati enter pentru a va intoarce la meniul precedent...";
 
-        _getch();
+        getch();
         sali_cu_piesa();
     }
 }
 
 void cautare_actori_nume()
 {
-    system("CLS");
+    clear_screen();
 
     unsigned int Meniu_subprogram;
 
@@ -2871,7 +2916,7 @@ void cautare_actori_nume()
     cin >> Meniu_subprogram;
     if (Meniu_subprogram == 1)
     {
-        system("CLS");
+        clear_screen();
 
         cout << endl;
         cout << setw(5 - 1) << " "
@@ -2885,7 +2930,7 @@ void cautare_actori_nume()
         unsigned int NumarMaxCaractereEmail = 0;
 
         for (unsigned int i = 1; i <= NumarActori; i++)
-            if (stricmp(vPrenume_Actor, actorTeatru[i].Prenume_Actor) == 0)
+            if (strcasecmp(vPrenume_Actor, actorTeatru[i].Prenume_Actor) == 0)
             {
                 if (strlen(actorTeatru[i].Nume_Actor) > NumarMaxCaractereNume)
                     NumarMaxCaractereNume = strlen(actorTeatru[i].Nume_Actor);
@@ -2911,7 +2956,7 @@ void cautare_actori_nume()
         fillLinieConsola(150);
 
         for (unsigned int i = 1; i <= NumarActori; i++)
-            if (stricmp(vPrenume_Actor, actorTeatru[i].Prenume_Actor) == 0)
+            if (strcasecmp(vPrenume_Actor, actorTeatru[i].Prenume_Actor) == 0)
                 cout << setw(5) << " " << actorTeatru[i].ID_Actor << setw(10 - 1) << " " << actorTeatru[i].ID_Piesa << setw(10 - 1) << " " << actorTeatru[i].Nume_Actor
                      << setw(NumarMaxCaractereNume - strlen(actorTeatru[i].Nume_Actor) + 10) << " " << actorTeatru[i].Prenume_Actor
                      << setw(NumarMaxCaracterePrenume - strlen(actorTeatru[i].Prenume_Actor) + 15) << " " << actorTeatru[i].Varsta_Actor << " ani"
@@ -2928,7 +2973,7 @@ void cautare_actori_nume()
         return;
     else
     {
-        system("CLS");
+        clear_screen();
 
         cout << endl;
         cout << setw(5 - 1) << " "
@@ -2942,7 +2987,7 @@ void cautare_actori_nume()
         unsigned int NumarMaxCaractereEmail = 0;
 
         for (unsigned int i = 1; i <= NumarActori; i++)
-            if (stricmp(vNume_Actor, actorTeatru[i].Nume_Actor) == 0)
+            if (strcasecmp(vNume_Actor, actorTeatru[i].Nume_Actor) == 0)
             {
                 if (strlen(actorTeatru[i].Nume_Actor) > NumarMaxCaractereNume)
                     NumarMaxCaractereNume = strlen(actorTeatru[i].Nume_Actor);
@@ -2968,7 +3013,7 @@ void cautare_actori_nume()
         fillLinieConsola(150);
 
         for (unsigned int i = 1; i <= NumarActori; i++)
-            if (stricmp(vNume_Actor, actorTeatru[i].Nume_Actor) == 0)
+            if (strcasecmp(vNume_Actor, actorTeatru[i].Nume_Actor) == 0)
                 cout << setw(5) << " " << actorTeatru[i].ID_Actor << setw(10 - 1) << " " << actorTeatru[i].ID_Piesa << setw(10 - 1) << " " << actorTeatru[i].Nume_Actor
                      << setw(NumarMaxCaractereNume - strlen(actorTeatru[i].Nume_Actor) + 10) << " " << actorTeatru[i].Prenume_Actor
                      << setw(NumarMaxCaracterePrenume - strlen(actorTeatru[i].Prenume_Actor) + 15) << " " << actorTeatru[i].Varsta_Actor << " ani"
@@ -2981,13 +3026,13 @@ void cautare_actori_nume()
              << setw(4) << " "
              << "Apasati enter pentru a va intoarce la meniul precedent...";
     }
-    _getch();
+    getch();
     cautare_actori_nume();
 }
 
 void bilete_ieftine()
 {
-    system("CLS");
+    clear_screen();
     afisare_bilete();
 
     float vPret;
@@ -3013,14 +3058,14 @@ void bilete_ieftine()
              << setw(4) << " "
              << "Apasati enter pentru a va intoarce la meniul precedent...";
 
-        _getch();
+        getch();
         bilete_ieftine();
     }
 }
 
 void bilete_pe_piesa()
 {
-    system("CLS");
+    clear_screen();
     afisare_bilete();
 
     unsigned int vID_Piesa;
@@ -3046,7 +3091,7 @@ void bilete_pe_piesa()
             cout << '\n';
             cerr << setw(4) << " "
                  << "Valoarea introdusa este invalida!" << endl;
-            Sleep(1500);
+            sleepcp(1500);
             bilete_pe_piesa();
         }
         else
@@ -3057,7 +3102,7 @@ void bilete_pe_piesa()
         return;
     else
     {
-        system("CLS");
+        clear_screen();
         afisare_bilete();
 
         for (unsigned int i = 1; i <= NumarPieseVechi && ok == 0; i++)
@@ -3091,8 +3136,10 @@ void bilete_pe_piesa()
         cout << '\n';
         if (piesaVeche == true)
         {
-            cout << setw(5 - 1) << " " << "Pentru piesa '" << piesa_veche[vID_Piesa].Nume_Piesa << "' s-au vandut " << bilete
-                 << " bilete, dintre care " << bilete_loja << " pentru loja " << "(" << piesa_veche[vID_Piesa].Data_Piesa << ")." << '\n';
+            cout << setw(5 - 1) << " "
+                 << "Pentru piesa '" << piesa_veche[vID_Piesa].Nume_Piesa << "' s-au vandut " << bilete
+                 << " bilete, dintre care " << bilete_loja << " pentru loja "
+                 << "(" << piesa_veche[vID_Piesa].Data_Piesa << ")." << '\n';
 
             cout << "\n\n"
                  << setw(4) << " "
@@ -3110,21 +3157,23 @@ void bilete_pe_piesa()
                     strcpy(numePiesaLocal, piesaTeatru[i].Nume_Piesa);
                 }
 
-            cout << setw(5 - 1) << " " << "Pentru piesa '" << numePiesaLocal << "' s-au vandut " << bilete
-                 << " bilete, dintre care " << bilete_loja << " pentru loja " << "(" << dataPiesaLocala << ")." << '\n';
+            cout << setw(5 - 1) << " "
+                 << "Pentru piesa '" << numePiesaLocal << "' s-au vandut " << bilete
+                 << " bilete, dintre care " << bilete_loja << " pentru loja "
+                 << "(" << dataPiesaLocala << ")." << '\n';
 
             cout << "\n\n"
                  << setw(4) << " "
                  << "Apasati enter pentru a va intoarce la meniul precedent...";
         }
     }
-    _getch();
+    getch();
     bilete_pe_piesa();
 }
 
 void bilete_nevandute()
 {
-    system("CLS");
+    clear_screen();
     afisare_bilete();
 
     cout << endl;
@@ -3133,57 +3182,64 @@ void bilete_nevandute()
         bilete_vandute[spectator_vechi[i].ID_Piesa]++;
     unsigned int meniu_subprogram;
 
-    cout << setw(5) << " " << "1. Numarul de bilete nevandute intr-o piesa." << endl
-         << setw(5) << " " << "2. Numarul de bilete nevandute in total." << endl
-         << setw(5) << " " << "0. Inapoi"
+    cout << setw(5) << " "
+         << "1. Numarul de bilete nevandute intr-o piesa." << endl
+         << setw(5) << " "
+         << "2. Numarul de bilete nevandute in total." << endl
+         << setw(5) << " "
+         << "0. Inapoi"
          << "\n\n";
-    cout << setw(5 - 1) << " " << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: ";
+    cout << setw(5 - 1) << " "
+         << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: ";
     cin >> meniu_subprogram;
 
     if (meniu_subprogram == 1)
     {
-        system("CLS");
+        clear_screen();
         afisare_bilete();
 
         cout << endl
-             << setw(5 - 1) << " " << "Tastati numele piesei: ";
+             << setw(5 - 1) << " "
+             << "Tastati numele piesei: ";
         char vPiesaVeche[101];
         cin >> vPiesaVeche;
         unsigned int v = 0;
         for (unsigned int i = 1; i <= NumarPieseVechi; i++)
             if (strcmp(piesa_veche[i].Nume_Piesa, vPiesaVeche) == 0)
                 v = v + (salaTeatru[piesa_veche[i].ID_Sala].Nr_Scaune + salaTeatru[piesa_veche[i].ID_Sala].Nr_Scaune_Loja - bilete_vandute[piesa_veche[i].ID_Piesa]);
-        cout << '\n' << setw(5 - 1) << " " << "In total, aceasta piesa a avut " << v << " bilete nevandute." << endl;
+        cout << '\n'
+             << setw(5 - 1) << " "
+             << "In total, aceasta piesa a avut " << v << " bilete nevandute." << endl;
 
         cout << "\n\n"
              << setw(4) << " "
              << "Apasati enter pentru a va intoarce la meniul precedent...";
-
     }
     else if (meniu_subprogram == 0)
         return;
     else
     {
-        system("CLS");
+        clear_screen();
         afisare_bilete();
 
         unsigned int v = 0;
         for (unsigned int i = 1; i <= NumarPieseVechi; i++)
             v = v + (salaTeatru[piesa_veche[i].ID_Sala].Nr_Scaune + salaTeatru[piesa_veche[i].ID_Sala].Nr_Scaune_Loja - bilete_vandute[piesa_veche[i].ID_Piesa]);
 
-        cout << setw(5 - 1) << " " << "In total, " << v << " bilete au ramas nevandute.";
+        cout << setw(5 - 1) << " "
+             << "In total, " << v << " bilete au ramas nevandute.";
 
         cout << "\n\n"
              << setw(4) << " "
              << "Apasati enter pentru a va intoarce la meniul precedent...";
     }
-    _getch();
+    getch();
     bilete_nevandute();
 }
 
 void top5_piese()
 {
-    system("CLS");
+    clear_screen();
 
     cout << "\n\n";
 
@@ -3255,32 +3311,32 @@ void top5_piese()
          << "Apasati enter pentru a va intoarce la meniul precedent...";
 }
 
-///Ioana
-///Afisati toate piesele care incep cu litera � (litera va fi introdus de la tastatura)
+/// Ioana
+/// Afisati toate piesele care incep cu litera � (litera va fi introdus de la tastatura)
 void afisare_prima_litera()
 {
-    system("CLS");
+    clear_screen();
 
     cout << "\n\n";
     cout << setw(5 - 1) << " "
          << "APASA TASTA '0' PENTRU A ANULA";
 
     cout << "\n\n";
-    cout<< setw(5 - 1) << " "
-        <<"Introduceti litera: ";
+    cout << setw(5 - 1) << " "
+         << "Introduceti litera: ";
     char l;
-    cin>>l;
+    cin >> l;
 
     if (l == '0')
         return;
     else
     {
-        if(l>='a'&&l<='z')
-            l=l-32;
+        if (l >= 'a' && l <= 'z')
+            l = l - 32;
 
         cout << endl;
         for (unsigned int i = 1; i <= NumarPiese; i++)
-            if(piesaTeatru[i].Nume_Piesa[0]==l)
+            if (piesaTeatru[i].Nume_Piesa[0] == l)
                 cout << setw(5 - 1) << " " << piesaTeatru[i].ID_Piesa << setw(5 - 1) << " " << piesaTeatru[i].Nume_Piesa
                      << setw(5 - 1) << " " << piesaTeatru[i].Data_Piesa << " "
                      << setw(5 - 1) << " " << piesaTeatru[i].Ora_Piesa << setw(5 - 1) << endl;
@@ -3288,7 +3344,7 @@ void afisare_prima_litera()
              << setw(4) << " "
              << "Apasati enter pentru a va intoarce la meniul precedent...";
 
-        _getch();
+        getch();
         afisare_prima_litera();
     }
 }
@@ -3296,21 +3352,21 @@ void afisare_prima_litera()
 /// Afisati toate piesele care se tin dupa ora�(ora va fi introdusa de la tastatura)
 void piese_dupa_ora()
 {
-    system("CLS");
+    clear_screen();
 
     cout << "\n\n";
     cout << setw(5 - 1) << " "
          << "APASA TASTA '0' PENTRU A ANULA";
     cout << "\n\n";
 
-    cout<< setw(5 - 1) << " "
-        <<"Introduceti ora dorita: ";
+    cout << setw(5 - 1) << " "
+         << "Introduceti ora dorita: ";
 
     char ora[6];
     cin.get();
     cin.get(ora, 6);
 
-    system("CLS");
+    clear_screen();
     cout << "\n\n";
 
     if (strcmp(ora, "0") == 0)
@@ -3327,7 +3383,7 @@ void piese_dupa_ora()
              << setw(4) << " "
              << "Apasati enter pentru a va intoarce la meniul precedent...";
 
-        _getch();
+        getch();
         piese_dupa_ora();
     }
 }
@@ -3335,7 +3391,7 @@ void piese_dupa_ora()
 /// Afisarea primelor 3 cele mai incapatoare sali din teatru
 void cele_mai_mari_3_sali()
 {
-    system("CLS");
+    clear_screen();
 
     cout << "\n\n";
     cout << setw(5 - 1) << " "
@@ -3368,13 +3424,13 @@ void cele_mai_mari_3_sali()
     cout << '\n'
          << setw(4) << " "
          << "Apasati enter pentru a va intoarce la meniul precedent...";
-    _getch();
+    getch();
 }
 
 /// Afisarea tuturor actorilor a caror varsta este mai mare sau egala cu � ani.
 void varsta_mai_mare_actori()
 {
-    system("CLS");
+    clear_screen();
 
     unsigned int nrMaxCaractereNume = 0;
     for (unsigned int i = 1; i <= NumarActori; i++)
@@ -3400,7 +3456,7 @@ void varsta_mai_mare_actori()
         return;
     else
     {
-        system("CLS");
+        clear_screen();
         cout << "\n\n";
 
         cout << setw(5) << " "
@@ -3420,7 +3476,7 @@ void varsta_mai_mare_actori()
         cout << '\n'
              << setw(4) << " "
              << "Apasati enter pentru a va intoarce la meniul precedent...";
-        _getch();
+        getch();
         varsta_mai_mare_actori();
     }
 }
@@ -3428,7 +3484,7 @@ void varsta_mai_mare_actori()
 /// Afisarea tuturor actorilor a caror varsta este mai mica sau egala cu � ani
 void varsta_mai_mica_actori()
 {
-    system("CLS");
+    clear_screen();
 
     unsigned int nrMaxCaractereNume = 0;
     for (unsigned int i = 1; i <= NumarActori; i++)
@@ -3454,7 +3510,7 @@ void varsta_mai_mica_actori()
         return;
     else
     {
-        system("CLS");
+        clear_screen();
 
         cout << "\n\n";
         cout << setw(5) << " "
@@ -3473,15 +3529,15 @@ void varsta_mai_mica_actori()
         cout << '\n'
              << setw(4) << " "
              << "Apasati enter pentru a va intoarce la meniul precedent...";
-        _getch();
+        getch();
         varsta_mai_mica_actori();
     }
 }
 
-///Afisati toti actorii cu genul� (genul va fi introdus de la tastatura)
+/// Afisati toti actorii cu genul� (genul va fi introdus de la tastatura)
 void gen_actori()
 {
-    system("CLS");
+    clear_screen();
 
     unsigned int NumarMaxCaractereNume = 0;
 
@@ -3509,14 +3565,15 @@ void gen_actori()
          << "APASA TASTA '0' PENTRU A ANULA";
     cout << "\n\n";
 
-    cout << setw(5 - 1) << " " << "Introduceti genul (M / F): ";
-    cin>>gen;
+    cout << setw(5 - 1) << " "
+         << "Introduceti genul (M / F): ";
+    cin >> gen;
 
     if (gen == '0')
         return;
     else
     {
-        system("CLS");
+        clear_screen();
 
         cout << "\n\n"
              << setw(5 - 1) << " "
@@ -3532,10 +3589,10 @@ void gen_actori()
 
         fillLinieConsola(115); // umple toate linia din consola cu  '_'
 
-        if(gen>='a'&&gen<='z')
-            gen=gen-32;
-        for(unsigned int i=0; i<NumarActori; i++)
-            if(actorTeatru[i].Sex_Actor==gen)
+        if (gen >= 'a' && gen <= 'z')
+            gen = gen - 32;
+        for (unsigned int i = 0; i < NumarActori; i++)
+            if (actorTeatru[i].Sex_Actor == gen)
                 cout << setw(5) << " " << actorTeatru[i].ID_Actor << setw(10 - 1) << " " << actorTeatru[i].ID_Piesa << setw(10 - 1) << " " << actorTeatru[i].Nume_Actor
                      << setw(NumarMaxCaractereNume - strlen(actorTeatru[i].Nume_Actor) + 10) << " " << actorTeatru[i].Prenume_Actor
                      << setw(NumarMaxCaracterePrenume - strlen(actorTeatru[i].Prenume_Actor) + 10) << " " << actorTeatru[i].Varsta_Actor << " ani"
@@ -3546,15 +3603,15 @@ void gen_actori()
              << setw(4) << " "
              << "Apasati enter pentru a va intoarce la meniul precedent...";
 
-        _getch();
+        getch();
         gen_actori();
     }
 }
 
-///Afisati tot personalul cu ocupatia� (numele ocupatiei va fi introdus de la tastatura)
+/// Afisati tot personalul cu ocupatia� (numele ocupatiei va fi introdus de la tastatura)
 void ocupatie_personal()
 {
-    system("CLS");
+    clear_screen();
 
     unsigned int NumarMaxCaractereNume = 0;
 
@@ -3581,18 +3638,19 @@ void ocupatie_personal()
          << "APASA TASTA '0' PENTRU A ANULA";
     cout << "\n\n";
 
-    cout << setw(5 - 1) << " " << "Introduceti ocupatia cautata: ";
+    cout << setw(5 - 1) << " "
+         << "Introduceti ocupatia cautata: ";
     cin.get();
-    cin.get(ocupatie,1001);
+    cin.get(ocupatie, 1001);
 
     if (strcmp(ocupatie, "0") == 0)
         return;
     else
     {
         unsigned int i;
-        for(i=0; i<strlen(ocupatie); i++)
-            if(ocupatie[i]>='A'&&ocupatie[i]<='Z')
-                ocupatie[i]=ocupatie[i]-32;
+        for (i = 0; i < strlen(ocupatie); i++)
+            if (ocupatie[i] >= 'A' && ocupatie[i] <= 'Z')
+                ocupatie[i] = ocupatie[i] - 32;
 
         cout << "\n\n"
              << setw(5 - 1) << " "
@@ -3608,8 +3666,8 @@ void ocupatie_personal()
 
         fillLinieConsola(115);
 
-        for(i=1; i<=NumarPersonalTeatru; i++)
-            if(stricmp(personalTeatru[i].Functie_PersonalTeatru,ocupatie)==0)
+        for (i = 1; i <= NumarPersonalTeatru; i++)
+            if (strcasecmp(personalTeatru[i].Functie_PersonalTeatru, ocupatie) == 0)
                 cout << setw(5) << " " << actorTeatru[i].ID_Actor << setw(10 - 1) << " " << actorTeatru[i].ID_Piesa << setw(10 - 1) << " " << actorTeatru[i].Nume_Actor
                      << setw(NumarMaxCaractereNume - strlen(actorTeatru[i].Nume_Actor) + 10) << " " << actorTeatru[i].Prenume_Actor
                      << setw(NumarMaxCaracterePrenume - strlen(actorTeatru[i].Prenume_Actor) + 10) << " " << actorTeatru[i].Varsta_Actor << " ani"
@@ -3620,15 +3678,15 @@ void ocupatie_personal()
              << setw(4) << " "
              << "Apasati enter pentru a va intoarce la meniul precedent...";
 
-        _getch();
+        getch();
         ocupatie_personal();
     }
 }
 
-///Afisarea personalului cu varsta mai mare sau egala cu � ani.
+/// Afisarea personalului cu varsta mai mare sau egala cu � ani.
 void varsta_mai_mare_personal()
 {
-    system("CLS");
+    clear_screen();
 
     unsigned int NumarMaxCaractereNume = 0;
 
@@ -3648,15 +3706,16 @@ void varsta_mai_mare_personal()
         if (strlen(actorTeatru[i].Email_Actor) > NumarMaxCaractereEmail)
             NumarMaxCaractereEmail = strlen(actorTeatru[i].Email_Actor);
 
-    unsigned int varsta,i;
+    unsigned int varsta, i;
 
     cout << '\n';
     cout << setw(5 - 1) << " "
          << "APASA TASTA '0' PENTRU A ANULA";
     cout << "\n\n";
 
-    cout << setw(5 - 1) << " " << "Introduceti varsta: ";
-    cin>>varsta;
+    cout << setw(5 - 1) << " "
+         << "Introduceti varsta: ";
+    cin >> varsta;
 
     cout << "\n\n"
          << setw(5 - 1) << " "
@@ -3676,8 +3735,8 @@ void varsta_mai_mare_personal()
     {
         fillLinieConsola(115);
 
-        for(i=1; i<=NumarPersonalTeatru; i++)
-            if(personalTeatru[i].Varsta_PersonalTeatru>=varsta)
+        for (i = 1; i <= NumarPersonalTeatru; i++)
+            if (personalTeatru[i].Varsta_PersonalTeatru >= varsta)
                 cout << setw(5) << " " << actorTeatru[i].ID_Actor << setw(10 - 1) << " " << actorTeatru[i].ID_Piesa << setw(10 - 1) << " " << actorTeatru[i].Nume_Actor
                      << setw(NumarMaxCaractereNume - strlen(actorTeatru[i].Nume_Actor) + 10) << " " << actorTeatru[i].Prenume_Actor
                      << setw(NumarMaxCaracterePrenume - strlen(actorTeatru[i].Prenume_Actor) + 10) << " " << actorTeatru[i].Varsta_Actor << " ani"
@@ -3688,7 +3747,7 @@ void varsta_mai_mare_personal()
              << setw(4) << " "
              << "Apasati enter pentru a va intoarce la meniul precedent...";
 
-        _getch();
+        getch();
         varsta_mai_mare_personal();
     }
 }
@@ -3696,7 +3755,7 @@ void varsta_mai_mare_personal()
 /// Afisarea personalului cu varsta mai mica sau egala cu � ani
 void varsta_mai_mica_personal()
 {
-    system("CLS");
+    clear_screen();
 
     unsigned int NumarMaxCaractereNume = 0;
 
@@ -3716,15 +3775,16 @@ void varsta_mai_mica_personal()
         if (strlen(actorTeatru[i].Email_Actor) > NumarMaxCaractereEmail)
             NumarMaxCaractereEmail = strlen(actorTeatru[i].Email_Actor);
 
-    unsigned int varsta,i;
+    unsigned int varsta, i;
 
     cout << '\n';
     cout << setw(5 - 1) << " "
          << "APASA TASTA '0' PENTRU A ANULA";
     cout << "\n\n";
 
-    cout << setw(5 - 1) << " " << "Introduceti varsta: ";
-    cin>>varsta;
+    cout << setw(5 - 1) << " "
+         << "Introduceti varsta: ";
+    cin >> varsta;
 
     cout << "\n\n"
          << setw(5 - 1) << " "
@@ -3738,14 +3798,13 @@ void varsta_mai_mica_personal()
          << "Email_Actor"
          << "\n";
 
-
     if (varsta == 0)
         return;
     else
     {
         fillLinieConsola(115);
-        for(i=0; i<NumarPersonalTeatru; i++)
-            if(personalTeatru[i].Varsta_PersonalTeatru<=varsta)
+        for (i = 0; i < NumarPersonalTeatru; i++)
+            if (personalTeatru[i].Varsta_PersonalTeatru <= varsta)
                 cout << setw(5) << " " << actorTeatru[i].ID_Actor << setw(10 - 1) << " " << actorTeatru[i].ID_Piesa << setw(10 - 1) << " " << actorTeatru[i].Nume_Actor
                      << setw(NumarMaxCaractereNume - strlen(actorTeatru[i].Nume_Actor) + 10) << " " << actorTeatru[i].Prenume_Actor
                      << setw(NumarMaxCaracterePrenume - strlen(actorTeatru[i].Prenume_Actor) + 10) << " " << actorTeatru[i].Varsta_Actor << " ani"
@@ -3755,10 +3814,9 @@ void varsta_mai_mica_personal()
              << setw(4) << " "
              << "Apasati enter pentru a va intoarce la meniul precedent...";
 
-        _getch();
+        getch();
         varsta_mai_mica_personal();
     }
-
 }
 
 int main()
@@ -3779,7 +3837,7 @@ int main()
 
     do
     {
-        system("CLS");
+        clear_screen();
 
         // Continutul meniului principal
         cout << "\n\n"
@@ -3821,7 +3879,7 @@ int main()
 
             do
             {
-                system("CLS"); // sterge continut consola
+                clear_screen(); // sterge continut consola
                 afisare_piese();
                 cout << endl;
 
@@ -3855,7 +3913,7 @@ int main()
 
                     do
                     {
-                        system("CLS");
+                        clear_screen();
                         afisare_piese();
                         bool valid = false;
                         cout << setw(5 - 1) << " "
@@ -3915,9 +3973,8 @@ int main()
                         }
                         break;
                         }
-                    }
-                    while (Meniu_Cautare != 0);
-                    system("CLS");
+                    } while (Meniu_Cautare != 0);
+                    clear_screen();
                 }
                 break;
 
@@ -3927,8 +3984,8 @@ int main()
                 }
                 break;
 
-                _getch();
-                break;
+                    getch();
+                    break;
 
                 case 3:
                 {
@@ -3948,7 +4005,7 @@ int main()
 
                     do
                     {
-                        system("CLS");
+                        clear_screen();
                         afisare_piese();
                         cout << '\n';
                         cout << setw(5 - 1) << " "
@@ -3975,13 +4032,11 @@ int main()
                             Stergere_Piese();
                             break;
                         }
-                    }
-                    while (Meniu_Mod_Date_Piesa != 0);
+                    } while (Meniu_Mod_Date_Piesa != 0);
                 }
                 break;
                 }
-            }
-            while (Meniu_2 != 0);
+            } while (Meniu_2 != 0);
         }
         break;
         case 2:
@@ -3990,7 +4045,7 @@ int main()
 
             do
             {
-                system("CLS");
+                clear_screen();
                 afisare_sali();
                 cout << '\n';
                 cout << setw(6) << " "
@@ -4021,7 +4076,7 @@ int main()
 
                     do
                     {
-                        system("CLS");
+                        clear_screen();
                         afisare_sali();
                         cout << '\n';
                         cout << setw(5 - 1) << " "
@@ -4043,19 +4098,17 @@ int main()
                         {
                         case 1:
                             Adaugare_Sali();
-                            _getch();
+                            getch();
                             break;
                         case 2:
                             Stergere_Sali();
                             break;
                         }
-                    }
-                    while (Meniu_Mod_Sali != 0);
+                    } while (Meniu_Mod_Sali != 0);
                 }
                 break;
                 }
-            }
-            while (Meniu_Sali != 0);
+            } while (Meniu_Sali != 0);
         }
         break;
         case 3:
@@ -4064,7 +4117,7 @@ int main()
 
             do
             {
-                system("CLS");
+                clear_screen();
                 afisare_bilete();
 
                 cout << '\n';
@@ -4101,7 +4154,7 @@ int main()
 
                     do
                     {
-                        system("CLS");
+                        clear_screen();
                         afisare_bilete();
 
                         cout << '\n';
@@ -4124,20 +4177,18 @@ int main()
                         {
                         case 1:
                             Adaugare_Bilet();
-                            _getch();
+                            getch();
                             break;
                         case 2:
                             Stergere_Bilet();
                             break;
                         }
-                    }
-                    while (Meniu_Mod_Bilet != 0);
+                    } while (Meniu_Mod_Bilet != 0);
                 }
-                _getch();
-                break;
+                    getch();
+                    break;
                 }
-            }
-            while (Meniu_Bilet != 0);
+            } while (Meniu_Bilet != 0);
         }
         break;
         case 4:
@@ -4146,7 +4197,7 @@ int main()
 
             do
             {
-                system("CLS");
+                clear_screen();
                 afisare_actori();
 
                 cout << '\n';
@@ -4170,7 +4221,7 @@ int main()
 
                     do
                     {
-                        system("CLS");
+                        clear_screen();
 
                         cout << '\n';
                         cout << setw(6) << " "
@@ -4204,8 +4255,7 @@ int main()
                             gen_actori();
                             break;
                         }
-                    }
-                    while (Meniu_Cautare_Actori != 0);
+                    } while (Meniu_Cautare_Actori != 0);
                 }
                 break;
                 case 2:
@@ -4214,7 +4264,7 @@ int main()
 
                     do
                     {
-                        system("CLS");
+                        clear_screen();
 
                         cout << '\n';
                         cout << setw(5 - 1) << " "
@@ -4241,13 +4291,11 @@ int main()
                             Stergere_Actori();
                             break;
                         }
-                    }
-                    while (Meniu_Mod_Actori != 0);
+                    } while (Meniu_Mod_Actori != 0);
                 }
                 break;
                 }
-            }
-            while (Meniu_Actori != 0);
+            } while (Meniu_Actori != 0);
         }
         break;
         case 5:
@@ -4256,7 +4304,7 @@ int main()
 
             do
             {
-                system("CLS");
+                clear_screen();
                 afisare_personal();
 
                 cout << '\n';
@@ -4282,7 +4330,7 @@ int main()
                     do
                     {
 
-                        system("CLS");
+                        clear_screen();
                         afisare_personal();
 
                         cout << '\n';
@@ -4312,8 +4360,7 @@ int main()
                             varsta_mai_mica_personal();
                             break;
                         }
-                    }
-                    while (Meniu_Cautare_Personal != 0);
+                    } while (Meniu_Cautare_Personal != 0);
                 }
                 break;
                 case 2:
@@ -4322,7 +4369,7 @@ int main()
 
                     do
                     {
-                        system("CLS");
+                        clear_screen();
                         afisare_personal();
 
                         cout << '\n';
@@ -4350,16 +4397,12 @@ int main()
                             Stergere_Personal();
                             break;
                         }
-                    }
-                    while (Meniu_Mod_Personal != 0);
+                    } while (Meniu_Mod_Personal != 0);
                 }
                 break;
                 }
 
-            }
-            while (Meniu_Personal != 0);
-
-
+            } while (Meniu_Personal != 0);
         }
         break;
         case 6:
@@ -4368,15 +4411,20 @@ int main()
 
             do
             {
-                system("CLS");
+                clear_screen();
                 afisare_piese_vechi();
 
-                cout << setw(5 - 1) << " " << "1. Sorteaza piesele vechi alfabetic A-Z" << endl;
-                cout << setw(5 - 1) << " " << "2. Sorteaza piesele vechi alfabetic Z-A" << endl;
-                cout << setw(5 - 1) << " " << "3. Sorteaza piesele vechi in functie de data in care au fost jucate" << endl;
+                cout << setw(5 - 1) << " "
+                     << "1. Sorteaza piesele vechi alfabetic A-Z" << endl;
+                cout << setw(5 - 1) << " "
+                     << "2. Sorteaza piesele vechi alfabetic Z-A" << endl;
+                cout << setw(5 - 1) << " "
+                     << "3. Sorteaza piesele vechi in functie de data in care au fost jucate" << endl;
                 cout << setw(5 - 1) << " "
                      << "4. Top 5 cele mai frecventate piese din trecut" << endl;
-                cout << setw(5 - 1) << " " << "0. Inapoi" << "\n\n";
+                cout << setw(5 - 1) << " "
+                     << "0. Inapoi"
+                     << "\n\n";
 
                 cout << setw(5 - 1) << " "
                      << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: ";
@@ -4387,30 +4435,29 @@ int main()
                 {
                     sortari_istoricPiese_alfabeti_A_Z();
                 }
-                _getch();
-                break;
+                    getch();
+                    break;
 
                 case 2:
                 {
                     sortari_istoricPiese_alfabeti_Z_A();
                 }
-                _getch();
-                break;
+                    getch();
+                    break;
 
                 case 3:
                 {
                     sortari_istoricPiese_data();
                 }
-                _getch();
-                break;
+                    getch();
+                    break;
 
                 case 4:
                     top5_piese();
-                    _getch();
+                    getch();
                     break;
                 }
-            }
-            while (Meniu_sortari != 0);
+            } while (Meniu_sortari != 0);
         }
         break;
         case 7:
@@ -4422,14 +4469,20 @@ int main()
             do
             {
                 bool valid = false;
-                system("CLS");
+                clear_screen();
                 afisare_venituri();
 
-                cout << setw(5 - 1) << " " << "1. Sorteaza veniturile in ordine crescatoare in functie de suma acumulata" << endl;
-                cout << setw(5 - 1) << " " << "2. Sorteaza veniturile in ordine descrescatoare in functie de suma acumulata" << endl;
-                cout << setw(5 - 1) << " " << "3. Afiseaza veniturile pieselor dupa o anumita data" << endl;
-                cout << setw(5 - 1) << " " << "4. Reseteaza afisarea veniturilor" << endl;
-                cout << setw(5 - 1) << " " << "0. Inapoi" << "\n\n";
+                cout << setw(5 - 1) << " "
+                     << "1. Sorteaza veniturile in ordine crescatoare in functie de suma acumulata" << endl;
+                cout << setw(5 - 1) << " "
+                     << "2. Sorteaza veniturile in ordine descrescatoare in functie de suma acumulata" << endl;
+                cout << setw(5 - 1) << " "
+                     << "3. Afiseaza veniturile pieselor dupa o anumita data" << endl;
+                cout << setw(5 - 1) << " "
+                     << "4. Reseteaza afisarea veniturilor" << endl;
+                cout << setw(5 - 1) << " "
+                     << "0. Inapoi"
+                     << "\n\n";
 
                 cout << setw(5 - 1) << " "
                      << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: ";
@@ -4445,7 +4498,7 @@ int main()
                         cout << '\n';
                         cerr << setw(5 - 1) << " "
                              << "Valoarea introdusa este invalida!" << endl;
-                        Sleep(1500);
+                        sleepcp(1500);
                         break;
                     }
                     else
@@ -4468,21 +4521,19 @@ int main()
                 {
                     sortare_venituri_data();
                 }
-                _getch();
-                break;
+                    getch();
+                    break;
                 case 4:
                 {
                     resetare_afisare_venituri();
                 }
                 break;
                 }
-            }
-            while (Meniu_Venituri != 0);
+            } while (Meniu_Venituri != 0);
         }
         break;
         }
-    }
-    while (Meniu_1 != 0);
+    } while (Meniu_1 != 0);
 
     return 0;
 }
