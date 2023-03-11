@@ -5,10 +5,10 @@
 - The project was built in **CodeBlocks V20.03**.
 
 ## Requirements
-- The project is recommanded to be ran on **windows** only, since there are some issues with the used C++ libraries on **Linux** and **MacOS**.
+- The project can be ran on on both **Linux** and **Linux**.
 
 ## Project Status
-- The project has been completed on the 10th of January 2023.
+- The project has been updated on the 11th of Martch 2023 (*added Linux compatibility*).
 
 ## Contact
 - sorin.andrei.tudose@gmail.com / tudose.sorinandrei@cncosbuc.ro
