@@ -5,7 +5,7 @@
 - The project was built in **CodeBlocks V20.03**.
 
 ## Requirements
-- The project can be ran on on both **Linux** and **Linux**.
+- The project can be ran on on both **Windows** and **Linux**.
 
 ## Project Status
 - The project has been updated on the 11th of Martch 2023 (*added Linux compatibility*).
