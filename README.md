@@ -4,7 +4,7 @@
 - The program we've built runs on a console interface, presenting users with a Main Menu that grants access to various sub-menus. These sub-menus serve to modify the data stored within the files.
 - Our choice of a static memory management system means that it isn't capable of adapting in real-time.
 # Requirements
-- The project is recommanded to be ran on **windows** only, since there are some issues with the used C++ libraries on **Linux** and **MacOS**.
+- The project is recommanded to be ran on **windows** only, since there are some issues with the used C++ libraries on **Linux**.
 
 # Project Status
 - The project has been completed on the 10th of January 2023.
