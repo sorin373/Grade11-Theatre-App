@@ -23,7 +23,6 @@ unsigned int contorVenit = 1;
 
 struct sala
 {
-public:
     unsigned int ID_Sala;
     unsigned int Nr_Scaune;
     unsigned int Nr_Scaune_Loja;
@@ -31,7 +30,6 @@ public:
 
 struct actor
 {
-public:
     unsigned int ID_Actor;
     unsigned int ID_Piesa;
     char Nume_Actor[1001];
@@ -44,7 +42,6 @@ public:
 
 struct piesa
 {
-public:
     unsigned int ID_Piesa;
     unsigned int ID_Sala;
     char Nume_Piesa[1001];
@@ -55,7 +52,6 @@ public:
 
 struct personaj_piesa
 {
-public:
     unsigned int ID_Piesa;
     unsigned int ID_Actor;
     char Nume_Personaj[201];
@@ -63,7 +59,6 @@ public:
 
 struct bilet
 {
-public:
     unsigned int ID_Bilet;
     float Pret_Bilet;
     char Tip_Bilet[1001];
@@ -71,7 +66,6 @@ public:
 
 struct personal
 {
-public:
     unsigned int ID_PersonalTeatru;
     char Nume_PersonalTeatru[1001];
     char Prenume_PersonalTeatru[1001];
@@ -83,7 +77,6 @@ public:
 
 struct spectator
 {
-public:
     unsigned int ID_Spectator;
     unsigned int ID_Bilet;
     unsigned int ID_Piesa;
@@ -92,7 +85,6 @@ public:
 
 struct piesa_v
 {
-public:
     unsigned int ID_Piesa;
     unsigned int ID_Sala;
     char Nume_Piesa[101];
