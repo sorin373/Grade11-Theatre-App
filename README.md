@@ -13,7 +13,7 @@ $ g++ -o main main.cpp
 $ ./main
 ~~~
 # Requirements
-- The project is is both **Windows** and **Linux** compatible :D
+- This application is compatible with both **Windows** and **Linux** operating systems.
 
 # Project Status
 - The project has been completed on the 10th of January 2023.
