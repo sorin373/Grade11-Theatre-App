@@ -3,18 +3,17 @@
 #include <cstring>
 #include <iomanip>
 #include <cstdlib>
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <termios.h>
 #include <ctype.h>
-
 #ifdef _WIN32
 #include <windows.h>
+#include <conio.h>
 #else
 #include <unistd.h>
-#endif // _WIN32
+#include <termios.h>
+#endif
 
 using namespace std;
 
