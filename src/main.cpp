@@ -164,7 +164,7 @@ char getch(void)
 
 void citire_sali()
 {
-    ifstream fisierSala("sala.txt"); // fisier sali teatru
+    ifstream fisierSala("Files/sala.txt"); // fisier sali teatru
     while (fisierSala >> salaTeatru[NumarSali].ID_Sala >> salaTeatru[NumarSali].Nr_Scaune >> salaTeatru[NumarSali].Nr_Scaune_Loja)
     {
         copie_ID_Sala_Max = salaTeatru[NumarSali].ID_Sala;
@@ -176,7 +176,7 @@ void citire_sali()
 
 void citire_actori()
 {
-    ifstream fisierActor("actor.txt"); // fisier actori care joaca in piesele de teatru
+    ifstream fisierActor("Files/actor.txt"); // fisier actori care joaca in piesele de teatru
     while (fisierActor >> actorTeatru[NumarActori].ID_Actor >> actorTeatru[NumarActori].ID_Piesa >> actorTeatru[NumarActori].Nume_Actor >> actorTeatru[NumarActori].Prenume_Actor >> actorTeatru[NumarActori].Varsta_Actor >> actorTeatru[NumarActori].Email_Actor >> actorTeatru[NumarActori].CNP_Actor >> actorTeatru[NumarActori].Sex_Actor)
     {
         copie_ID_Actor_Max = actorTeatru[NumarActori].ID_Actor;
@@ -189,7 +189,7 @@ void citire_actori()
 
 void citire_piese()
 {
-    ifstream fisierPiesa("piesa.txt"); // fisier cu piesele care urmeaza sa fie jucate in urmatoarea saptamana
+    ifstream fisierPiesa("Files/piesa.txt"); // fisier cu piesele care urmeaza sa fie jucate in urmatoarea saptamana
     while (fisierPiesa >> piesaTeatru[NumarPiese].ID_Piesa >> piesaTeatru[NumarPiese].ID_Sala >> piesaTeatru[NumarPiese].ID_PersonalTeatru >> piesaTeatru[NumarPiese].Data_Piesa >> piesaTeatru[NumarPiese].Ora_Piesa)
     {
         copie_ID_Piesa_Max = piesaTeatru[NumarPiese].ID_Piesa;
@@ -203,7 +203,7 @@ void citire_piese()
 
 void citire_personaje_piese()
 {
-    ifstream fisierPersonaj("personaj.txt"); // fisier cu personajele din fiecare piesa de teatru
+    ifstream fisierPersonaj("Files/personaj.txt"); // fisier cu personajele din fiecare piesa de teatru
     while (fisierPersonaj >> personajPiesa[NumarPersonaje].ID_Piesa >> personajPiesa[NumarPersonaje].ID_Actor)
     {
         fisierPersonaj.get();
@@ -216,7 +216,7 @@ void citire_personaje_piese()
 
 void citire_bilete()
 {
-    ifstream fisierBilet("bilet.txt"); // fisier cu tipurile de bilete disponibile la teatru
+    ifstream fisierBilet("Files/bilet.txt"); // fisier cu tipurile de bilete disponibile la teatru
     while (fisierBilet >> biletPiesa[NumarBilete].ID_Bilet >> biletPiesa[NumarBilete].Tip_Bilet >> biletPiesa[NumarBilete].Pret_Bilet)
     {
         copie_ID_Bilet_Max = biletPiesa[NumarBilete].ID_Bilet;
@@ -229,7 +229,7 @@ void citire_bilete()
 
 void citire_personal()
 {
-    ifstream fisierPersonalTeatru("personal.txt"); // fisier cu personalul care lucreaza in incinta teatrului
+    ifstream fisierPersonalTeatru("Files/personal.txt"); // fisier cu personalul care lucreaza in incinta teatrului
     while (fisierPersonalTeatru >> personalTeatru[NumarPersonalTeatru].ID_PersonalTeatru >> personalTeatru[NumarPersonalTeatru].Functie_PersonalTeatru >> personalTeatru[NumarPersonalTeatru].Nume_PersonalTeatru >> personalTeatru[NumarPersonalTeatru].Prenume_PersonalTeatru >> personalTeatru[NumarPersonalTeatru].CNP_PersonalTeatru >> personalTeatru[NumarPersonalTeatru].Varsta_PersonalTeatru)
     {
         copie_ID_Personal_Max = personalTeatru[NumarPersonalTeatru].ID_PersonalTeatru;
@@ -242,7 +242,7 @@ void citire_personal()
 
 void citire_spectatori()
 {
-    ifstream fisierSpectator("spectator.txt"); // fisier cu spectatorii care si-au rezervat loc la fiecare piesa de teatru
+    ifstream fisierSpectator("Files/spectator.txt"); // fisier cu spectatorii care si-au rezervat loc la fiecare piesa de teatru
     while (fisierSpectator >> spectatorPiesa[NumarSpectatori].ID_Spectator >> spectatorPiesa[NumarSpectatori].ID_Bilet >> spectatorPiesa[NumarSpectatori].ID_Piesa >> spectatorPiesa[NumarSpectatori].loja)
         NumarSpectatori++;
     NumarSpectatori--;
@@ -251,7 +251,7 @@ void citire_spectatori()
 
 void citire_piese_vechi()
 {
-    ifstream fisierPiesaVeche("piesa_veche.txt");
+    ifstream fisierPiesaVeche("Files/piesa_veche.txt");
     while (fisierPiesaVeche >> piesa_veche[NumarPieseVechi].ID_Piesa >> piesa_veche[NumarPieseVechi].ID_Sala >> piesa_veche[NumarPieseVechi].ID_PersonalTeatru >> piesa_veche[NumarPieseVechi].Data_Piesa)
     {
         copie_ID_Piesa_Veche_Max = piesa_veche[NumarPieseVechi].ID_Piesa;
@@ -265,7 +265,7 @@ void citire_piese_vechi()
 
 void citire_spectatori_vechi()
 {
-    ifstream fisierSpectatorVechi("spectator_vechi.txt");
+    ifstream fisierSpectatorVechi("Files/spectator_vechi.txt");
     while (fisierSpectatorVechi >> spectator_vechi[NumarSpectatoriVechi].ID_Spectator >> spectator_vechi[NumarSpectatoriVechi].ID_Bilet >> spectator_vechi[NumarSpectatoriVechi].ID_Piesa >> spectator_vechi[NumarSpectatoriVechi].loja)
         NumarSpectatoriVechi++;
     NumarSpectatoriVechi--;
