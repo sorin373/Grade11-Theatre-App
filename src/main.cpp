@@ -94,7 +94,6 @@ struct piesa_v
 
 struct venit
 {
-public:
     unsigned int ID_Piesa;
     char Data_Piesa[1001];
     float suma;
