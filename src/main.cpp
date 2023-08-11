@@ -17,12 +17,10 @@
 
 using namespace std;
 
-/// Declarare contoarelor
 unsigned int NumarActori = 1, NumarPiese = 1, NumarBilete = 1, NumarSali = 1, NumarPersonalTeatru = 1, NumarSpectatori = 1, NumarPersonaje = 1, NumarPieseVechi = 1, NumarSpectatoriVechi = 1;
 unsigned int copie_ID_Sala_Max = 0, copie_ID_Actor_Max = 0, copie_ID_Piesa_Max = 0, copie_ID_Bilet_Max = 0, copie_ID_Personal_Max = 0, copie_ID_Piesa_Veche_Max = 0;
 unsigned int contorVenit = 1;
 
-/// Declarare structuri de date
 struct sala
 {
 public:
@@ -110,7 +108,6 @@ public:
     float suma;
 } venitPiesa[1001];
 
-/// Functii ajutatoare
 void fillLinieConsola(const unsigned int vWidth)
 {
     cout << setw(5 - 2) << " ";
@@ -136,7 +133,7 @@ void clear_screen()
 void sleepcp(int milliseconds) // Cross-platform sleep function
 {
 #ifdef _WIN32
-    sleep(milliseconds);
+    Sleep(milliseconds);
 #else
     usleep(milliseconds * 1000);
 #endif // _WIN32
@@ -165,7 +162,6 @@ char getch(void)
     return buf;
 }
 
-/// Citire date din fisier
 void citire_sali()
 {
     ifstream fisierSala("sala.txt"); // fisier sali teatru
@@ -276,7 +272,6 @@ void citire_spectatori_vechi()
     fisierSpectatorVechi.close();
 }
 
-/// Afisare date
 void afisare_piese()
 {
     // Determinarea piesei cu numar maxim de caractere
@@ -532,7 +527,6 @@ void afisare_venituri()
     fillLinieConsola(85);
 }
 
-/// Sortari
 void sort_piese_ID_crescator()
 {
     bool vSort = true;
@@ -1425,7 +1419,6 @@ void sortari_istoricPiese_data()
          << "Apasati enter pentru a va intoarce la meniul precedent...";
 }
 
-/// Componente main
 void cautare_piesa_nume()
 {
     clear_screen();
@@ -2727,13 +2720,13 @@ void sortare_venituri_data()
         if (matrix[0][0] == '0')
         {
             matrix[0][0] = matrix[0][1];
-            matrix[0][1] = NULL;
+            matrix[0][1] = '\0';
         }
 
         if (matrix[1][0] == '0')
         {
             matrix[1][0] = matrix[1][1];
-            matrix[1][1] = NULL;
+            matrix[1][1] = '\0';
         }
 
         if (strlen(matrix[0]) == 2)
