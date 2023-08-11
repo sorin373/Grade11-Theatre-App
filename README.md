@@ -3,8 +3,8 @@
 - We have created a data storage system that makes use of files as its foundation. To represent the information from these files, we've developed several data structures.
 - The program we've built runs on a console interface, presenting users with a Main Menu that grants access to various sub-menus. These sub-menus serve to modify the data stored within the files.
 
-![demo1](Screenshots/Main-menu.png)
-![demo2](Screenshots/Sub-menu.png)
+![demo1](Screenshots/S1.png)
+![demo2](Screenshots/S2.png)
 - Our choice of a static memory management system means that it isn't capable of adapting in real-time.
 # Installation
 - Before running the program, make sure that you have a compiler installed on your machine. One option is to use [MinGW](https://www.mingw-w64.org/downloads/).
