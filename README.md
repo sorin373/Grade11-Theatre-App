@@ -13,7 +13,7 @@ $ g++ -o main main.cpp
 $ ./main
 ~~~
 # Requirements
-- The project is recommanded to be ran on **windows** only, since there are some issues with the used C++ libraries on **Linux**.
+- The project is is both **windows** and **Linux** compatible :D
 
 # Project Status
 - The project has been completed on the 10th of January 2023.
