@@ -5,8 +5,6 @@
 #include <cstdlib>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <ctype.h>
 #ifdef _WIN32
 #include <windows.h>
 #include <conio.h>
@@ -113,11 +111,10 @@ void fillLinieConsola(const unsigned int vWidth)
 
 void clear_screen()
 {
-#ifdef WINDOWS
-    std::clear_screen();
+#ifdef WIN32
+    system("CLS");
 #else
-    // Assume POSIX
-    std::system("clear");
+    system("clear");
 #endif
 }
 
@@ -130,6 +127,7 @@ void sleepcp(int milliseconds) // Cross-platform sleep function
 #endif // _WIN32
 }
 
+#ifdef __linux__
 char getch(void)
 {
     char buf = 0;
@@ -152,6 +150,7 @@ char getch(void)
     printf("%c\n", buf);
     return buf;
 }
+#endif
 
 void citire_sali()
 {
@@ -330,15 +329,16 @@ void afisare_sali()
     cout << "\n\n";
     cout << setw(5) << " "
          << "ID Sala";
-    cout << setw(2) << " "
-         << "Numar scaune";
-    cout << setw(2) << " "
-         << "Numar scaune loja";
+    cout << setw(5) << " "
+         << "Nr. scaune";
+    cout << setw(5) << " "
+         << "Nr. loc. loja";
     cout << "\n";
-    fillLinieConsola(45);
+    fillLinieConsola(75);
     for (unsigned int i = 1; i <= NumarSali; i++)
-        cout << setw(8) << " " << salaTeatru[i].ID_Sala << setw(10) << " " << salaTeatru[i].Nr_Scaune << setw(12) << " " << salaTeatru[i].Nr_Scaune_Loja << endl;
-    fillLinieConsola(45);
+        cout << setw(5) << " " << salaTeatru[i].ID_Sala << setw(11) << " " << salaTeatru[i].Nr_Scaune << " sc."
+             << setw(12) << " " << salaTeatru[i].Nr_Scaune_Loja << " sc." << endl;
+    fillLinieConsola(75);
 }
 
 void afisare_bilete()
@@ -3336,14 +3336,15 @@ void afisare_prima_litera()
 void piese_dupa_ora()
 {
     clear_screen();
+    afisare_piese();
 
-    cout << "\n\n";
+    cout << "\n";
     cout << setw(5 - 1) << " "
          << "APASA TASTA '0' PENTRU A ANULA";
     cout << "\n\n";
 
     cout << setw(5 - 1) << " "
-         << "Introduceti ora dorita: ";
+         << "Introduceti ora dorita(00:00): ";
 
     char ora[6];
     cin.get();
@@ -3804,6 +3805,7 @@ void varsta_mai_mica_personal()
 
 int main()
 {
+    clear_screen();
 
     /// Citirea datelor din fisierele corespunzatoare
     citire_sali();
@@ -4030,18 +4032,21 @@ int main()
             {
                 clear_screen();
                 afisare_sali();
-                cout << '\n';
-                cout << setw(6) << " "
-                     << "1. Afisarea pieselor ca se joaca intr-o anumita sala" << '\n';
-                cout << setw(6) << " "
-                     << "2. Afisarea primelor 3 cele mai incapatoare sali din teatru" << '\n';
-                cout << setw(6) << " "
-                     << "3. Modificare date" << '\n';
-                cout << setw(6) << " "
-                     << "0. Inapoi"
-                     << "\n\n";
 
-                cout << setw(5 - 1) << " "
+                cout << '\n';
+                cout << setw(5) << " "
+                     << "1. Afisarea pieselor care se joaca intr-o anumita sala" << '\n';
+                cout << setw(5) << " "
+                     << "2. Afisarea primelor 3 cele mai incapatoare sali din teatru" << '\n';
+                cout << setw(5) << " "
+                     << "3. Modificare date" << '\n';
+                cout << setw(5) << " "
+                     << "0. Inapoi"
+                     << "\n";
+
+                fillLinieConsola(75);
+
+                cout << setw(5) << " "
                      << "Tastati numarul respectiv sectiunii pe care doriti sa o accesati: ";
                 cin >> Meniu_Sali;
 
@@ -4517,6 +4522,8 @@ int main()
         break;
         }
     } while (Meniu_1 != 0);
+
+    clear_screen();
 
     return 0;
 }
