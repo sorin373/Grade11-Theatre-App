@@ -31,13 +31,9 @@
 ## Windows
 
 1. Download the Windows installer for the app from the [GitHub Releases](https://github.com/sorin373/Grade11-Theatre-App/releases/tag/v1.0.0) page.
-
 2. Run the installer by double-clicking the downloaded file (`Grade11-Theatre-App-1.0.0-win64.exe`).
-
 3. Follow the on-screen instructions to complete the installation.
-
 4. Once installed, navigate to the installation folder (usually `C:\Program Files\Grade11-Theatre-App 1.0.0`) and find the `Grade11-Theatre-App.exe` file.
-
 5. Double-click `Grade11-Theatre-App.exe` to launch the application.
 
 ## Unix (Debian)
