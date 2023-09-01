@@ -6,7 +6,7 @@
     - [Unix (Debian)](#unix-debian)
     - [Unix (RPM-based)](#unix-rpm-based)
 - [Building the executable binaries](#building-the-executable-binaries)
-    - [Windows](#windows)
+    - [Windows](#windows-1)
     - [Debian](#debian)
 - [Project Status](#project-status)
 
