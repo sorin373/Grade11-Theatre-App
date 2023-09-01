@@ -22,11 +22,6 @@ unsigned int NumarActori = 1, NumarPiese = 1, NumarBilete = 1, NumarSali = 1, Nu
              copie_ID_Sala_Max = 0, copie_ID_Actor_Max = 0, copie_ID_Piesa_Max = 0, copie_ID_Bilet_Max = 0,
              copie_ID_Personal_Max = 0, copie_ID_Piesa_Veche_Max = 0, contorVenit = 1;
 
-int _strcasecmp_(const char *str1, const char *str2)
-{
-    return STRCASECMP(str1, str2);
-}
-
 struct sala
 {
     unsigned int ID_Sala;
@@ -104,6 +99,11 @@ struct venit
     char Data_Piesa[1001];
     float suma;
 } venitPiesa[1001];
+
+int _strcasecmp_(const char *str1, const char *str2)
+{
+    return STRCASECMP(str1, str2);
+}
 
 void fillLinieConsola(const unsigned int vWidth)
 {
@@ -1927,7 +1927,7 @@ void Adaugare_Sali()
          << "Apasati enter pentru a va intoarce la meniul precedent...";
 
     ofstream fisierSala;
-    fisierSala.open("sala.txt", ios::out | ios::app);
+    fisierSala.open("db_files/sala.txt", ios::out | ios::app);
     fisierSala << salaTeatru[NumarSali].ID_Sala << " " << salaTeatru[NumarSali].Nr_Scaune << " " << salaTeatru[NumarSali].Nr_Scaune_Loja << endl;
     fisierSala.close();
 }
@@ -1949,7 +1949,7 @@ void Stergere_Sali()
     NumarSali--;
     copie_ID_Sala_Max--;
 
-    ofstream fiserSala("sala.txt");
+    ofstream fiserSala("db_files/sala.txt");
     for (unsigned int i = 1; i <= NumarSali; i++)
         fiserSala << salaTeatru[i].ID_Sala << " " << salaTeatru[i].Nr_Scaune << " " << salaTeatru[i].Nr_Scaune_Loja << endl;
     fiserSala.close();
@@ -2049,7 +2049,7 @@ void Adaugare_Actori()
     cin >> actorTeatru[NumarActori].Sex_Actor;
 
     ofstream fisierActor;
-    fisierActor.open("actor.txt", ios::out | ios::app);
+    fisierActor.open("db_files/actor.txt", ios::out | ios::app);
     fisierActor << actorTeatru[NumarActori].ID_Actor << " " << actorTeatru[NumarActori].ID_Piesa << " " << actorTeatru[NumarActori].Nume_Actor << " "
                 << actorTeatru[NumarActori].Prenume_Actor << " " << actorTeatru[NumarActori].Varsta_Actor << " " << actorTeatru[NumarActori].Email_Actor << " "
                 << actorTeatru[NumarActori].CNP_Actor << " " << actorTeatru[NumarActori].Sex_Actor << endl;
@@ -2107,7 +2107,7 @@ void Stergere_Actori()
         NumarActori--;
         copie_ID_Actor_Max--;
 
-        ofstream fisierActor("actor.txt");
+        ofstream fisierActor("db_files/actor.txt");
         for (unsigned int i = 1; i <= NumarActori; i++)
             fisierActor << actorTeatru[i].ID_Actor << " " << actorTeatru[i].ID_Piesa << " " << actorTeatru[i].Nume_Actor << " "
                         << actorTeatru[i].Prenume_Actor << " " << actorTeatru[i].Varsta_Actor << " " << actorTeatru[i].Email_Actor << " "
@@ -2175,7 +2175,7 @@ void Adaugare_Personal()
     cin >> personalTeatru[NumarPersonalTeatru].Varsta_PersonalTeatru;
 
     ofstream fisierPersonalTeatru;
-    fisierPersonalTeatru.open("personal.txt", ios::out | ios::app);
+    fisierPersonalTeatru.open("db_files/personal.txt", ios::out | ios::app);
     fisierPersonalTeatru << personalTeatru[NumarPersonalTeatru].ID_PersonalTeatru << " "
                          << personalTeatru[NumarPersonalTeatru].Functie_PersonalTeatru << " "
                          << personalTeatru[NumarPersonalTeatru].Nume_PersonalTeatru << " "
@@ -2232,7 +2232,7 @@ void Stergere_Personal()
         copie_ID_Personal_Max--;
     }
 
-    ofstream fisierPersonalTeatru("personal.txt");
+    ofstream fisierPersonalTeatru("db_files/personal.txt");
     for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
         fisierPersonalTeatru << personalTeatru[i].ID_PersonalTeatru << " "
                              << personalTeatru[i].Functie_PersonalTeatru << " "
@@ -2363,7 +2363,7 @@ void Adaugare_Piese()
     getch();
 
     ofstream fisierPiesa;
-    fisierPiesa.open("piesa.txt", ios::out | ios::app);
+    fisierPiesa.open("db_files/piesa.txt", ios::out | ios::app);
     fisierPiesa << piesaTeatru[NumarPiese].ID_Piesa << " " << piesaTeatru[NumarPiese].ID_Sala << " "
                 << piesaTeatru[NumarPiese].ID_PersonalTeatru << " " << piesaTeatru[NumarPiese].Data_Piesa << " "
                 << piesaTeatru[NumarPiese].Ora_Piesa << " " << piesaTeatru[NumarPiese].Nume_Piesa << endl;
@@ -2419,7 +2419,7 @@ void Stergere_Piese()
         copie_ID_Piesa_Max--;
     }
 
-    ofstream fisierPiesa("piesa.txt");
+    ofstream fisierPiesa("db_files/piesa.txt");
     for (unsigned int i = 1; i <= NumarPiese; i++)
         fisierPiesa << piesaTeatru[i].ID_Piesa << " " << piesaTeatru[i].ID_Sala << " " << piesaTeatru[i].ID_PersonalTeatru << " " << piesaTeatru[i].Data_Piesa << " "
                     << piesaTeatru[i].Ora_Piesa << " " << piesaTeatru[i].Nume_Piesa << endl;
@@ -2493,7 +2493,7 @@ void Adaugare_Bilet()
              << "Apasati enter pentru a va intoarce la meniul precedent...";
 
         ofstream fisierBilet;
-        fisierBilet.open("bilet.txt", ios::out | ios::app);
+        fisierBilet.open("db_files/bilet.txt", ios::out | ios::app);
         fisierBilet << biletPiesa[NumarBilete].ID_Bilet << " " << biletPiesa[NumarBilete].Tip_Bilet << " " << biletPiesa[NumarBilete].Pret_Bilet << '\n';
         fisierBilet.close();
     }
@@ -2546,7 +2546,7 @@ void Stergere_Bilet()
         copie_ID_Bilet_Max--;
     }
 
-    ofstream fisierBilet("bilet.txt");
+    ofstream fisierBilet("db_files/bilet.txt");
     for (unsigned int i = 1; i <= NumarBilete; i++)
         fisierBilet << biletPiesa[i].ID_Bilet << " " << biletPiesa[i].Tip_Bilet << " " << biletPiesa[i].Pret_Bilet << endl;
     fisierBilet.close();
