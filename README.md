@@ -26,6 +26,8 @@
 
 # Installation
 
+> **Note**: In order for all features to work correctly, run the app as an admin.
+
 ## Windows
 
 1. Download the Windows installer for the app from the [GitHub Releases](https://github.com/sorin373/Grade11-Theatre-App/releases/tag/v1.0.0) page.
