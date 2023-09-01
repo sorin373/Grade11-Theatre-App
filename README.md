@@ -18,7 +18,7 @@
 - Our choice of a static memory management system means that it isn't capable of adapting in real-time.
 
 <details id="section-1">
-  <summary><span style="font-size: 25pt;">Demo Screenshots</span></summary>
+  <summary><strong>Demo Screenshots</strong></summary>
 
   ![Screenshot 1](Screenshots/S1.png)
   
