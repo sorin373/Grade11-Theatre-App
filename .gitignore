@@ -26,7 +26,20 @@
 *.a
 *.lib
 
+# IDE/Editor specific files
+.idea/
+.vscode/
+.vs/
+
 # Executables
 *.exe
 *.out
 *.app
+
+# CMake
+build/
+CMakeFiles/
+CMakeCache.txt
+Makefile
+*.cmake
+*.vcxproj

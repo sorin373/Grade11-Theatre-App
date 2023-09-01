@@ -8,16 +8,24 @@
 #ifdef _WIN32
 #include <windows.h>
 #include <conio.h>
-#else
+#define STRCASECMP _stricmp
+#elif __linux__
 #include <unistd.h>
 #include <termios.h>
+#define STRCASECMP strcasecmp
 #endif
 
 using namespace std;
 
-unsigned int NumarActori = 1, NumarPiese = 1, NumarBilete = 1, NumarSali = 1, NumarPersonalTeatru = 1, NumarSpectatori = 1, NumarPersonaje = 1, NumarPieseVechi = 1, NumarSpectatoriVechi = 1;
-unsigned int copie_ID_Sala_Max = 0, copie_ID_Actor_Max = 0, copie_ID_Piesa_Max = 0, copie_ID_Bilet_Max = 0, copie_ID_Personal_Max = 0, copie_ID_Piesa_Veche_Max = 0;
-unsigned int contorVenit = 1;
+unsigned int NumarActori = 1, NumarPiese = 1, NumarBilete = 1, NumarSali = 1, NumarPersonalTeatru = 1,
+             NumarSpectatori = 1, NumarPersonaje = 1, NumarPieseVechi = 1, NumarSpectatoriVechi = 1,
+             copie_ID_Sala_Max = 0, copie_ID_Actor_Max = 0, copie_ID_Piesa_Max = 0, copie_ID_Bilet_Max = 0,
+             copie_ID_Personal_Max = 0, copie_ID_Piesa_Veche_Max = 0, contorVenit = 1;
+
+int _strcasecmp_(const char *str1, const char *str2)
+{
+    return STRCASECMP(str1, str2);
+}
 
 struct sala
 {
@@ -118,13 +126,13 @@ void clear_screen()
 #endif
 }
 
-void sleepcp(int milliseconds) // Cross-platform sleep function
+void sleepcp(int milliseconds)
 {
 #ifdef _WIN32
     Sleep(milliseconds);
 #else
     usleep(milliseconds * 1000);
-#endif // _WIN32
+#endif
 }
 
 #ifdef __linux__
@@ -154,7 +162,7 @@ char getch(void)
 
 void citire_sali()
 {
-    ifstream fisierSala("Files/sala.txt"); // fisier sali teatru
+    ifstream fisierSala("db_files/sala.txt"); // fisier sali teatru
     while (fisierSala >> salaTeatru[NumarSali].ID_Sala >> salaTeatru[NumarSali].Nr_Scaune >> salaTeatru[NumarSali].Nr_Scaune_Loja)
     {
         copie_ID_Sala_Max = salaTeatru[NumarSali].ID_Sala;
@@ -166,7 +174,7 @@ void citire_sali()
 
 void citire_actori()
 {
-    ifstream fisierActor("Files/actor.txt"); // fisier actori care joaca in piesele de teatru
+    ifstream fisierActor("db_files/actor.txt"); // fisier actori care joaca in piesele de teatru
     while (fisierActor >> actorTeatru[NumarActori].ID_Actor >> actorTeatru[NumarActori].ID_Piesa >> actorTeatru[NumarActori].Nume_Actor >> actorTeatru[NumarActori].Prenume_Actor >> actorTeatru[NumarActori].Varsta_Actor >> actorTeatru[NumarActori].Email_Actor >> actorTeatru[NumarActori].CNP_Actor >> actorTeatru[NumarActori].Sex_Actor)
     {
         copie_ID_Actor_Max = actorTeatru[NumarActori].ID_Actor;
@@ -179,7 +187,7 @@ void citire_actori()
 
 void citire_piese()
 {
-    ifstream fisierPiesa("Files/piesa.txt"); // fisier cu piesele care urmeaza sa fie jucate in urmatoarea saptamana
+    ifstream fisierPiesa("db_files/piesa.txt"); // fisier cu piesele care urmeaza sa fie jucate in urmatoarea saptamana
     while (fisierPiesa >> piesaTeatru[NumarPiese].ID_Piesa >> piesaTeatru[NumarPiese].ID_Sala >> piesaTeatru[NumarPiese].ID_PersonalTeatru >> piesaTeatru[NumarPiese].Data_Piesa >> piesaTeatru[NumarPiese].Ora_Piesa)
     {
         copie_ID_Piesa_Max = piesaTeatru[NumarPiese].ID_Piesa;
@@ -193,7 +201,7 @@ void citire_piese()
 
 void citire_personaje_piese()
 {
-    ifstream fisierPersonaj("Files/personaj.txt"); // fisier cu personajele din fiecare piesa de teatru
+    ifstream fisierPersonaj("db_files/personaj.txt"); // fisier cu personajele din fiecare piesa de teatru
     while (fisierPersonaj >> personajPiesa[NumarPersonaje].ID_Piesa >> personajPiesa[NumarPersonaje].ID_Actor)
     {
         fisierPersonaj.get();
@@ -206,7 +214,7 @@ void citire_personaje_piese()
 
 void citire_bilete()
 {
-    ifstream fisierBilet("Files/bilet.txt"); // fisier cu tipurile de bilete disponibile la teatru
+    ifstream fisierBilet("db_files/bilet.txt"); // fisier cu tipurile de bilete disponibile la teatru
     while (fisierBilet >> biletPiesa[NumarBilete].ID_Bilet >> biletPiesa[NumarBilete].Tip_Bilet >> biletPiesa[NumarBilete].Pret_Bilet)
     {
         copie_ID_Bilet_Max = biletPiesa[NumarBilete].ID_Bilet;
@@ -219,7 +227,7 @@ void citire_bilete()
 
 void citire_personal()
 {
-    ifstream fisierPersonalTeatru("Files/personal.txt"); // fisier cu personalul care lucreaza in incinta teatrului
+    ifstream fisierPersonalTeatru("db_files/personal.txt"); // fisier cu personalul care lucreaza in incinta teatrului
     while (fisierPersonalTeatru >> personalTeatru[NumarPersonalTeatru].ID_PersonalTeatru >> personalTeatru[NumarPersonalTeatru].Functie_PersonalTeatru >> personalTeatru[NumarPersonalTeatru].Nume_PersonalTeatru >> personalTeatru[NumarPersonalTeatru].Prenume_PersonalTeatru >> personalTeatru[NumarPersonalTeatru].CNP_PersonalTeatru >> personalTeatru[NumarPersonalTeatru].Varsta_PersonalTeatru)
     {
         copie_ID_Personal_Max = personalTeatru[NumarPersonalTeatru].ID_PersonalTeatru;
@@ -232,7 +240,7 @@ void citire_personal()
 
 void citire_spectatori()
 {
-    ifstream fisierSpectator("Files/spectator.txt"); // fisier cu spectatorii care si-au rezervat loc la fiecare piesa de teatru
+    ifstream fisierSpectator("db_files/spectator.txt"); // fisier cu spectatorii care si-au rezervat loc la fiecare piesa de teatru
     while (fisierSpectator >> spectatorPiesa[NumarSpectatori].ID_Spectator >> spectatorPiesa[NumarSpectatori].ID_Bilet >> spectatorPiesa[NumarSpectatori].ID_Piesa >> spectatorPiesa[NumarSpectatori].loja)
         NumarSpectatori++;
     NumarSpectatori--;
@@ -241,7 +249,7 @@ void citire_spectatori()
 
 void citire_piese_vechi()
 {
-    ifstream fisierPiesaVeche("Files/piesa_veche.txt");
+    ifstream fisierPiesaVeche("db_files/piesa_veche.txt");
     while (fisierPiesaVeche >> piesa_veche[NumarPieseVechi].ID_Piesa >> piesa_veche[NumarPieseVechi].ID_Sala >> piesa_veche[NumarPieseVechi].ID_PersonalTeatru >> piesa_veche[NumarPieseVechi].Data_Piesa)
     {
         copie_ID_Piesa_Veche_Max = piesa_veche[NumarPieseVechi].ID_Piesa;
@@ -255,7 +263,7 @@ void citire_piese_vechi()
 
 void citire_spectatori_vechi()
 {
-    ifstream fisierSpectatorVechi("Files/spectator_vechi.txt");
+    ifstream fisierSpectatorVechi("db_files/spectator_vechi.txt");
     while (fisierSpectatorVechi >> spectator_vechi[NumarSpectatoriVechi].ID_Spectator >> spectator_vechi[NumarSpectatoriVechi].ID_Bilet >> spectator_vechi[NumarSpectatoriVechi].ID_Piesa >> spectator_vechi[NumarSpectatoriVechi].loja)
         NumarSpectatoriVechi++;
     NumarSpectatoriVechi--;
@@ -622,7 +630,7 @@ void sortari_piese()
             {
                 ok = 1;
                 for (unsigned int i = 1; i < NumarPiese; i++)
-                    if (strcasecmp(s_piesaTeatru[i].Nume_Piesa, s_piesaTeatru[i + 1].Nume_Piesa) > 0)
+                    if (_strcasecmp_(s_piesaTeatru[i].Nume_Piesa, s_piesaTeatru[i + 1].Nume_Piesa) > 0)
                     {
                         swap(s_piesaTeatru[i], s_piesaTeatru[i + 1]);
                         ok = 0;
@@ -789,7 +797,7 @@ void sortari_actori()
             {
                 ok = 1;
                 for (unsigned int i = 1; i < NumarActori; i++)
-                    if (strcasecmp(c_actor[i].Nume_Actor, c_actor[i + 1].Nume_Actor) > 0)
+                    if (_strcasecmp_(c_actor[i].Nume_Actor, c_actor[i + 1].Nume_Actor) > 0)
                     {
                         swap(c_actor[i], c_actor[i + 1]);
                         ok = 0;
@@ -849,7 +857,7 @@ void sortari_actori()
             {
                 ok = 1;
                 for (unsigned int i = 1; i < NumarActori; i++)
-                    if (strcasecmp(c_actor[i].Prenume_Actor, c_actor[i + 1].Prenume_Actor) > 0)
+                    if (_strcasecmp_(c_actor[i].Prenume_Actor, c_actor[i + 1].Prenume_Actor) > 0)
                     {
                         swap(c_actor[i], c_actor[i + 1]);
                         ok = 0;
@@ -997,7 +1005,7 @@ void sortari_personal()
             {
                 ok = 1;
                 for (unsigned int i = 1; i < NumarPersonalTeatru; i++)
-                    if (strcasecmp(c_personal[i].Nume_PersonalTeatru, c_personal[i + 1].Nume_PersonalTeatru) > 0)
+                    if (_strcasecmp_(c_personal[i].Nume_PersonalTeatru, c_personal[i + 1].Nume_PersonalTeatru) > 0)
                     {
                         swap(c_personal[i], c_personal[i + 1]);
                         ok = 0;
@@ -1063,7 +1071,7 @@ void sortari_personal()
             {
                 ok = 1;
                 for (unsigned int i = 1; i < NumarPersonalTeatru; i++)
-                    if (strcasecmp(c_personal[i].Prenume_PersonalTeatru, c_personal[i + 1].Prenume_PersonalTeatru) > 0)
+                    if (_strcasecmp_(c_personal[i].Prenume_PersonalTeatru, c_personal[i + 1].Prenume_PersonalTeatru) > 0)
                     {
                         swap(c_personal[i], c_personal[i + 1]);
                         ok = 0;
@@ -1195,7 +1203,7 @@ void sortari_personal()
             {
                 ok = 1;
                 for (unsigned int i = 1; i < NumarPersonalTeatru; i++)
-                    if (strcasecmp(c_personal[i].Functie_PersonalTeatru, c_personal[i + 1].Functie_PersonalTeatru) > 0)
+                    if (_strcasecmp_(c_personal[i].Functie_PersonalTeatru, c_personal[i + 1].Functie_PersonalTeatru) > 0)
                     {
                         swap(c_personal[i], c_personal[i + 1]);
                         ok = 0;
@@ -1266,7 +1274,7 @@ void sortari_istoricPiese_alfabeti_A_Z()
     {
         ok = 1;
         for (unsigned int i = 1; i < NumarPieseVechi; i++)
-            if (strcasecmp(c_piesa_veche[i].Nume_Piesa, c_piesa_veche[i + 1].Nume_Piesa) > 0)
+            if (_strcasecmp_(c_piesa_veche[i].Nume_Piesa, c_piesa_veche[i + 1].Nume_Piesa) > 0)
             {
                 swap(c_piesa_veche[i], c_piesa_veche[i + 1]);
                 ok = 0;
@@ -1316,7 +1324,7 @@ void sortari_istoricPiese_alfabeti_Z_A()
     {
         ok = 1;
         for (unsigned int i = 1; i < NumarPieseVechi; i++)
-            if (strcasecmp(c_piesa_veche[i].Nume_Piesa, c_piesa_veche[i + 1].Nume_Piesa) < 0)
+            if (_strcasecmp_(c_piesa_veche[i].Nume_Piesa, c_piesa_veche[i + 1].Nume_Piesa) < 0)
             {
                 swap(c_piesa_veche[i], c_piesa_veche[i + 1]);
                 ok = 0;
@@ -1432,7 +1440,7 @@ void cautare_piesa_nume()
     else
     {
         for (unsigned int i = 1; i <= NumarPiese; i++)
-            if (strcasecmp(piesaTeatru[i].Nume_Piesa, vNume_Piesa) == 0)
+            if (_strcasecmp_(piesaTeatru[i].Nume_Piesa, vNume_Piesa) == 0)
             {
                 cout << '\n';
 
@@ -1704,7 +1712,7 @@ void cautare_piesa_regizor()
         {
             unsigned int copieID = 0;
             for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
-                if (strcasecmp(vNumeRegizor, personalTeatru[i].Nume_PersonalTeatru) == 0 && strcasecmp(vPrenumeRegizor, personalTeatru[i].Prenume_PersonalTeatru) == 0)
+                if (_strcasecmp_(vNumeRegizor, personalTeatru[i].Nume_PersonalTeatru) == 0 && _strcasecmp_(vPrenumeRegizor, personalTeatru[i].Prenume_PersonalTeatru) == 0)
                     copieID = personalTeatru[i].ID_PersonalTeatru;
 
             for (unsigned int j = 1; j <= NumarPiese; j++)
@@ -2290,7 +2298,7 @@ void Adaugare_Piese()
     unsigned int copieID = 0, ID_Personal_Locala = 0;
     for (unsigned int i = 1; i <= NumarPersonalTeatru; i++)
     {
-        if (strcasecmp(vNumeRegizor, personalTeatru[i].Nume_PersonalTeatru) == 0 && strcasecmp(vPrenumeRegizor, personalTeatru[i].Prenume_PersonalTeatru) == 0)
+        if (_strcasecmp_(vNumeRegizor, personalTeatru[i].Nume_PersonalTeatru) == 0 && _strcasecmp_(vPrenumeRegizor, personalTeatru[i].Prenume_PersonalTeatru) == 0)
             copieID = personalTeatru[i].ID_PersonalTeatru;
         ID_Personal_Locala = personalTeatru[i].ID_PersonalTeatru;
     }
@@ -2913,7 +2921,7 @@ void cautare_actori_nume()
         unsigned int NumarMaxCaractereEmail = 0;
 
         for (unsigned int i = 1; i <= NumarActori; i++)
-            if (strcasecmp(vPrenume_Actor, actorTeatru[i].Prenume_Actor) == 0)
+            if (_strcasecmp_(vPrenume_Actor, actorTeatru[i].Prenume_Actor) == 0)
             {
                 if (strlen(actorTeatru[i].Nume_Actor) > NumarMaxCaractereNume)
                     NumarMaxCaractereNume = strlen(actorTeatru[i].Nume_Actor);
@@ -2939,7 +2947,7 @@ void cautare_actori_nume()
         fillLinieConsola(150);
 
         for (unsigned int i = 1; i <= NumarActori; i++)
-            if (strcasecmp(vPrenume_Actor, actorTeatru[i].Prenume_Actor) == 0)
+            if (_strcasecmp_(vPrenume_Actor, actorTeatru[i].Prenume_Actor) == 0)
                 cout << setw(5) << " " << actorTeatru[i].ID_Actor << setw(10 - 1) << " " << actorTeatru[i].ID_Piesa << setw(10 - 1) << " " << actorTeatru[i].Nume_Actor
                      << setw(NumarMaxCaractereNume - strlen(actorTeatru[i].Nume_Actor) + 10) << " " << actorTeatru[i].Prenume_Actor
                      << setw(NumarMaxCaracterePrenume - strlen(actorTeatru[i].Prenume_Actor) + 15) << " " << actorTeatru[i].Varsta_Actor << " ani"
@@ -2970,7 +2978,7 @@ void cautare_actori_nume()
         unsigned int NumarMaxCaractereEmail = 0;
 
         for (unsigned int i = 1; i <= NumarActori; i++)
-            if (strcasecmp(vNume_Actor, actorTeatru[i].Nume_Actor) == 0)
+            if (_strcasecmp_(vNume_Actor, actorTeatru[i].Nume_Actor) == 0)
             {
                 if (strlen(actorTeatru[i].Nume_Actor) > NumarMaxCaractereNume)
                     NumarMaxCaractereNume = strlen(actorTeatru[i].Nume_Actor);
@@ -2996,7 +3004,7 @@ void cautare_actori_nume()
         fillLinieConsola(150);
 
         for (unsigned int i = 1; i <= NumarActori; i++)
-            if (strcasecmp(vNume_Actor, actorTeatru[i].Nume_Actor) == 0)
+            if (_strcasecmp_(vNume_Actor, actorTeatru[i].Nume_Actor) == 0)
                 cout << setw(5) << " " << actorTeatru[i].ID_Actor << setw(10 - 1) << " " << actorTeatru[i].ID_Piesa << setw(10 - 1) << " " << actorTeatru[i].Nume_Actor
                      << setw(NumarMaxCaractereNume - strlen(actorTeatru[i].Nume_Actor) + 10) << " " << actorTeatru[i].Prenume_Actor
                      << setw(NumarMaxCaracterePrenume - strlen(actorTeatru[i].Prenume_Actor) + 15) << " " << actorTeatru[i].Varsta_Actor << " ani"
@@ -3651,7 +3659,7 @@ void ocupatie_personal()
         fillLinieConsola(115);
 
         for (i = 1; i <= NumarPersonalTeatru; i++)
-            if (strcasecmp(personalTeatru[i].Functie_PersonalTeatru, ocupatie) == 0)
+            if (_strcasecmp_(personalTeatru[i].Functie_PersonalTeatru, ocupatie) == 0)
                 cout << setw(5) << " " << actorTeatru[i].ID_Actor << setw(10 - 1) << " " << actorTeatru[i].ID_Piesa << setw(10 - 1) << " " << actorTeatru[i].Nume_Actor
                      << setw(NumarMaxCaractereNume - strlen(actorTeatru[i].Nume_Actor) + 10) << " " << actorTeatru[i].Prenume_Actor
                      << setw(NumarMaxCaracterePrenume - strlen(actorTeatru[i].Prenume_Actor) + 10) << " " << actorTeatru[i].Varsta_Actor << " ani"
