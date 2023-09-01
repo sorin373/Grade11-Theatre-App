@@ -1,7 +1,6 @@
 # Table of contents
 
 - [Overview](#overview)
-- [Demo Screenshots](#section-1)
 - [Installation](#installation)
     - [Windows](#windows)
     - [Unix (Debian)](#unix-debian)
@@ -17,7 +16,7 @@
 - The program we've built runs on a console interface, presenting users with a Main Menu that grants access to various sub-menus. These sub-menus serve to modify the data stored within the files.
 - Our choice of a static memory management system means that it isn't capable of adapting in real-time.
 
-<details id="section-1">
+<details>
   <summary><strong>Demo Screenshots</strong></summary>
 
   ![Screenshot 1](Screenshots/S1.png)
