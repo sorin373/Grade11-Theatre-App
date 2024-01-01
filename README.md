@@ -42,7 +42,7 @@
 2. Install the package using the software installer
 3. By default, the app will be installed in the `/usr/bin` directory. To run the application, open your terminal here and execute:
 ```bash
-$ ./Grade11-Theatre-App
+./Grade11-Theatre-App
 ```
 
 ## Unix (RPM-based)
@@ -50,11 +50,11 @@ $ ./Grade11-Theatre-App
 1. Download the RPM package (`.rpm` file) for the app from the [GitHub Releases](https://github.com/sorin373/Grade11-Theatre-App/releases/tag/v1.0.0) page.
 2. Install the package using the rpm command:
 ```bash
-$ sudo rpm -i Grade11-Theatre-App-1.0.0-Linux.rpm
+sudo rpm -i Grade11-Theatre-App-1.0.0-Linux.rpm
 ```
 3. By default, the app will be installed in the `/usr/bin` directory. To run the application, open your terminal here and execute:
 ```bash
-$ ./Grade11-Theatre-App
+./Grade11-Theatre-App
 ```
 
 # Building the executable binaries
@@ -68,8 +68,8 @@ $ ./Grade11-Theatre-App
 
 - **Install** [CMake](https://cmake.org/download/)
 ```bash
-$ sudo apt-get update && sudo apt-get upgrade
-$ sudo snap install cmake --classic
+sudo apt-get update && sudo apt-get upgrade
+sudo snap install cmake --classic
 ```
 - After acquiring the zip file containing the project files, open the folder in Visual Studio Code and use the CMake commands to build the application (or install the [CMake](https://marketplace.visualstudio.com/items?itemName=twxs.cmake) and [CMake Tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools) extensions).
 
