@@ -75,7 +75,3 @@ $ sudo snap install cmake --classic
 
 # Project Status
 - The project has been completed on the 10th of January 2023.
-
-
-
-
